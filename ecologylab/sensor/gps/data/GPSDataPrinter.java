@@ -19,6 +19,7 @@ public class GPSDataPrinter implements GPSDataListener
      */
     public void readGPSData(String gpsDataString)
     {
+        System.out.println("got data");
         System.out.println(gpsDataString);
     }
 

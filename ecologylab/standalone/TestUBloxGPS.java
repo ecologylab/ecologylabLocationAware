@@ -13,7 +13,7 @@ public class TestUBloxGPS
 {
     public static void main(String[] args) throws PortInUseException, UnsupportedCommOperationException, IOException, TooManyListenersException, NoSuchPortException
     {
-        GPS g = new GPS(null, "COM3", 4800);
+        GPS g = new GPS(null, "COM1", 115200);
         
         g.addGPSDataListener(new GPSDataPrinter());
         
