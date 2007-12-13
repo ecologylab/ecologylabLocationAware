@@ -1,10 +1,10 @@
 /**
  * 
  */
-package ecologylab.sensor.gps.data;
+package ecologylab.sensor.gps.listener;
 
 /**
- * @author toupsz
+ * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  *
  */
 public interface GPSDataListener
