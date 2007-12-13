@@ -169,7 +169,7 @@ public class GPS extends Debug implements SerialPortEventListener
 
 					if (startOfMessage > -1 && endOfMessage > -1)
 					{
-						this.fireGPSDataString(incomingDataBuffer.substring(startOfMessage, endOfMessage));
+						this.fireGPSDataString(incomingDataBuffer.substring(startOfMessage+1, endOfMessage));
 
 						incomingDataBuffer.delete(startOfMessage, endOfMessage + 2);
 					}

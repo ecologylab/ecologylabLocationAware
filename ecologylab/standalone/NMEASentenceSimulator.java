@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ecologylab.sensor.gps.listener.GPSDataListener;
+import ecologylab.sensor.gps.listener.GPSDataPrinter;
 import ecologylab.sensor.gps.listener.GPSDataUpdater;
 
 /**
@@ -65,6 +66,7 @@ public class NMEASentenceSimulator
 	{
 		NMEASentenceSimulator s = new NMEASentenceSimulator();
 		
+		s.addListener(new GPSDataPrinter());
 		s.addListener(new GPSDataUpdater());
 		
 		s.go();

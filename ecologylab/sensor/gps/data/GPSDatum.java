@@ -3,6 +3,15 @@
  */
 package ecologylab.sensor.gps.data;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import ecologylab.sensor.gps.data.dataset.GGA;
+import ecologylab.sensor.gps.data.dataset.GLL;
+import ecologylab.sensor.gps.data.dataset.GPSDataFieldBase;
+import ecologylab.sensor.gps.data.dataset.GSA;
+import ecologylab.sensor.gps.data.dataset.RMC;
+import ecologylab.sensor.gps.listener.GPSDataUpdatedListener;
 import ecologylab.xml.ElementState;
 import ecologylab.xml.XMLTranslationException;
 
@@ -15,29 +24,29 @@ import ecologylab.xml.XMLTranslationException;
  */
 public class GPSDatum extends ElementState
 {
-	@xml_attribute float			utcPosTime;
+	@xml_attribute float							utcPosTime;
 
-	@xml_attribute private int	latDeg;
+	@xml_attribute private int					latDeg;
 
-	@xml_attribute float			latMin;
+	@xml_attribute float							latMin;
 
-	@xml_attribute int			lonDeg;
+	@xml_attribute int							lonDeg;
 
-	@xml_attribute float			lonMin;
+	@xml_attribute float							lonMin;
 
 	/** Quality of GPS data; values will be either GPS_QUAL_NO, GPS_QUAL_GPS, GPS_QUAL_DGPS. */
-	@xml_attribute int			gpsQual;
+	@xml_attribute int							gpsQual;
 
 	/** Indicates no GPS. */
-	public static final int		GPS_QUAL_NO		= 0;
+	public static final int						GPS_QUAL_NO					= 0;
 
 	/** Indicates GPS satellite fix only. */
-	public static final int		GPS_QUAL_GPS	= 1;
+	public static final int						GPS_QUAL_GPS				= 1;
 
 	/** Indicates GPS satellite fix + differential signal. */
-	public static final int		GPS_QUAL_DGPS	= 2;
+	public static final int						GPS_QUAL_DGPS				= 2;
 
-	@xml_attribute int			numSats;
+	@xml_attribute int							numSats;
 
 	/**
 	 * Horizontal Dilution of Precision - approximation of the size of the area in which the actual location of the GPS
@@ -87,100 +96,21 @@ public class GPSDatum extends ElementState
 	 * </tr>
 	 * </table>
 	 */
-	@xml_attribute float			hdop;
+	@xml_attribute float							hdop;
 
 	/** The altitude of the antenna of the GPS (location where the signals are recieved). In meters. */
-	@xml_attribute float			geoidHeight;
+	@xml_attribute float							geoidHeight;
 
 	/** The differential between the elipsoid and the geoid. In meters. */
-	@xml_attribute float			heightDiff;
+	@xml_attribute float							heightDiff;
 
-	@xml_attribute float			dgpsAge;
+	@xml_attribute float							dgpsAge;
 
-	@xml_attribute int			dgpsRefStation;
+	@xml_attribute int							dgpsRefStation;
 
-	private char[]					tempDataStore;
+	private char[]									tempDataStore;
 
-	private StringBuilder		indivDatumStore;
-
-	interface GPSDataFieldBase
-	{
-		void update(String src, GPSDatum dst);
-	}
-
-	/**
-	 * GLL data set -- Geographic position - Latitude and Longitude
-	 * 
-	 * @author Zachary O. Toups (toupsz@cs.tamu.edu)
-	 * 
-	 */
-	enum GLL implements GPSDataFieldBase
-	{
-		LAT, NSLAT, LON, EWLON, UTC_POS_TIME, GPS_QUAL_X, CHECKSUM;
-
-		/**
-		 * Updates dst's internal data by parsing src according to the interpretation of the current mode.
-		 * 
-		 * @param data
-		 * @param decLoc
-		 * @param dst
-		 */
-		public void update(String src, GPSDatum dst)
-		{
-			switch (this)
-			{
-			case UTC_POS_TIME:
-				dst.updateUtcPosTime(src);
-				break;
-			case LAT:
-				dst.updateLat(src);
-				break;
-			case NSLAT:
-				dst.updateLatHemisphere(src);
-				break;
-			case LON:
-				dst.updateLon(src);
-				break;
-			case EWLON:
-				dst.updateLonHemisphere(src);
-				break;
-			}
-		}
-	}
-
-	enum GGA implements GPSDataFieldBase
-	{
-		UTC_POS_TIME, LAT, NSLAT, LON, EWLON, GPS_QUAL, NUM_SATS, HDOP, GEOID_HEIGHT, HEIGHT_UNIT, HEIGHT_DIFF, HEIGHT_DIFF_UNIT, DGPS_AGE, DGPS_REF, CHECKSUM;
-
-		/**
-		 * Updates dst's internal data by parsing src according to the interpretation of the current mode.
-		 * 
-		 * @param data
-		 * @param decLoc
-		 * @param dst
-		 */
-		public void update(String src, GPSDatum dst)
-		{
-			switch (this)
-			{
-			case UTC_POS_TIME:
-				dst.updateUtcPosTime(src);
-				break;
-			case LAT:
-				dst.updateLat(src);
-				break;
-			case NSLAT:
-				dst.updateLatHemisphere(src);
-				break;
-			case LON:
-				dst.updateLon(src);
-				break;
-			case EWLON:
-				dst.updateLonHemisphere(src);
-				break;
-			}
-		}
-	};
+	private List<GPSDataUpdatedListener>	gpsDataUpdatedListeners	= new LinkedList<GPSDataUpdatedListener>();
 
 	public GPSDatum()
 	{
@@ -202,22 +132,6 @@ public class GPSDatum extends ElementState
 	}
 
 	/**
-	 * Ensure that indivDatumStore is instantiated and clean, then return it.
-	 * 
-	 * @return
-	 */
-	private synchronized StringBuilder indivDatumStore()
-	{
-		if (indivDatumStore == null)
-		{
-			indivDatumStore = new StringBuilder(79);
-		}
-
-		indivDatumStore.setLength(0);
-		return indivDatumStore;
-	}
-
-	/**
 	 * Splits and stores data from an NMEA GPS data set.
 	 * 
 	 * @param gpsData
@@ -226,7 +140,6 @@ public class GPSDatum extends ElementState
 	public void integrateGPSData(String gpsData)
 	{
 		char[] tempData = tempDataStore();
-		StringBuilder indivDatumStore = indivDatumStore();
 
 		int dataLength = gpsData.length();
 		int i = 6; // start looking after "GPGGA," -- the header of the message
@@ -244,20 +157,17 @@ public class GPSDatum extends ElementState
 			{
 			case ('G'):
 				// assume GGA
-				System.out.print("GGA - ");
 				fieldBase = GGA.values();
 				break;
 			case ('L'):
 				// assume GLL
-				System.out.print("GLL - ");
 				fieldBase = GLL.values();
 				break;
 			case ('S'):
 				switch (gpsData.charAt(4))
 				{
 				case ('A'): // GSA
-					// TODO
-					System.out.print("GSA - ");
+					fieldBase = GSA.values();
 					break;
 				case ('V'): // GSV
 					// TODO
@@ -267,10 +177,8 @@ public class GPSDatum extends ElementState
 				break;
 			}
 			break;
-		case ('R'):
-			// assume RMC
-			// TODO
-			System.out.print("RMC - ");
+		case ('R'): // assume RMC
+			fieldBase = RMC.values();
 			break;
 
 		case ('V'):
@@ -303,7 +211,10 @@ public class GPSDatum extends ElementState
 
 						if (tempData[i] == ',')
 						{
-							field.update(new String(tempData, dataStart, (i - dataStart)), this);
+							if (i - dataStart > 0)
+							{
+								field.update(new String(tempData, dataStart, (i - dataStart)), this);
+							}
 							finishedField = true;
 						}
 
@@ -315,6 +226,16 @@ public class GPSDatum extends ElementState
 		else
 		{
 			System.out.println("data type unidentified");
+		}
+
+		this.fireGPSDataUpdatedEvent();
+	}
+
+	private void fireGPSDataUpdatedEvent()
+	{
+		for (GPSDataUpdatedListener l : this.gpsDataUpdatedListeners)
+		{
+			l.gpsDatumUpdated(this);
 		}
 	}
 
@@ -336,7 +257,7 @@ public class GPSDatum extends ElementState
 	 * 
 	 * @param src
 	 */
-	private void updateLonHemisphere(String src)
+	public void updateLonHemisphere(String src)
 	{
 		if (src.charAt(0) == 'W') // southern hemisphere == negative latitude
 			this.lonDeg *= -1;
@@ -347,7 +268,7 @@ public class GPSDatum extends ElementState
 	 * 
 	 * @param src
 	 */
-	private void updateLon(String src)
+	public void updateLon(String src)
 	{
 		this.lonDeg = Integer.parseInt(src.substring(0, 3));
 		this.lonMin = Float.parseFloat(src.substring(3));
@@ -358,7 +279,7 @@ public class GPSDatum extends ElementState
 	 * 
 	 * @param src
 	 */
-	private void updateLatHemisphere(String src)
+	public void updateLatHemisphere(String src)
 	{
 		if (src.charAt(0) == 'S') // southern hemisphere == negative latitude
 			this.latDeg *= -1;
@@ -369,7 +290,7 @@ public class GPSDatum extends ElementState
 	 * 
 	 * @param src
 	 */
-	private void updateLat(String src)
+	public void updateLat(String src)
 	{
 		this.latDeg = Integer.parseInt(src.substring(0, 2));
 		this.latMin = Float.parseFloat(src.substring(2));
@@ -378,8 +299,134 @@ public class GPSDatum extends ElementState
 	/**
 	 * @param src
 	 */
-	private void updateUtcPosTime(String src)
+	public void updateUtcPosTime(String src)
 	{
 		this.utcPosTime = Float.parseFloat(src);
 	}
+
+	/**
+	 * @param src
+	 */
+	public void updateHDOP(String src)
+	{
+		this.hdop = Float.parseFloat(src);
+	}
+
+	/**
+	 * @param src
+	 */
+	public void updateNumSats(String src)
+	{
+		this.numSats = Integer.parseInt(src);
+	}
+
+	/**
+	 * @param src
+	 */
+	public void updateGPSQual(String src)
+	{
+		this.gpsQual = Integer.parseInt(src);
+	}
+
+	/**
+	 * @param src
+	 */
+	public void updateDGPSRef(String src)
+	{
+		this.dgpsRefStation = Integer.parseInt(src);
+	}
+
+	/**
+	 * @param src
+	 */
+	public void updateDiffHeightUnit(String src)
+	{
+		if (src.charAt(0) != 'M')
+		{
+			warning("GPS is not using meters: " + src);
+		}
+	}
+
+	/**
+	 * @param src
+	 */
+	public void updateDGPSAge(String src)
+	{
+		this.dgpsAge = Float.parseFloat(src);
+	}
+
+	/**
+	 * @param src
+	 */
+	public void updateHeightUnit(String src)
+	{
+		if (src.charAt(0) != 'M')
+		{
+			warning("GPS is not using meters: " + src);
+		}
+	}
+
+	/**
+	 * @param src
+	 */
+	public void updateGeoidHeight(String src)
+	{
+		this.geoidHeight = Float.parseFloat(src);
+	}
+
+	/**
+	 * @param src
+	 */
+	public void updateCalcModeDecision(String src)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * @param src
+	 */
+	public void updateCalcMode(String src)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * @param src
+	 * @param i
+	 */
+	public void updateSat(String src, int i)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * @param src
+	 */
+	public void updatePDOP(String src)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * @param src
+	 */
+	public void updateVDOP(String src)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * @param src
+	 */
+	public void updateHeightDiff(String src)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
 }

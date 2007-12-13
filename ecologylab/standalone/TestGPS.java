@@ -9,11 +9,11 @@ import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 
-public class TestUBloxGPS
+public class TestGPS
 {
     public static void main(String[] args) throws PortInUseException, UnsupportedCommOperationException, IOException, TooManyListenersException, NoSuchPortException
     {
-        GPS g = new GPS(null, "COM4", 9600);
+        GPS g = new GPS("COM4", 9600);
         
         g.addGPSDataListener(new GPSDataPrinter());
         
