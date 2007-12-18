@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.util.TooManyListenersException;
 
 import javax.swing.JFrame;
 import javax.swing.Timer;
@@ -15,12 +16,15 @@ import javax.swing.Timer;
 import ecologylab.appframework.ApplicationEnvironment;
 import ecologylab.sensor.gps.GPS;
 import ecologylab.sensor.gps.data.GPSDatum;
+import ecologylab.sensor.gps.listener.GPSDataPrinter;
 import ecologylab.sensor.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.gps.listener.GPSDataUpdater;
 import ecologylab.xml.TranslationSpace;
 import ecologylab.xml.XMLTranslationException;
 import ecologylab.xml.library.geom.Rectangle2DDoubleState;
 import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
+import gnu.io.UnsupportedCommOperationException;
 
 /**
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
@@ -156,7 +160,21 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	private void configureFromPrefs() throws NoSuchPortException, IOException
 	{
 		this.gps = new GPS("COM41", 115200);
+		try {
+			this.gps.connect();
+		} catch (PortInUseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedCommOperationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TooManyListenersException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		this.gps.addGPSDataListener(updater);
+		//this.gps.addGPSDataListener(new GPSDataPrinter());
 		
 	}
 

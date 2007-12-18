@@ -146,6 +146,7 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 	 */
 	public void gpsDatumUpdated(GPSDatum datum)
 	{
+		System.out.println("got data");
 		this.currentPosition = datum;
 	}
 }
