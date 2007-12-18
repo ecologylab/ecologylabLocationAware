@@ -341,7 +341,7 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateLat(String src)
 	{
-		this.lat = WorldCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 3)), Double.parseDouble(src.substring(3)),
+		this.lat = WorldCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 2)), Double.parseDouble(src.substring(2)),
 				0);
 
 		this.pointDirty = true;

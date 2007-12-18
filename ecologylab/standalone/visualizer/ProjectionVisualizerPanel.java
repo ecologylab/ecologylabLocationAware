@@ -132,7 +132,7 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 		}
 		else
 		{ // draw an arrow offscreen
-			g2.drawLine((int) (loc.getX()), (int) (loc.getY()), 0, 0);
+			g2.drawLine((int) (loc.getX()), (int) (loc.getY()), 100, 100);
 		}
 	}
 
@@ -146,7 +146,6 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 	 */
 	public void gpsDatumUpdated(GPSDatum datum)
 	{
-		System.out.println("got data");
 		this.currentPosition = datum;
 	}
 }
