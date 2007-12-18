@@ -3,6 +3,7 @@
  */
 package ecologylab.sensor.gps.data;
 
+import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,29 +25,25 @@ import ecologylab.xml.XMLTranslationException;
  */
 public class GPSDatum extends ElementState
 {
-	@xml_attribute float							utcPosTime;
+	@xml_attribute float				utcPosTime;
 
-	@xml_attribute private int					latDeg;
+	@xml_attribute double			lat;
 
-	@xml_attribute float							latMin;
-
-	@xml_attribute int							lonDeg;
-
-	@xml_attribute float							lonMin;
+	@xml_attribute double			lon;
 
 	/** Quality of GPS data; values will be either GPS_QUAL_NO, GPS_QUAL_GPS, GPS_QUAL_DGPS. */
-	@xml_attribute int							gpsQual;
+	@xml_attribute int				gpsQual;
 
 	/** Indicates no GPS. */
-	public static final int						GPS_QUAL_NO					= 0;
+	public static final int			GPS_QUAL_NO					= 0;
 
 	/** Indicates GPS satellite fix only. */
-	public static final int						GPS_QUAL_GPS				= 1;
+	public static final int			GPS_QUAL_GPS				= 1;
 
 	/** Indicates GPS satellite fix + differential signal. */
-	public static final int						GPS_QUAL_DGPS				= 2;
+	public static final int			GPS_QUAL_DGPS				= 2;
 
-	@xml_attribute int							numSats;
+	@xml_attribute int				numSats;
 
 	/**
 	 * Horizontal Dilution of Precision - approximation of the size of the area in which the actual location of the GPS
@@ -96,24 +93,44 @@ public class GPSDatum extends ElementState
 	 * </tr>
 	 * </table>
 	 */
-	@xml_attribute float							hdop;
+	@xml_attribute float				hdop;
 
 	/** The altitude of the antenna of the GPS (location where the signals are recieved). In meters. */
-	@xml_attribute float							geoidHeight;
+	@xml_attribute float				geoidHeight;
 
 	/** The differential between the elipsoid and the geoid. In meters. */
-	@xml_attribute float							heightDiff;
+	@xml_attribute float				heightDiff;
 
-	@xml_attribute float							dgpsAge;
+	@xml_attribute float				dgpsAge;
 
-	@xml_attribute int							dgpsRefStation;
+	@xml_attribute int				dgpsRefStation;
 
-	private char[]									tempDataStore;
+	char[]								tempDataStore;
 
-	private List<GPSDataUpdatedListener>	gpsDataUpdatedListeners	= new LinkedList<GPSDataUpdatedListener>();
+	List<GPSDataUpdatedListener>	gpsDataUpdatedListeners	= new LinkedList<GPSDataUpdatedListener>();
+
+	/**
+	 * A Point2D representation of this's latitude and longitude, instantiated and filled through lazy evaluation, when
+	 * needed.
+	 */
+	private Point2D.Double			pointRepresentation		= null;
+
+	/** Indicates that pointRepresentation is out of synch with the state of this object. */
+	private boolean					pointDirty					= true;
 
 	public GPSDatum()
 	{
+	}
+
+	public GPSDatum(int latDeg, double latMin, int lonDeg, double lonMin)
+	{
+		this.lat = WorldCoord.fromDegMinSec(latDeg, latMin, 0);
+		this.lon = WorldCoord.fromDegMinSec(lonDeg, lonMin, 0);
+	}
+
+	public GPSDatum(int latDeg, int lonDeg)
+	{
+		this(latDeg, 0f, lonDeg, 0f);
 	}
 
 	/**
@@ -132,17 +149,51 @@ public class GPSDatum extends ElementState
 	}
 
 	/**
+	 * @param that
+	 * @return positive if this is farther north than that, negative if that is more north; 0 if they lie on exactly the
+	 *         same parallel.
+	 */
+	public double compareNS(GPSDatum that)
+	{
+		return this.getLat() - that.getLat();
+	}
+
+	/**
+	 * @param that
+	 * @return compares two GPSDatum's based on the acute angle between their longitudes. Returns 1 if this is farther
+	 *         east than that, -1 if this is farther west, 0 if the two points lie on the same arc, 180/-180 if they are
+	 *         opposite.
+	 */
+	public double compareEW(GPSDatum that)
+	{
+		double diff = this.lon - that.getLon();
+
+		if (diff > 180)
+		{
+			return diff - 360;
+		}
+		else if (diff < -180)
+		{
+			return diff + 360;
+		}
+		else
+		{
+			return diff;
+		}
+	}
+
+	/**
 	 * Splits and stores data from an NMEA GPS data set.
 	 * 
 	 * @param gpsData
 	 *           a GPS data set, minus $ header and <CR><LF> trailer.
 	 */
-	public void integrateGPSData(String gpsData)
+	public synchronized void integrateGPSData(String gpsData)
 	{
 		char[] tempData = tempDataStore();
 
 		int dataLength = gpsData.length();
-		int i = 6; // start looking after "GPGGA," -- the header of the message
+		int i = 6; // start looking after "GPXXX," -- the header of the message
 
 		int dataStart = i;
 		boolean finishedField = false;
@@ -241,15 +292,7 @@ public class GPSDatum extends ElementState
 
 	@Override public String toString()
 	{
-		try
-		{
-			return this.translateToXML().toString();
-		}
-		catch (XMLTranslationException e)
-		{
-			e.printStackTrace();
-			return null;
-		}
+		return new String("GPSDatum: " + this.lat + ", " + this.lon);
 	}
 
 	/**
@@ -260,7 +303,9 @@ public class GPSDatum extends ElementState
 	public void updateLonHemisphere(String src)
 	{
 		if (src.charAt(0) == 'W') // southern hemisphere == negative latitude
-			this.lonDeg *= -1;
+			this.lon *= -1;
+
+		this.pointDirty = true;
 	}
 
 	/**
@@ -270,8 +315,10 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateLon(String src)
 	{
-		this.lonDeg = Integer.parseInt(src.substring(0, 3));
-		this.lonMin = Float.parseFloat(src.substring(3));
+		this.lon = WorldCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 3)), Double.parseDouble(src.substring(3)),
+				0);
+
+		this.pointDirty = true;
 	}
 
 	/**
@@ -282,7 +329,9 @@ public class GPSDatum extends ElementState
 	public void updateLatHemisphere(String src)
 	{
 		if (src.charAt(0) == 'S') // southern hemisphere == negative latitude
-			this.latDeg *= -1;
+			this.lat *= -1;
+
+		this.pointDirty = true;
 	}
 
 	/**
@@ -292,8 +341,10 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateLat(String src)
 	{
-		this.latDeg = Integer.parseInt(src.substring(0, 2));
-		this.latMin = Float.parseFloat(src.substring(2));
+		this.lat = WorldCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 3)), Double.parseDouble(src.substring(3)),
+				0);
+
+		this.pointDirty = true;
 	}
 
 	/**
@@ -429,4 +480,123 @@ public class GPSDatum extends ElementState
 
 	}
 
+	public static void main(String[] args)
+	{
+		GPSDatum a = new GPSDatum(0, 0);
+		GPSDatum b = new GPSDatum(10, 10);
+		GPSDatum c = new GPSDatum(120, 120);
+		GPSDatum d = new GPSDatum(-35, -35);
+		GPSDatum e = new GPSDatum(-150, -150);
+		GPSDatum f = new GPSDatum(-180, -180);
+
+		GPSDatum[] all =
+		{ a, b, c, d, e, f };
+
+		for (int i = 0; i < all.length; i++)
+		{
+			for (int j = 0; j < all.length; j++)
+			{
+				System.out.println("-------------------");
+				System.out.println("pt lat: " + all[i].getLat() + ", lon: " + all[i].getLon() + " is "
+						+ nsString(all[i].compareNS(all[j])) + " lat: " + all[j].getLat() + ", lon: " + all[j].getLon());
+				System.out.println("pt lat: " + all[i].getLat() + ", lon: " + all[i].getLon() + " is "
+						+ ewString(all[i].compareEW(all[j])) + " lat: " + all[j].getLat() + ", lon: " + all[j].getLon());
+			}
+		}
+	}
+
+	static String nsString(double dir)
+	{
+		if (dir > 0)
+		{
+			return "north of";
+		}
+		else if (dir < 0)
+		{
+			return "south of";
+		}
+		else
+		{
+			return "the same latitude as";
+		}
+	}
+
+	static String ewString(double dir)
+	{
+		if (dir > 0)
+		{
+			return "west of";
+		}
+		else if (dir < 0)
+		{
+			return "east of";
+		}
+		else if (dir == -180 || dir == 180)
+		{
+			return "opposite the earth from";
+		}
+		else
+		{
+			return "the same longitude as";
+		}
+	}
+
+	/**
+	 * @return the lat
+	 */
+	public double getLat()
+	{
+		return lat;
+	}
+
+	/**
+	 * @return the lon
+	 */
+	public double getLon()
+	{
+		return lon;
+	}
+
+	/**
+	 * @param lat
+	 *           the lat to set
+	 */
+	public void setLat(double lat)
+	{
+		this.lat = lat;
+
+		this.pointDirty = true;
+	}
+
+	/**
+	 * @param lon
+	 *           the lon to set
+	 */
+	public void setLon(double lon)
+	{
+		this.lon = lon;
+
+		this.pointDirty = true;
+	}
+
+	/**
+	 * Gets the latitude and longitude of this datum as a Point2D, where x = longitude and y = latitude.
+	 * 
+	 * @return the pointRepresentation
+	 */
+	public Point2D.Double getPointRepresentation()
+	{
+		if (pointRepresentation == null)
+		{
+			pointRepresentation = new Point2D.Double();
+		}
+
+		if (this.pointDirty)
+		{
+			this.pointRepresentation.setLocation(this.lon, this.lat);
+			this.pointDirty = false;
+		}
+
+		return pointRepresentation;
+	}
 }
