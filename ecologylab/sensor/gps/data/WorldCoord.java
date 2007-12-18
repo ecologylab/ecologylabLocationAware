@@ -24,7 +24,7 @@ public class WorldCoord extends ElementState implements Comparable<WorldCoord>
 		{
 			retCoord *= -1;
 		}
-
+		
 		return retCoord;
 	}
 

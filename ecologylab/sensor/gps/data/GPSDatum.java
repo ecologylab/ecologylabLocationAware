@@ -122,13 +122,13 @@ public class GPSDatum extends ElementState
 	{
 	}
 
-	public GPSDatum(int latDeg, double latMin, int lonDeg, double lonMin)
+	public GPSDatum(double latDeg, double latMin, double lonDeg, double lonMin)
 	{
 		this.lat = WorldCoord.fromDegMinSec(latDeg, latMin, 0);
 		this.lon = WorldCoord.fromDegMinSec(lonDeg, lonMin, 0);
 	}
 
-	public GPSDatum(int latDeg, int lonDeg)
+	public GPSDatum(double latDeg, double lonDeg)
 	{
 		this(latDeg, 0f, lonDeg, 0f);
 	}
@@ -598,5 +598,10 @@ public class GPSDatum extends ElementState
 		}
 
 		return pointRepresentation;
+	}
+	
+	public void addGPSDataUpdatedListener(GPSDataUpdatedListener l)
+	{
+		this.gpsDataUpdatedListeners.add(l);
 	}
 }

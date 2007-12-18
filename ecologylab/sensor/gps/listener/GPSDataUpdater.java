@@ -19,7 +19,6 @@ public class GPSDataUpdater extends Debug implements GPSDataListener
 	 */
 	public GPSDataUpdater()
 	{
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -31,4 +30,20 @@ public class GPSDataUpdater extends Debug implements GPSDataListener
 		System.out.println(datum.toString());
 	}
 
+	/**
+	 * Convience method to add a listener to the datum contained in this object.
+	 * @param l
+	 */
+	public void addDataUpdatedListener(GPSDataUpdatedListener l)
+	{
+		this.datum.addGPSDataUpdatedListener(l);
+	}
+
+	/**
+	 * @return the datum
+	 */
+	public GPSDatum getDatum()
+	{
+		return datum;
+	}
 }

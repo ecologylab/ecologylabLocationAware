@@ -4,6 +4,7 @@
 package ecologylab.projection;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
 import ecologylab.generic.Debug;
@@ -242,9 +243,9 @@ public abstract class Projection extends Debug
 	 * @param origPoint
 	 * @return a new Point2D.Double containing the virtual space point for origPoint.
 	 */
-	public Point2D project(GPSDatum origPoint)
+	public Point2D projectIntoVirtual(GPSDatum origPoint)
 	{
-		return this.project(origPoint, null);
+		return this.projectIntoVirtual(origPoint, null);
 	}
 
 	/**
@@ -258,8 +259,22 @@ public abstract class Projection extends Debug
 	 * @param destPoint
 	 * @return destPoint containing the virtual space point for origPoint.
 	 */
-	public Point2D project(GPSDatum origPoint, Point2D.Double destPoint)
+	public Point2D projectIntoVirtual(GPSDatum origPoint, Point2D.Double destPoint)
 	{
 		return this.transformMatrix.transform(origPoint.getPointRepresentation(), destPoint);
+	}
+	
+	public Point2D projectIntoReal(Point2D origPoint)
+	{
+		try
+		{
+			return this.transformMatrix.inverseTransform(origPoint, null);
+		}
+		catch (NoninvertibleTransformException e)
+		{
+			e.printStackTrace();
+			
+			return null;
+		}
 	}
 }

@@ -103,6 +103,7 @@ public class PlateCarreeProjection extends Projection
 			double translateY = Point2D.distance(scaledY, 0, this.virtualWorldPointUpperRight.y, 0)
 					* (scaledY > this.virtualWorldPointUpperRight.y ? -1.0 : 1.0);
 
+			this.transformMatrix.setToIdentity();
 			this.transformMatrix.scale(scaleFactorX, scaleFactorY);
 			this.transformMatrix.translate(translateX, translateY);
 			break;
@@ -122,11 +123,15 @@ public class PlateCarreeProjection extends Projection
 		
 		for (GPSDatum d : ds)
 		{
-			Point2D.Double transformedPoint = (Double) p.project(d);
+			Point2D.Double transformedPoint = (Double) p.projectIntoVirtual(d);
 			
 			System.out.println(d.getLon() + ", " + d.getLat());
 			System.out.println("  v  ");
 			System.out.println(transformedPoint.x + ", "+ transformedPoint.y);
+			System.out.println("  v");
+			
+			Point2D.Double transformedBackPoint = (Double) p.projectIntoReal(transformedPoint);
+			System.out.println(transformedBackPoint.x +", "+transformedBackPoint.y);
 		}
 		
 
