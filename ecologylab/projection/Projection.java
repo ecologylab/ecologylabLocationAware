@@ -77,10 +77,14 @@ public abstract class Projection extends Debug
 	}
 
 	public Projection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2,
-			Point2D.Double virtualWorldPointUpperLeft, Point2D.Double virtualWorldPointLowerRight,
+			Point2D.Double virtualWorldPointUpperRight, Point2D.Double virtualWorldPointLowerLeft,
 			RotationConstraintMode rotConstMode) throws SameCoordinatesException
 	{
-		setVirtualWorldPointsOnly(virtualWorldPointUpperLeft, virtualWorldPointLowerRight);
+		debug("original corners: ");
+		debug("1: " + physicalWorldPoint1.toString());
+		debug("2: " + physicalWorldPoint2.toString());
+		
+		setVirtualWorldPointsOnly(virtualWorldPointUpperRight, virtualWorldPointLowerLeft);
 
 		setRotationConstraintMode(rotConstMode);
 
@@ -245,7 +249,10 @@ public abstract class Projection extends Debug
 	 */
 	public Point2D projectIntoVirtual(GPSDatum origPoint)
 	{
-		return this.projectIntoVirtual(origPoint, null);
+		Point2D pt = 
+		 this.projectIntoVirtual(origPoint, null);
+		
+		return pt;
 	}
 
 	/**
@@ -276,5 +283,21 @@ public abstract class Projection extends Debug
 			
 			return null;
 		}
+	}
+
+	/**
+	 * @return the physicalWorldPointNE
+	 */
+	public GPSDatum getPhysicalWorldPointNE()
+	{
+		return physicalWorldPointNE;
+	}
+
+	/**
+	 * @return the physicalWorldPointSW
+	 */
+	public GPSDatum getPhysicalWorldPointSW()
+	{
+		return physicalWorldPointSW;
 	}
 }

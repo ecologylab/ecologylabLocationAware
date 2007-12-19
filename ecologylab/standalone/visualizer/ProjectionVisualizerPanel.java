@@ -5,6 +5,7 @@ package ecologylab.standalone.visualizer;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
@@ -48,7 +49,7 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 	 * @throws SameCoordinatesException
 	 * 
 	 */
-	public ProjectionVisualizerPanel(GPSDatum centerPoint)
+	public ProjectionVisualizerPanel(GPSDatum centerPoint, Projection currentProjection)
 	{
 		Dimension d = new Dimension(200, 200);
 		this.setPreferredSize(d);
@@ -57,20 +58,21 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 
 		this.centerPoint = centerPoint;
 		this.currentPosition = centerPoint;
+		this.currentProjection = currentProjection;
 
 		// use the center point to create a projection that is about .25 minutes expanded in each direction
-		GPSDatum neCorner = new GPSDatum(centerPoint.getLat() + .02, centerPoint.getLon() + .02);
-		Point2D.Double upperLeft = new Point2D.Double(0, 0);
+		GPSDatum neCorner = new GPSDatum(centerPoint.getLat() + .04, centerPoint.getLon() + .04);
+		Point2D.Double upperRight = new Point2D.Double(200, 0);
 
-		GPSDatum swCorner = new GPSDatum(centerPoint.getLat() - .02, centerPoint.getLon() - .02);
-		Point2D.Double lowerRight = new Point2D.Double(200, 200);
+		GPSDatum swCorner = new GPSDatum(centerPoint.getLat() - .04, centerPoint.getLon() - .04);
+		Point2D.Double lowerLeft = new Point2D.Double(0, 200);
 
-		visualRect = new Rectangle2D.Double(upperLeft.x, upperLeft.y, Point2D.distance(upperLeft.x, 0, lowerRight.x, 0),
-				Point2D.distance(0, upperLeft.y, 0, lowerRight.y));
+		visualRect = new Rectangle2D.Double(lowerLeft.x, upperRight.y, Point2D.distance(upperRight.x, 0, lowerLeft.x, 0),
+				Point2D.distance(0, upperRight.y, 0, lowerLeft.y));
 
 		try
 		{
-			visualizerProjection = new PlateCarreeProjection(neCorner, swCorner, upperLeft, lowerRight,
+			visualizerProjection = new PlateCarreeProjection(neCorner, swCorner, upperRight, lowerLeft,
 					Projection.RotationConstraintMode.CARDINAL_DIRECTIONS);
 		}
 		catch (SameCoordinatesException e)
@@ -134,6 +136,41 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 		{ // draw an arrow offscreen
 			g2.drawLine((int) (loc.getX()), (int) (loc.getY()), 100, 100);
 		}
+
+		g2.setColor(Color.RED);
+		
+		GPSDatum temp = new GPSDatum(this.centerPoint.getLat(), this.centerPoint.getLon());
+		
+		for (int i = 0; i < 100; i++)
+		{
+			temp.setLat(temp.getLat() + .001);
+			temp.setLon(temp.getLon() + .001);
+			
+			
+			Point2D tempP = this.visualizerProjection.projectIntoVirtual(temp);
+
+			g2.fillOval((int)tempP.getX(), (int)tempP.getY(), 1, 1);
+		}
+		
+		this.paintCorners(g2);
+
+		g2.setFont(new Font("Arial", Font.BOLD, 10));
+		g2.drawString("o: " + this.centerPoint.getLon() + ", " + centerPoint.getLat(), 0, 10);
+		g2.drawString("c: " + this.currentPosition.getLon() + ", " + this.currentPosition.getLat(), 0, 20);
+	}
+
+	private void paintCorners(Graphics2D g2)
+	{
+		Point2D ne = this.visualizerProjection.projectIntoVirtual(this.currentProjection.getPhysicalWorldPointNE());
+		Point2D sw = this.visualizerProjection.projectIntoVirtual(this.currentProjection.getPhysicalWorldPointSW());
+
+		g2.setColor(Color.GRAY);
+
+		g2.drawLine((int) ne.getX(), (int) ne.getY(), (int) ne.getX() - 5, (int) ne.getY());
+		g2.drawLine((int) ne.getX(), (int) ne.getY(), (int) ne.getX(), (int) ne.getY() + 5);
+
+		g2.drawLine((int) sw.getX(), (int) sw.getY(), (int) sw.getX() + 5, (int) sw.getY());
+		g2.drawLine((int) sw.getX(), (int) sw.getY(), (int) sw.getX(), (int) sw.getY() - 5);
 	}
 
 	public void centerOnCurrent()

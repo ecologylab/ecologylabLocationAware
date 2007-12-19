@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.TooManyListenersException;
 
@@ -14,9 +15,11 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import ecologylab.appframework.ApplicationEnvironment;
+import ecologylab.projection.PlateCarreeProjection;
+import ecologylab.projection.Projection;
+import ecologylab.projection.SameCoordinatesException;
 import ecologylab.sensor.gps.GPS;
 import ecologylab.sensor.gps.data.GPSDatum;
-import ecologylab.sensor.gps.listener.GPSDataPrinter;
 import ecologylab.sensor.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.gps.listener.GPSDataUpdater;
 import ecologylab.xml.TranslationSpace;
@@ -43,13 +46,13 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 
 	GPS							gps;
 
-	GPSDataUpdater updater = new GPSDataUpdater();
-	
+	GPSDataUpdater				updater	= new GPSDataUpdater();
+
 	/**
 	 * @param applicationName
 	 * @throws XMLTranslationException
-	 * @throws IOException 
-	 * @throws NoSuchPortException 
+	 * @throws IOException
+	 * @throws NoSuchPortException
 	 */
 	public ProjectionVisualizer(String applicationName) throws XMLTranslationException, NoSuchPortException, IOException
 	{
@@ -64,8 +67,8 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 * @param args
 	 * @param prefsAssetVersion
 	 * @throws XMLTranslationException
-	 * @throws IOException 
-	 * @throws NoSuchPortException 
+	 * @throws IOException
+	 * @throws NoSuchPortException
 	 */
 	public ProjectionVisualizer(String applicationName, TranslationSpace translationSpace, String[] args,
 			float prefsAssetVersion) throws XMLTranslationException, NoSuchPortException, IOException
@@ -79,10 +82,11 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 * @param applicationName
 	 * @param args
 	 * @throws XMLTranslationException
-	 * @throws IOException 
-	 * @throws NoSuchPortException 
+	 * @throws IOException
+	 * @throws NoSuchPortException
 	 */
-	public ProjectionVisualizer(String applicationName, String[] args) throws XMLTranslationException, NoSuchPortException, IOException
+	public ProjectionVisualizer(String applicationName, String[] args) throws XMLTranslationException,
+			NoSuchPortException, IOException
 	{
 		super(applicationName, args);
 
@@ -94,10 +98,11 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 * @param applicationName
 	 * @param args
 	 * @throws XMLTranslationException
-	 * @throws IOException 
-	 * @throws NoSuchPortException 
+	 * @throws IOException
+	 * @throws NoSuchPortException
 	 */
-	public ProjectionVisualizer(Class baseClass, String applicationName, String[] args) throws XMLTranslationException, NoSuchPortException, IOException
+	public ProjectionVisualizer(Class baseClass, String applicationName, String[] args) throws XMLTranslationException,
+			NoSuchPortException, IOException
 	{
 		super(baseClass, applicationName, args);
 
@@ -111,8 +116,8 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 * @param args
 	 * @param prefsAssetVersion
 	 * @throws XMLTranslationException
-	 * @throws IOException 
-	 * @throws NoSuchPortException 
+	 * @throws IOException
+	 * @throws NoSuchPortException
 	 */
 	public ProjectionVisualizer(Class baseClass, String applicationName, TranslationSpace translationSpace,
 			String[] args, float prefsAssetVersion) throws XMLTranslationException, NoSuchPortException, IOException
@@ -139,50 +144,68 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	private void setupVisualization()
 	{
 		this.mainFrame = new JFrame();
-		
-		ProjectionVisualizerPanel panel = new ProjectionVisualizerPanel(new GPSDatum(29.9611133702, -95.6697746507));
-		this.mainFrame.getContentPane().add(panel);
 
-		this.updater.addDataUpdatedListener(this);
-		this.updater.addDataUpdatedListener(panel);
-		
-		this.mainFrame.setVisible(true);
-		this.mainFrame.setSize(200, 200);
-		this.mainFrame.pack();
-		this.mainFrame.invalidate();
+		Projection p;
+		try
+		{
+			p = new PlateCarreeProjection(new GPSDatum(29.9611133702 - .02, -95.6697746507 + .02), new GPSDatum(29.9611133702 + .02, -95.6697746507 - .02), new Point2D.Double(0,
+					0), new Point2D.Double(10, 10), Projection.RotationConstraintMode.CARDINAL_DIRECTIONS);
+			
+			ProjectionVisualizerPanel panel = new ProjectionVisualizerPanel(new GPSDatum(29.9611133702, -95.6697746507), p);
+			this.mainFrame.getContentPane().add(panel);
+
+			this.updater.addDataUpdatedListener(this);
+			this.updater.addDataUpdatedListener(panel);
+
+			this.mainFrame.setVisible(true);
+			this.mainFrame.setSize(200, 200);
+			this.mainFrame.pack();
+			this.mainFrame.invalidate();
+		}
+		catch (SameCoordinatesException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**
-	 * @throws IOException 
-	 * @throws NoSuchPortException 
+	 * @throws IOException
+	 * @throws NoSuchPortException
 	 * 
 	 */
 	private void configureFromPrefs() throws NoSuchPortException, IOException
 	{
-		this.gps = new GPS("COM41", 115200);
-		try {
+/*		this.gps = new GPS("COM41", 115200);
+		try
+		{
 			this.gps.connect();
-		} catch (PortInUseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedCommOperationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TooManyListenersException e) {
+		}
+		catch (PortInUseException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		catch (UnsupportedCommOperationException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (TooManyListenersException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		this.gps.addGPSDataListener(updater);
-		//this.gps.addGPSDataListener(new GPSDataPrinter());
-		
+		// this.gps.addGPSDataListener(new GPSDataPrinter());
+*/
 	}
 
 	/**
 	 * @param args
 	 * @throws XMLTranslationException
-	 * @throws IOException 
-	 * @throws NoSuchPortException 
+	 * @throws IOException
+	 * @throws NoSuchPortException
 	 */
 	public static void main(String[] args) throws XMLTranslationException, NoSuchPortException, IOException
 	{
