@@ -48,6 +48,10 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 
 	GPSDataUpdater				updater	= new GPSDataUpdater();
 
+	int							w			= 400;
+
+	int							h			= 200;
+
 	/**
 	 * @param applicationName
 	 * @throws XMLTranslationException
@@ -144,21 +148,25 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	private void setupVisualization()
 	{
 		this.mainFrame = new JFrame();
+		
+		this.mainFrame.addWindowListener(this);
 
-		Projection p;
+		PlateCarreeProjection p;
 		try
 		{
-			p = new PlateCarreeProjection(new GPSDatum(29.9611133702 - .02, -95.6697746507 + .02), new GPSDatum(29.9611133702 + .02, -95.6697746507 - .02), new Point2D.Double(0,
-					0), new Point2D.Double(10, 10), Projection.RotationConstraintMode.CARDINAL_DIRECTIONS);
-			
-			ProjectionVisualizerPanel panel = new ProjectionVisualizerPanel(new GPSDatum(29.9611133702, -95.6697746507), p);
+			p = new PlateCarreeProjection(new GPSDatum(29.9611133702 - .05, -95.6697746507 + .05), new GPSDatum(
+					29.9611133702 + .07, -95.6697746507 - .17), 200.0, 100.0,
+					Projection.RotationConstraintMode.CARDINAL_DIRECTIONS);
+
+			ProjectionVisualizerPanel panel = new ProjectionVisualizerPanel(new GPSDatum(29.9611133702, -95.6697746507),
+					p, w, h);
 			this.mainFrame.getContentPane().add(panel);
 
 			this.updater.addDataUpdatedListener(this);
 			this.updater.addDataUpdatedListener(panel);
 
 			this.mainFrame.setVisible(true);
-			this.mainFrame.setSize(200, 200);
+			this.mainFrame.setSize(w, h);
 			this.mainFrame.pack();
 			this.mainFrame.invalidate();
 		}
@@ -175,30 +183,14 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 */
 	private void configureFromPrefs() throws NoSuchPortException, IOException
 	{
-/*		this.gps = new GPS("COM41", 115200);
-		try
-		{
-			this.gps.connect();
-		}
-		catch (PortInUseException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (UnsupportedCommOperationException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (TooManyListenersException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		this.gps.addGPSDataListener(updater);
-		// this.gps.addGPSDataListener(new GPSDataPrinter());
-*/
+		/*
+		 * this.gps = new GPS("COM41", 115200); try { this.gps.connect(); } catch (PortInUseException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); } catch (UnsupportedCommOperationException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); } catch (TooManyListenersException e) { // TODO Auto-generated
+		 * catch block e.printStackTrace(); }
+		 * 
+		 * this.gps.addGPSDataListener(updater); // this.gps.addGPSDataListener(new GPSDataPrinter());
+		 */
 	}
 
 	/**
@@ -233,23 +225,24 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 */
 	public void windowActivated(WindowEvent e)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
 	 * @see java.awt.event.WindowListener#windowClosed(java.awt.event.WindowEvent)
 	 */
 	public void windowClosed(WindowEvent e)
-	{
-		t.stop();
-	}
+	{}
 
 	/**
 	 * @see java.awt.event.WindowListener#windowClosing(java.awt.event.WindowEvent)
 	 */
 	public void windowClosing(WindowEvent e)
 	{
+		debug("Window closed.");
+		
+		t.stop();
+		
+		System.exit(1);
 	}
 
 	/**
@@ -257,8 +250,6 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 */
 	public void windowDeactivated(WindowEvent e)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -266,8 +257,6 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 */
 	public void windowDeiconified(WindowEvent e)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -275,8 +264,6 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 */
 	public void windowIconified(WindowEvent e)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -284,8 +271,5 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 */
 	public void windowOpened(WindowEvent e)
 	{
-		// TODO Auto-generated method stub
-
 	}
-
 }

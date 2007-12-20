@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.LayoutManager;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
@@ -26,32 +27,40 @@ import ecologylab.sensor.gps.listener.GPSDataUpdatedListener;
  */
 public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedListener
 {
-	GPSDatum						centerPoint;
+	private static final Color	TRANSLUCENT_GREEN	= new Color(Color.GREEN.getRed(), Color.GREEN.getGreen(), Color.GREEN
+																		.getBlue(), 128);
 
-	GPSDatum						currentPosition;
+	GPSDatum							centerPoint;
 
-	Projection					currentProjection;
+	GPSDatum							currentPosition;
+
+	PlateCarreeProjection		currentProjection;
 
 	/**
 	 * Allows us to visualize GPS coordinates.
 	 */
-	PlateCarreeProjection	visualizerProjection;
+	PlateCarreeProjection		visualizerProjection;
 
-	GPSDatum						point1;
+	GPSDatum							point1;
 
-	GPSDatum						point2;
+	GPSDatum							point2;
 
-	boolean						drawing;
+	boolean							drawing;
 
-	Rectangle2D					visualRect;
+	Rectangle2D						visualRect;
+
+	int								w, h;
 
 	/**
 	 * @throws SameCoordinatesException
 	 * 
 	 */
-	public ProjectionVisualizerPanel(GPSDatum centerPoint, Projection currentProjection)
+	public ProjectionVisualizerPanel(GPSDatum centerPoint, PlateCarreeProjection currentProjection, int width, int height)
 	{
-		Dimension d = new Dimension(200, 200);
+		this.w = width;
+		this.h = height;
+
+		Dimension d = new Dimension(w, h);
 		this.setPreferredSize(d);
 		this.setMinimumSize(d);
 		this.setMaximumSize(d);
@@ -61,18 +70,15 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 		this.currentProjection = currentProjection;
 
 		// use the center point to create a projection that is about .25 minutes expanded in each direction
-		GPSDatum neCorner = new GPSDatum(centerPoint.getLat() + .04, centerPoint.getLon() + .04);
-		Point2D.Double upperRight = new Point2D.Double(200, 0);
+		GPSDatum neCorner = new GPSDatum(centerPoint.getLat() + .3, centerPoint.getLon() + .3);
 
-		GPSDatum swCorner = new GPSDatum(centerPoint.getLat() - .04, centerPoint.getLon() - .04);
-		Point2D.Double lowerLeft = new Point2D.Double(0, 200);
+		GPSDatum swCorner = new GPSDatum(centerPoint.getLat() - .3, centerPoint.getLon() - .3);
 
-		visualRect = new Rectangle2D.Double(lowerLeft.x, upperRight.y, Point2D.distance(upperRight.x, 0, lowerLeft.x, 0),
-				Point2D.distance(0, upperRight.y, 0, lowerLeft.y));
+		visualRect = new Rectangle2D.Double(-w / 2.0, -h / 2.0, w, h);
 
 		try
 		{
-			visualizerProjection = new PlateCarreeProjection(neCorner, swCorner, upperRight, lowerLeft,
+			visualizerProjection = new PlateCarreeProjection(neCorner, swCorner, w, h,
 					Projection.RotationConstraintMode.CARDINAL_DIRECTIONS);
 		}
 		catch (SameCoordinatesException e)
@@ -114,18 +120,24 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 	{
 		Graphics2D g2 = (Graphics2D) g;
 
+		Point2D.Double center = this.visualizerProjection.projectIntoVirtual(this.centerPoint);
+
+		AffineTransform saveXForm = g2.getTransform();
+
+		g2.translate(center.getX() + (this.w / 2.0), center.getY() + (this.h / 2.0));
+
 		// clear background
 		g2.setColor(Color.BLACK);
 		g2.fill(visualRect);
 
 		// draw origin
 		g2.setColor(Color.WHITE);
-		g2.drawLine(95, 100, 105, 100);
-		g2.drawLine(100, 95, 100, 105);
+		g2.drawLine(-5, 0, 5, 0);
+		g2.drawLine(0, -5, 0, 5);
 
 		// draw current position
 		g2.setColor(Color.GREEN);
-		Point2D loc = this.visualizerProjection.projectIntoVirtual(this.currentPosition);
+		Point2D.Double loc = this.visualizerProjection.projectIntoVirtual(this.currentPosition);
 
 		if (visualRect.contains(loc))
 		{ // draw an x @ the current position
@@ -138,31 +150,53 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 		}
 
 		g2.setColor(Color.RED);
-		
-		GPSDatum temp = new GPSDatum(this.centerPoint.getLat(), this.centerPoint.getLon());
-		
-		for (int i = 0; i < 100; i++)
-		{
-			temp.setLat(temp.getLat() + .001);
-			temp.setLon(temp.getLon() + .001);
-			
-			
-			Point2D tempP = this.visualizerProjection.projectIntoVirtual(temp);
 
-			g2.fillOval((int)tempP.getX(), (int)tempP.getY(), 1, 1);
-		}
-		
+		GPSDatum temp = new GPSDatum(this.centerPoint.getLat(), this.centerPoint.getLon());
+
+		this.paintVirtualWorld(g2, center);
 		this.paintCorners(g2);
+
+		g2.setTransform(saveXForm);
 
 		g2.setFont(new Font("Arial", Font.BOLD, 10));
 		g2.drawString("o: " + this.centerPoint.getLon() + ", " + centerPoint.getLat(), 0, 10);
 		g2.drawString("c: " + this.currentPosition.getLon() + ", " + this.currentPosition.getLat(), 0, 20);
 	}
 
+	/**
+	 * @param g2
+	 */
+	private void paintVirtualWorld(Graphics2D g2, Point2D.Double currentCenterInVisCoords)
+	{
+		double vWidth = this.currentProjection.getVirtualWorldWidth();
+		double vHeight = this.currentProjection.getVirtualWorldHeight();
+		Point2D.Double uLInVisCoords = this.visualizerProjection.projectIntoVirtual(this.currentProjection
+				.projectIntoReal(new Point2D.Double (currentCenterInVisCoords.getX()
+						- (vWidth / 2.0), currentCenterInVisCoords.getY()
+						- (vHeight / 2.0))));
+		Point2D.Double lRInVisCoords = this.visualizerProjection.projectIntoVirtual(this.currentProjection
+				.projectIntoReal(new Point2D.Double (currentCenterInVisCoords.getX()
+						+ (vWidth / 2.0), currentCenterInVisCoords.getY()
+						+ (vHeight / 2.0))));
+
+		Rectangle2D.Double virtWorldRect = new Rectangle2D.Double(uLInVisCoords.getX(), uLInVisCoords.getY(), Point2D
+				.distance(uLInVisCoords.getX(), 0, lRInVisCoords.getX(), 0), Point2D.distance(0, uLInVisCoords.getY(), 0,
+				lRInVisCoords.getY()));
+
+		AffineTransform xForm = g2.getTransform();
+
+		// move the rectangle to the center
+		g2.setColor(TRANSLUCENT_GREEN);
+		g2.fill(virtWorldRect);
+
+		g2.setColor(Color.GREEN);
+		g2.draw(virtWorldRect);
+	}
+
 	private void paintCorners(Graphics2D g2)
 	{
-		Point2D ne = this.visualizerProjection.projectIntoVirtual(this.currentProjection.getPhysicalWorldPointNE());
-		Point2D sw = this.visualizerProjection.projectIntoVirtual(this.currentProjection.getPhysicalWorldPointSW());
+		Point2D.Double ne = this.visualizerProjection.projectIntoVirtual(this.currentProjection.getPhysicalWorldPointNE());
+		Point2D.Double sw = this.visualizerProjection.projectIntoVirtual(this.currentProjection.getPhysicalWorldPointSW());
 
 		g2.setColor(Color.GRAY);
 

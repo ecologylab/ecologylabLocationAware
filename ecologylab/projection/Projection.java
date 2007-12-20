@@ -12,52 +12,43 @@ import ecologylab.sensor.gps.data.GPSDatum;
 
 /**
  * Using two GPSDatum objects, demarking two corners of real-world space, provides functionality to map real-world
- * coordinates to an arbitrary coordinate system and vice-versa. Uses a Plate Carree projection.
+ * coordinates to another (virtual) set of coordinates within a rectangle specified by its size.
+ * 
+ * The center of the virtual world is considered to be at the center of the two specified points. The angle at which it
+ * is laid out depends on the projection mode.
+ * 
+ * CARDINAL_DIRECTIONS mode
+ * 
+ * CARDINAL_DIRECTIONS mode aligns the virtual world with the cardinal directions of the compass. It's height dimension
+ * specifies its N/S length and its width dimension specifies its E/W length. In this mode, the two real world
+ * coordinates are used to create a bounding box which contains the virtual world and scales it depending upon its
+ * aspect ratio, so that it is always contained by the bounding box.
+ * 
+ * ANCHOR_POINTS mode
+ * 
+ * ANCHOR_POINTS mode rotates the virtual world, so that two of its opposite corners are anchored by the real world
+ * coordinates. It is then scaled and rotated based on the relative orientation of and distance between the two
+ * coordinates.
+ * 
+ * A projection's virtual world scale may be specified in one of two ways:
+ * 
+ * CONSTANT_SCALE_FACTOR mode
+ * 
+ * In this mode, a constant factor is used to scale the virtual world to the real world, specified as the ratio of
+ * points (virtual space) : some real world measure (real space). In this mode, the size of the virtual world changes
+ * depending on the specified real world space. The real-world measure must be specified by subclasses. It may be
+ * degrees of latitude/longitude, real world distance, etc.
+ * 
+ * CONSTANT_SIZE mode
+ * 
+ * In this mode, the virtual world is held at a constant, specified size (width/height) and the scale between it and the
+ * real world changes, depending on the other specifications.
  * 
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
 public abstract class Projection extends Debug
 {
-	/**
-	 * The normalized northwest-most physical world point for this mapping; supplied coordinates will automatically be
-	 * transformed to match this specification; that is, if the points are essentially NE and SW, then this point will be
-	 * computed using the north-most and west-most components of those two coordinates.
-	 */
-	protected GPSDatum					physicalWorldPointNE				= null;
-
-	/**
-	 * The normalized southest-most physical world point for this mapping; supplied coordinates will automatically be
-	 * transformed to match this specification; that is, if the points are essentially NE and SW, then this point will be
-	 * computed using the south-most and east-most components of those two coordinates.
-	 */
-	protected GPSDatum					physicalWorldPointSW				= null;
-
-	/**
-	 * The upper-left-most point in the virtual world, which will be, more or less, mapped to physicalWorldPointNE based
-	 * on the MappingMode for this object.
-	 */
-	protected Point2D.Double			virtualWorldPointUpperRight	= null;
-
-	/**
-	 * The lower-right-most point in the virtual world, which will be, more or less, mapped to physicalWorldPointSW based
-	 * on the MappingMode for this object.
-	 */
-	protected Point2D.Double			virtualWorldPointLowerLeft		= null;
-
-	protected RotationConstraintMode	rotConstMode;
-
-	protected double						virtualWorldWidth, virtualWorldHeight;
-
-	protected double						realWorldWidth, realWorldHeight;
-
-	protected double						aspectRatio;
-
-	/**
-	 * The matrix that performs the transformation from real-world coordinates to virtual world coordinates.
-	 */
-	protected AffineTransform			transformMatrix					= new AffineTransform();
-
 	public enum RotationConstraintMode
 	{
 		/**
@@ -76,64 +67,187 @@ public abstract class Projection extends Debug
 		ANCHOR_POINTS;
 	}
 
-	public Projection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2,
-			Point2D.Double virtualWorldPointUpperRight, Point2D.Double virtualWorldPointLowerLeft,
+	public enum ScaleConstraintMode
+	{
+		CONSTANT_SCALE_FACTOR, CONSTANT_SIZE
+	}
+
+	/**
+	 * The normalized northwest-most physical world point for this mapping; supplied coordinates will automatically be
+	 * transformed to match this specification; that is, if the points are essentially NE and SW, then this point will be
+	 * computed using the north-most and west-most components of those two coordinates.
+	 */
+	protected GPSDatum					physicalWorldPointNE	= null;
+
+	/**
+	 * The normalized southest-most physical world point for this mapping; supplied coordinates will automatically be
+	 * transformed to match this specification; that is, if the points are essentially NE and SW, then this point will be
+	 * computed using the south-most and east-most components of those two coordinates.
+	 */
+	protected GPSDatum					physicalWorldPointSW	= null;
+
+	protected RotationConstraintMode	rotConstMode;
+
+	protected ScaleConstraintMode		scaleConstMode;
+
+	protected double						virtualWorldWidth, virtualWorldHeight;
+
+	protected double						realWorldWidth, realWorldHeight;
+
+	protected double						aspectRatio;
+
+	/**
+	 * Constructs a new Projection using the specified rotation constraint mode and using constant size scale mode.
+	 * 
+	 * @param physicalWorldPoint1
+	 * @param physicalWorldPoint2
+	 * @param virtualWorldWidth
+	 * @param virtualWorldHeight
+	 * @param rotConstMode
+	 * @throws SameCoordinatesException
+	 */
+	public Projection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2, double virtualWorldWidth,
+			double virtualWorldHeight, RotationConstraintMode rotConstMode) throws SameCoordinatesException
+	{
+		this(physicalWorldPoint1, physicalWorldPoint2, virtualWorldWidth, virtualWorldHeight, 0.0, rotConstMode,
+				ScaleConstraintMode.CONSTANT_SIZE);
+	}
+
+	public Projection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2, double scaleFactor,
 			RotationConstraintMode rotConstMode) throws SameCoordinatesException
 	{
-		debug("original corners: ");
-		debug("1: " + physicalWorldPoint1.toString());
-		debug("2: " + physicalWorldPoint2.toString());
-		
-		setVirtualWorldPointsOnly(virtualWorldPointUpperRight, virtualWorldPointLowerLeft);
+		this(physicalWorldPoint1, physicalWorldPoint2, 0.0, 0.0, scaleFactor, rotConstMode,
+				ScaleConstraintMode.CONSTANT_SCALE_FACTOR);
+	}
 
-		setRotationConstraintMode(rotConstMode);
+	/**
+	 * Catch-all constructor that is called by all the other constructors.
+	 * 
+	 * @param physicalWorldPoint1
+	 * @param physicalWorldPoint2
+	 * @param virtualWorldWidth
+	 * @param virtualWorldHeight
+	 * @param scaleFactor
+	 * @param rotConstMode
+	 * @param scaleConstMode
+	 * @throws SameCoordinatesException
+	 */
+	protected Projection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2, double virtualWorldWidth,
+			double virtualWorldHeight, double scaleFactor, RotationConstraintMode rotConstMode,
+			ScaleConstraintMode scaleConstMode) throws SameCoordinatesException
+	{
+		setVirtualWorldSizeOnly(virtualWorldWidth, virtualWorldHeight);
+
+		setRotConstModeOnly(rotConstMode);
+
+		setScaleConstModeOnly(scaleConstMode);
 
 		setPhysicalWorldCoordinatesOnly(physicalWorldPoint1, physicalWorldPoint2);
 
-		reconfigure();
-		
+		configure();
+
 		debug("corners set: ");
 		debug("NE: " + this.physicalWorldPointNE.toString());
 		debug("SW: " + this.physicalWorldPointSW.toString());
-	}
-
-	/**
-	 * @param rotConstMode
-	 */
-	private void setRotationConstraintMode(RotationConstraintMode rotConstMode)
-	{
-		this.rotConstMode = rotConstMode;
-	}
-
-	/**
-	 * @param virtualWorldPointUpperLeft
-	 * @param virtualWorldPointLowerRight
-	 * @throws SameCoordinatesException
-	 */
-	public void setVirtualWorldPoints(Point2D.Double virtualWorldPointUpperLeft,
-			Point2D.Double virtualWorldPointLowerRight) throws SameCoordinatesException
-	{
-		setVirtualWorldPointsOnly(virtualWorldPointUpperLeft, virtualWorldPointLowerRight);
 		
-		reconfigure();
+		debug("virtual world size: ");
+		debug("width: "+this.virtualWorldWidth);
+		debug("height: "+this.virtualWorldHeight);
+		
+		debug("real world size: ");
+		debug("width: "+this.realWorldWidth);
+		debug("height: "+this.realWorldHeight);
+		
+		debug("scaling factor: "+this.getScale());
 	}
 
 	/**
-	 * @param virtualWorldPointUpperLeft
-	 * @param virtualWorldPointLowerRight
-	 * @throws SameCoordinatesException
+	 * @return the physicalWorldPointNE
 	 */
-	protected void setVirtualWorldPointsOnly(Point2D.Double virtualWorldPointUpperLeft,
-			Point2D.Double virtualWorldPointLowerRight) throws SameCoordinatesException
+	public GPSDatum getPhysicalWorldPointNE()
 	{
-		this.virtualWorldPointUpperRight = virtualWorldPointUpperLeft;
-		this.virtualWorldPointLowerLeft = virtualWorldPointLowerRight;
+		return physicalWorldPointNE;
+	}
 
-		if (this.virtualWorldPointLowerLeft.x == this.virtualWorldPointUpperRight.x
-				|| this.virtualWorldPointLowerLeft.y == this.virtualWorldPointUpperRight.y)
+	/**
+	 * @return the physicalWorldPointSW
+	 */
+	public GPSDatum getPhysicalWorldPointSW()
+	{
+		return physicalWorldPointSW;
+	}
+
+	/**
+	 * Compute (if necessary) the scale factor between virtual world and real world units. Should be virtual points :
+	 * real world measure. The real world measure is dependent on the subclass.
+	 * 
+	 * @return the scale factor between the virtual world and the real world.
+	 */
+	public abstract double getScale();
+
+	/**
+	 * @return the virtualWorldHeight
+	 */
+	public double getVirtualWorldHeight()
+	{
+		return virtualWorldHeight;
+	}
+
+	/**
+	 * @return the virtualWorldWidth
+	 */
+	public double getVirtualWorldWidth()
+	{
+		return virtualWorldWidth;
+	}
+
+	public final GPSDatum projectIntoReal(Point2D.Double origPoint)
+	{
+		return this.projectIntoReal(origPoint, null);
+	}
+
+	public final GPSDatum projectIntoReal(Point2D.Double origPoint, GPSDatum destDatum)
+	{
+		if (destDatum == null)
 		{
-			throw new SameCoordinatesException("Virtual world space must have an area.");
+			destDatum = new GPSDatum();
 		}
+
+		return this.projectIntoRealImpl(origPoint, destDatum);
+	}
+
+	/**
+	 * Projects the given GPSDatum's coordinates into the virtual space, using some type of projection.
+	 * 
+	 * Subclasses may override this method, if they are not making affine transformations.
+	 * 
+	 * @param origDatum
+	 * @return a new Point2D.Double  containing the virtual space point for origPoint.
+	 */
+	public final Point2D.Double projectIntoVirtual(GPSDatum origDatum)
+	{
+		return this.projectIntoVirtual(origDatum, null);
+	}
+
+	/**
+	 * Projects the given GPSDatum's coordinates into the virtual space, using some type of projection.
+	 * 
+	 * This version takes an instantiated Point2D, so as not to expend resources instantating a new one.
+	 * 
+	 * Subclasses may override this method, if they are not making affine transformations.
+	 * 
+	 * @param origDatum
+	 * @param destPoint
+	 * @return destPoint containing the virtual space point for origPoint.
+	 */
+	public final Point2D.Double projectIntoVirtual(GPSDatum origDatum, Point2D.Double destPoint)
+	{
+		if (destPoint == null)
+		{
+			destPoint = new Point2D.Double ();
+		}
+
+		return this.projectIntoVirtualImpl(origDatum, destPoint);
 	}
 
 	/**
@@ -141,35 +255,75 @@ public abstract class Projection extends Debug
 	 * @param physicalWorldPoint2
 	 * @throws SameCoordinatesException
 	 */
-	public void setPhysicalWorldCoordinates(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2)
+	public final void setPhysicalWorldCoordinates(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2)
 			throws SameCoordinatesException
 	{
 		setPhysicalWorldCoordinatesOnly(physicalWorldPoint1, physicalWorldPoint2);
 
-		reconfigure();
+		configure();
 	}
 
 	/**
-	 * 
+	 * @param rotConstMode
 	 */
-	protected void reconfigure()
+	public final void setRotConstMode(RotationConstraintMode rotConstMode)
 	{
-		switch (this.rotConstMode)
-		{
-		case CARDINAL_DIRECTIONS:
-			// we need to redfine NE and SW so that they correspond to a rectangle with the same aspect ratio as the two
-			// virtual world coordinates
+		setRotConstModeOnly(rotConstMode);
 
-			redefineRealWorldCoordinatesForAspectRatio();
-
-			break;
-		case ANCHOR_POINTS:
-			// TODO
-			break;
-		}
-
-		this.configureTransformMatrix();
+		configure();
 	}
+
+	/**
+	 * @param scaleConstMode
+	 *           the scaleConstMode to set
+	 */
+	public final void setScaleConstMode(ScaleConstraintMode scaleConstMode)
+	{
+		setScaleConstModeOnly(scaleConstMode);
+
+		configure();
+	}
+
+	/**
+	 * @param virtualWorldPointUpperLeft
+	 * @param virtualWorldPointLowerRight
+	 * @throws SameCoordinatesException
+	 */
+	public final void setVirtualWorldPoints(double virtualWorldWidth, double virtualWorldHeight)
+			throws SameCoordinatesException
+	{
+		setVirtualWorldSizeOnly(virtualWorldWidth, virtualWorldHeight);
+
+		configure();
+	}
+
+	/**
+	 * Adjusts internal variables to match the modes, based on the current parameters. This method should be called
+	 * whenever any parameters are changed.
+	 * 
+	 * This method is automatically called by the public setter methods.
+	 */
+	protected abstract void configure();
+
+	/**
+	 * This method does the real work of projectIntoReal; all calls to it are guaranteed to pass an instantiated GPSDatum
+	 * object.
+	 * 
+	 * @param destPoint
+	 * @param destDatum
+	 * @return
+	 */
+	protected abstract GPSDatum projectIntoRealImpl(Point2D.Double destPoint, GPSDatum destDatum);
+
+	/**
+	 * This method does the real work of projectIntoVirtual; all calls to it are guaranteed to pass an instantiated
+	 * Point2D.Double object.
+	 * 
+	 * @param origDatum
+	 * @param destPoint
+	 * @return
+	 */
+	protected abstract Point2D.Double projectIntoVirtualImpl(GPSDatum origDatum, Point2D.Double destPoint);
 
 	/**
 	 * @param physicalWorldPoint1
@@ -216,88 +370,45 @@ public abstract class Projection extends Debug
 		{ // points overlap
 			throw new SameCoordinatesException("Real world space must have an area.");
 		}
-		
-		this.virtualWorldWidth = Point2D.Double.distance(this.virtualWorldPointUpperRight.getX(), 0,
-				this.virtualWorldPointLowerLeft.getX(), 0);
-		this.virtualWorldHeight = Point2D.Double.distance(0, this.virtualWorldPointUpperRight.getY(), 0,
-				this.virtualWorldPointLowerLeft.getY());
+
+		this.realWorldWidth = Point2D.distance(this.physicalWorldPointNE.getLon(), 0, this.physicalWorldPointSW.getLon(),
+				0);
+		this.realWorldHeight = Point2D.distance(0, this.physicalWorldPointNE.getLat(), 0, this.physicalWorldPointSW
+				.getLat());
+	}
+
+	/**
+	 * @param rotConstMode
+	 */
+	protected void setRotConstModeOnly(RotationConstraintMode rotConstMode)
+	{
+		this.rotConstMode = rotConstMode;
+	}
+
+	/**
+	 * @param scaleConstMode
+	 */
+	protected void setScaleConstModeOnly(ScaleConstraintMode scaleConstMode)
+	{
+		this.scaleConstMode = scaleConstMode;
+	}
+
+	/**
+	 * @param virtualWorldPointUpperLeft
+	 * @param virtualWorldPointLowerRight
+	 * @throws SameCoordinatesException
+	 */
+	protected void setVirtualWorldSizeOnly(double virtualWorldWidth, double virtualWorldHeight)
+			throws SameCoordinatesException
+	{
+		this.virtualWorldWidth = virtualWorldWidth;
+		this.virtualWorldHeight = virtualWorldHeight;
+
+		if (this.virtualWorldHeight == 0 || this.virtualWorldWidth == 0)
+		{
+			throw new SameCoordinatesException("Virtual world space must have an area.");
+		}
 
 		this.aspectRatio = this.virtualWorldWidth / this.virtualWorldHeight;
-	}
-	
-	/**
-	 * 
-	 */
-	protected abstract void redefineRealWorldCoordinatesForAspectRatio();
-
-	/**
-	 * This method is called automatically by the constructor, and by any method that will change the set of real world
-	 * points.
-	 * 
-	 * This method must configure the internal AffineTransform object (transformMatrix) so that calls to project can use
-	 * it to properly map real world coordinates to virtual world coordinates, and vice versa.
-	 */
-	protected abstract void configureTransformMatrix();
-
-	/**
-	 * Projects the given GPSDatum's coordinates into the virtual space, using some type of projection.
-	 * 
-	 * Subclasses may override this method, if they are not making affine transformations.
-	 * 
-	 * @param origPoint
-	 * @return a new Point2D.Double containing the virtual space point for origPoint.
-	 */
-	public Point2D projectIntoVirtual(GPSDatum origPoint)
-	{
-		Point2D pt = 
-		 this.projectIntoVirtual(origPoint, null);
-		
-		return pt;
-	}
-
-	/**
-	 * Projects the given GPSDatum's coordinates into the virtual space, using some type of projection.
-	 * 
-	 * This version takes an instantiated Point2D, so as not to expend resources instantating a new one.
-	 * 
-	 * Subclasses may override this method, if they are not making affine transformations.
-	 * 
-	 * @param origPoint
-	 * @param destPoint
-	 * @return destPoint containing the virtual space point for origPoint.
-	 */
-	public Point2D projectIntoVirtual(GPSDatum origPoint, Point2D.Double destPoint)
-	{
-		return this.transformMatrix.transform(origPoint.getPointRepresentation(), destPoint);
-	}
-	
-	public Point2D projectIntoReal(Point2D origPoint)
-	{
-		try
-		{
-			return this.transformMatrix.inverseTransform(origPoint, null);
-		}
-		catch (NoninvertibleTransformException e)
-		{
-			e.printStackTrace();
-			
-			return null;
-		}
-	}
-
-	/**
-	 * @return the physicalWorldPointNE
-	 */
-	public GPSDatum getPhysicalWorldPointNE()
-	{
-		return physicalWorldPointNE;
-	}
-
-	/**
-	 * @return the physicalWorldPointSW
-	 */
-	public GPSDatum getPhysicalWorldPointSW()
-	{
-		return physicalWorldPointSW;
 	}
 }

@@ -3,9 +3,12 @@
  */
 package ecologylab.projection;
 
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
+import java.awt.geom.Point2D.Double ;
 
+import ecologylab.projection.Projection.RotationConstraintMode;
 import ecologylab.sensor.gps.data.GPSDatum;
 
 /**
@@ -20,11 +23,28 @@ import ecologylab.sensor.gps.data.GPSDatum;
  * Note that, although it is somewhat confusing, this projection will map north to negative Y (because in Java, negative
  * Y is UP) and east to positive X.
  * 
+ * PlateCarreeProjection sets scale in terms of virtual world points : degrees latitude/longitude.
+ * 
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
 public class PlateCarreeProjection extends Projection
 {
+	/**
+	 * The matrix that performs the transformation from real-world coordinates to virtual world coordinates.
+	 */
+	protected AffineTransform	transformMatrix;
+
+	private double					scaleFactor;
+
+	public PlateCarreeProjection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2, double scaleFactor,
+			RotationConstraintMode rotConstMode) throws SameCoordinatesException
+	{
+		super(physicalWorldPoint1, physicalWorldPoint2, scaleFactor, rotConstMode);
+
+		debug("Using plate carree projection.");
+	}
+
 	/**
 	 * @param physicalWorldPoint1
 	 * @param physicalWorldPoint2
@@ -37,94 +57,96 @@ public class PlateCarreeProjection extends Projection
 	 * @param rotConstMode
 	 * @throws SameCoordinatesException
 	 */
-	public PlateCarreeProjection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2,
-			Double virtualWorldPointUpperRight, Double virtualWorldPointLowerLeft, RotationConstraintMode rotConstMode)
-			throws SameCoordinatesException
+	public PlateCarreeProjection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2, double virtualWorldWidth,
+			double virtualWorldHeight, RotationConstraintMode rotConstMode) throws SameCoordinatesException
 	{
-		super(physicalWorldPoint1, physicalWorldPoint2, virtualWorldPointUpperRight, virtualWorldPointLowerLeft,
-				rotConstMode);
+		super(physicalWorldPoint1, physicalWorldPoint2, virtualWorldWidth, virtualWorldHeight, rotConstMode);
 
 		debug("Using plate carree projection.");
 	}
 
-	/**
-	 * We map latitude to Y and longitude to X, assuming the same distance between each degree of lat/lon.
-	 * 
-	 * @see ecologylab.projection.Projection#redefineRealWorldCoordinatesForAspectRatio()
-	 */
-	@Override protected void redefineRealWorldCoordinatesForAspectRatio()
+	public static void main(String[] args) throws SameCoordinatesException
 	{
-		debug("redefining real world coordinate corners.");
+		PlateCarreeProjection p = new PlateCarreeProjection(new GPSDatum(0, -100), new GPSDatum(30, -70), 400, 200,
+				Projection.RotationConstraintMode.CARDINAL_DIRECTIONS);
 
-		this.realWorldHeight = this.physicalWorldPointNE.getLat() - this.physicalWorldPointSW.getLat();
-		this.realWorldWidth = this.physicalWorldPointNE.getLon() - this.physicalWorldPointSW.getLon();
+		GPSDatum[] ds =
+		{ new GPSDatum(15, -85), new GPSDatum(0, -100), new GPSDatum(30, -70), new GPSDatum(29.95, -95.67) };
 
-		double origRealWorldAspectRatio = this.realWorldWidth / this.realWorldHeight;
+		for (GPSDatum d : ds)
+		{
+			Point2D.Double  transformedPoint = (Double) p.projectIntoVirtual(d);
 
-		if (origRealWorldAspectRatio > this.aspectRatio)
-		{ // orig space is too wide, we need to shrink it (making it taller could make it go around the world...then bad
-			// things happen :( )
+			System.out.print(d.getLon() + ", " + d.getLat());
+			System.out.print(" > ");
+			System.out.println(transformedPoint.x + ", " + transformedPoint.y);
 
-			double targetWidthAdjustment = .5 * realWorldWidth * (1 - (this.aspectRatio / origRealWorldAspectRatio));
-
-			this.physicalWorldPointNE.setLon(this.physicalWorldPointNE.getLon() - targetWidthAdjustment);
-			this.physicalWorldPointSW.setLon(this.physicalWorldPointSW.getLon() + targetWidthAdjustment);
-		}
-		else
-		{ // make the real world shorter
-			double targetHeightAdjustment = .5 * realWorldHeight * (1 - (origRealWorldAspectRatio / this.aspectRatio));
-
-			this.physicalWorldPointNE.setLat(this.physicalWorldPointNE.getLat() - targetHeightAdjustment);
-			this.physicalWorldPointSW.setLat(this.physicalWorldPointSW.getLat() + targetHeightAdjustment);
+			// System.out.print(" > ");
+			// Point2D.Double  transformedBackPoint = (Double) p.projectIntoReal(transformedPoint);
+			// System.out.println(transformedBackPoint.x + ", " + transformedBackPoint.y);
 		}
 
-		this.realWorldHeight = this.physicalWorldPointNE.getLat() - this.physicalWorldPointSW.getLat();
-		this.realWorldWidth = this.physicalWorldPointNE.getLon() - this.physicalWorldPointSW.getLon();
-
-		origRealWorldAspectRatio = this.realWorldWidth / this.realWorldHeight;
-
-		debug("corner points adjusted: ");
-		debug("NE: " + this.physicalWorldPointNE.toString());
-		debug("SW: " + this.physicalWorldPointSW.toString());
-
-		debug("target aspect ratio: " + this.aspectRatio);
-		debug("new aspect ratio: " + origRealWorldAspectRatio);
 	}
 
 	/**
-	 * @see ecologylab.projection.Projection#configureTransformMatrix()
+	 * @see ecologylab.projection.Projection#getScale()
 	 */
-	@Override protected void configureTransformMatrix()
+	@Override public double getScale()
 	{
+		return this.scaleFactor;
+	}
+
+	/**
+	 * Adjusts internal variables to match the modes, based on the current parameters. This method should be called
+	 * whenever any states are changed.
+	 */
+	@Override protected void configure()
+	{
+		if (this.transformMatrix == null)
+		{
+			this.transformMatrix = new AffineTransform();
+		}
+		
 		switch (this.rotConstMode)
 		{
 		case CARDINAL_DIRECTIONS:
-			// we're just dealing with a scaling / translation issue here
-			double scaleFactorX = this.realWorldWidth / this.virtualWorldWidth;
-			double scaleFactorY = this.realWorldHeight / this.virtualWorldHeight;
+			// we need to redfine NE and SW so that they correspond to a rectangle with the same aspect ratio as the two
+			// virtual world coordinates
 
-			scaleFactorX = 1.0 / scaleFactorX;
-			scaleFactorY = -1.0 / scaleFactorY;
+			switch (this.scaleConstMode)
+			{
+			case CONSTANT_SCALE_FACTOR:
+				// TODO
+				break;
+			case CONSTANT_SIZE:
+				// we need to maintain a constant size and aspect ratio for the virtual world
+				
+				// first determine the scaling factor
+				// need the longest dimension of the virtual world
+				if (this.virtualWorldHeight > this.virtualWorldWidth)
+				{ // then our "bounding box" specified by the real world coordinates is constraining us on height more than width
+					this.scaleFactor = this.virtualWorldHeight / this.realWorldHeight;
+				}
+				else
+				{
+					this.scaleFactor = this.virtualWorldWidth / this.realWorldWidth;
+				}
 
-			double centerRealX = this.physicalWorldPointNE.getLon() - (this.realWorldWidth / 2.0);
-			double centerRealY = this.physicalWorldPointNE.getLat() - (this.realWorldHeight / 2.0);
+				double centerRealX = this.physicalWorldPointNE.getLon() - (this.realWorldWidth / 2.0);
+				double centerRealY = this.physicalWorldPointNE.getLat() - (this.realWorldHeight / 2.0);
 
-			double centerVirtualX = this.virtualWorldPointUpperRight.x - (this.virtualWorldWidth / 2.0);
-			double centerVirtualY = this.virtualWorldPointUpperRight.y + (this.virtualWorldHeight / 2.0);
+				double translateToOriginX = Point2D.distance(centerRealX, 0, 0, 0) * (centerRealX > 0 ? -1.0 : 1.0);
+				double translateToOriginY = Point2D.distance(0, centerRealY, 0, 0) * (centerRealY > 0 ? -1.0 : 1.0);
 
-			double translateToOriginX = Point2D.distance(centerRealX, 0, 0, 0) * (centerRealX > 0 ? -1.0 : 1.0);
-			double translateToOriginY = Point2D.distance(0, centerRealY, 0, 0) * (centerRealY > 0 ? -1.0 : 1.0);
+				debug("distance to origin: " + centerRealX + ", " + centerRealY);
 
-			double translateToCenterX = Point2D.distance(centerVirtualX, 0, 0, 0) * (centerVirtualX < 0 ? -1.0 : 1.0);
-			double translateToCenterY = Point2D.distance(0, centerVirtualY, 0, 0) * (centerVirtualY < 0 ? -1.0 : 1.0);
+				this.transformMatrix.setToIdentity();
 
-			debug("distance to origin: " + centerRealX + ", " + centerRealY);
-			debug("distance to center of virtual field: " + centerVirtualX + ", " + centerVirtualY);
+				this.transformMatrix.scale(scaleFactor, -1.0 * scaleFactor);
+				this.transformMatrix.translate(translateToOriginX, translateToOriginY);
 
-			this.transformMatrix.setToIdentity();
-			this.transformMatrix.translate(translateToCenterX, translateToCenterY);
-			this.transformMatrix.scale(scaleFactorX, scaleFactorY);
-			this.transformMatrix.translate(translateToOriginX, translateToOriginY);
+				break;
+			}
 
 			break;
 		case ANCHOR_POINTS:
@@ -133,27 +155,43 @@ public class PlateCarreeProjection extends Projection
 		}
 	}
 
-	public static void main(String[] args) throws SameCoordinatesException
+	/**
+	 * Projects the given GPSDatum's coordinates into the virtual space, using some type of projection.
+	 * 
+	 * This version takes an instantiated Point2D, so as not to expend resources instantating a new one.
+	 * 
+	 * Subclasses may override this method, if they are not making affine transformations.
+	 * 
+	 * @param origPoint
+	 * @param destPoint
+	 * @return destPoint containing the virtual space point for origPoint.
+	 */
+	@Override protected Point2D.Double projectIntoVirtualImpl(GPSDatum origPoint, Point2D.Double destPoint)
 	{
-		PlateCarreeProjection p = new PlateCarreeProjection(new GPSDatum(0, -100), new GPSDatum(30, -70),
-				new Point2D.Double(200, 0), new Point2D.Double(0, 200),
-				Projection.RotationConstraintMode.CARDINAL_DIRECTIONS);
+		return (Double) this.transformMatrix.transform(origPoint.getPointRepresentation(), destPoint);
+	}
 
-		GPSDatum[] ds =
-		{ new GPSDatum(15, -85), new GPSDatum(0, -100), new GPSDatum(30, -70), new GPSDatum(29.95, -95.67) };
-
-		for (GPSDatum d : ds)
+	@Override protected GPSDatum projectIntoRealImpl(Point2D.Double origPoint, GPSDatum destDatum)
+	{
+		try
 		{
-			Point2D.Double transformedPoint = (Double) p.projectIntoVirtual(d);
-
-			System.out.print(d.getLon() + ", " + d.getLat());
-			System.out.print(" > ");
-			System.out.println(transformedPoint.x + ", " + transformedPoint.y);
-			// System.out.print(" > ");
-
-			// Point2D.Double transformedBackPoint = (Double) p.projectIntoReal(transformedPoint);
-			// System.out.println(transformedBackPoint.x + ", " + transformedBackPoint.y);
+			Point2D.Double inversePoint = (Double) this.transformMatrix.inverseTransform(origPoint, null);
+			destDatum.setLon(inversePoint.getX());
+			destDatum.setLat(inversePoint.getY());
+		}
+		catch (NoninvertibleTransformException e)
+		{
+			e.printStackTrace();
 		}
 
+		return destDatum;
+	}
+
+	/**
+	 * @return the transformMatrix
+	 */
+	public AffineTransform getTransformMatrix()
+	{
+		return transformMatrix;
 	}
 }

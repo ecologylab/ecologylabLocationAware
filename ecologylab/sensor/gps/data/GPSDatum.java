@@ -110,10 +110,10 @@ public class GPSDatum extends ElementState
 	List<GPSDataUpdatedListener>	gpsDataUpdatedListeners	= new LinkedList<GPSDataUpdatedListener>();
 
 	/**
-	 * A Point2D representation of this's latitude and longitude, instantiated and filled through lazy evaluation, when
+	 * A Point2D.Double representation of this's latitude and longitude, instantiated and filled through lazy evaluation, when
 	 * needed.
 	 */
-	private Point2D.Double			pointRepresentation		= null;
+	private Point2D.Double 			pointRepresentation		= null;
 
 	/** Indicates that pointRepresentation is out of synch with the state of this object. */
 	private boolean					pointDirty					= true;
@@ -584,11 +584,11 @@ public class GPSDatum extends ElementState
 	 * 
 	 * @return the pointRepresentation
 	 */
-	public Point2D.Double getPointRepresentation()
+	public Point2D.Double  getPointRepresentation()
 	{
 		if (pointRepresentation == null)
 		{
-			pointRepresentation = new Point2D.Double();
+			pointRepresentation = new Point2D.Double ();
 		}
 
 		if (this.pointDirty)
