@@ -74,7 +74,7 @@ public enum GGA implements GPSDataFieldBase
 	{
 		public void update(String src, GPSDatum dst)
 		{
-			dst.updateUtcPosTime(src);
+			dst.updateHeightUnit(src);
 		}
 	},
 	HEIGHT_DIFF

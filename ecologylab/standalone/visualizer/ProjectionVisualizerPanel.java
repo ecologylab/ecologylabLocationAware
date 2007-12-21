@@ -113,7 +113,7 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 		g2.drawLine(0, -5, 0, 5);
 
 		// draw current position
-		g2.setColor(Color.GREEN);
+		g2.setColor(Color.RED);
 		Point2D.Double loc = this.visualizerProjection.projectIntoVirtual(this.currentPosition);
 
 		if (visualRect.contains(loc))
@@ -133,6 +133,7 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 
 		g2.setTransform(saveXForm);
 
+		g2.setColor(Color.WHITE);
 		g2.setFont(new Font("Arial", Font.BOLD, 10));
 		g2.drawString("o: " + this.centerPoint.getLon() + ", " + centerPoint.getLat(), 0, 10);
 		g2.drawString("c: " + this.currentPosition.getLon() + ", " + this.currentPosition.getLat(), 0, 20);
