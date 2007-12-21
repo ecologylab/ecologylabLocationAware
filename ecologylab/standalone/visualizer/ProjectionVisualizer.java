@@ -156,7 +156,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 		{
 			p = new PlateCarreeProjection(new GPSDatum(29.9611133702 - .05, -95.6697746507 + .05), new GPSDatum(
 					29.9611133702 + .07, -95.6697746507 - .17), 200.0, 100.0,
-					Projection.RotationConstraintMode.CARDINAL_DIRECTIONS);
+					Projection.RotationConstraintMode.ANCHOR_POINTS);
 
 			ProjectionVisualizerPanel panel = new ProjectionVisualizerPanel(new GPSDatum(29.9611133702, -95.6697746507),
 					p, w, h);

@@ -26,9 +26,8 @@ import ecologylab.sensor.gps.data.GPSDatum;
  * 
  * ANCHOR_POINTS mode
  * 
- * ANCHOR_POINTS mode rotates the virtual world, so that two of its opposite corners are anchored by the real world
- * coordinates. It is then scaled and rotated based on the relative orientation of and distance between the two
- * coordinates.
+ * ANCHOR_POINTS mode rotates the virtual world, so that the midpoints of its top and bottom verticies are anchored to
+ * the two specified GPS coordinates.
  * 
  * A projection's virtual world scale may be specified in one of two ways:
  * 
@@ -85,6 +84,10 @@ public abstract class Projection extends Debug
 	 * computed using the south-most and east-most components of those two coordinates.
 	 */
 	protected GPSDatum					physicalWorldPointSW	= null;
+
+	protected GPSDatum					specedPWP1				= null;
+
+	protected GPSDatum					specedPWP2				= null;
 
 	protected RotationConstraintMode	rotConstMode;
 
@@ -149,16 +152,16 @@ public abstract class Projection extends Debug
 		debug("corners set: ");
 		debug("NE: " + this.physicalWorldPointNE.toString());
 		debug("SW: " + this.physicalWorldPointSW.toString());
-		
+
 		debug("virtual world size: ");
-		debug("width: "+this.virtualWorldWidth);
-		debug("height: "+this.virtualWorldHeight);
-		
+		debug("width: " + this.virtualWorldWidth);
+		debug("height: " + this.virtualWorldHeight);
+
 		debug("real world size: ");
-		debug("width: "+this.realWorldWidth);
-		debug("height: "+this.realWorldHeight);
-		
-		debug("scaling factor: "+this.getScale());
+		debug("width: " + this.realWorldWidth);
+		debug("height: " + this.realWorldHeight);
+
+		debug("scaling factor: " + this.getScale());
 	}
 
 	/**
@@ -222,7 +225,7 @@ public abstract class Projection extends Debug
 	 * Subclasses may override this method, if they are not making affine transformations.
 	 * 
 	 * @param origDatum
-	 * @return a new Point2D.Double  containing the virtual space point for origPoint.
+	 * @return a new Point2D.Double containing the virtual space point for origPoint.
 	 */
 	public final Point2D.Double projectIntoVirtual(GPSDatum origDatum)
 	{
@@ -244,7 +247,7 @@ public abstract class Projection extends Debug
 	{
 		if (destPoint == null)
 		{
-			destPoint = new Point2D.Double ();
+			destPoint = new Point2D.Double();
 		}
 
 		return this.projectIntoVirtualImpl(origDatum, destPoint);
@@ -333,6 +336,9 @@ public abstract class Projection extends Debug
 	protected void setPhysicalWorldCoordinatesOnly(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2)
 			throws SameCoordinatesException
 	{
+		this.specedPWP1 = physicalWorldPoint1;
+		this.specedPWP2 = physicalWorldPoint2;
+
 		this.physicalWorldPointNE = new GPSDatum();
 		this.physicalWorldPointSW = new GPSDatum();
 

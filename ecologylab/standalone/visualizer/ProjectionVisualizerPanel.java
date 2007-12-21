@@ -123,7 +123,7 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 		Point2D.Double center = this.visualizerProjection.projectIntoVirtual(this.centerPoint);
 
 		AffineTransform saveXForm = g2.getTransform();
-
+		
 		g2.translate(center.getX() + (this.w / 2.0), center.getY() + (this.h / 2.0));
 
 		// clear background
@@ -168,8 +168,20 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 	 */
 	private void paintVirtualWorld(Graphics2D g2, Point2D.Double currentCenterInVisCoords)
 	{
+		AffineTransform saveXForm = g2.getTransform();
+		
 		double vWidth = this.currentProjection.getVirtualWorldWidth();
 		double vHeight = this.currentProjection.getVirtualWorldHeight();
+		
+		Rectangle2D.Double virtualWorld = new Rectangle2D.Double(-vWidth/2.0, -vHeight/2.0, vWidth, vHeight);
+		
+		AffineTransform modified = g2.getTransform();
+		
+		modified.concatenate(visualizerProjection.getTransformMatrix());
+		modified.concatenate(currentProjection.getInverseTransformMatrix());
+				
+		g2.setTransform(modified);
+		
 		Point2D.Double uLInVisCoords = this.visualizerProjection.projectIntoVirtual(this.currentProjection
 				.projectIntoReal(new Point2D.Double (currentCenterInVisCoords.getX()
 						- (vWidth / 2.0), currentCenterInVisCoords.getY()
@@ -183,13 +195,15 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 				.distance(uLInVisCoords.getX(), 0, lRInVisCoords.getX(), 0), Point2D.distance(0, uLInVisCoords.getY(), 0,
 				lRInVisCoords.getY()));
 
-		AffineTransform xForm = g2.getTransform();
-
 		// move the rectangle to the center
 		g2.setColor(TRANSLUCENT_GREEN);
-		g2.fill(virtWorldRect);
+	//	g2.fill(virtWorldRect);
+		g2.fill(virtualWorld);
 
 		g2.setColor(Color.GREEN);
+		g2.draw(virtualWorld);
+
+		g2.setTransform(saveXForm);
 		g2.draw(virtWorldRect);
 	}
 

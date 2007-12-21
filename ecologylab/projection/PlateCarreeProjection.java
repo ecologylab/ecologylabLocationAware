@@ -6,7 +6,7 @@ package ecologylab.projection;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double ;
+import java.awt.geom.Point2D.Double;
 
 import ecologylab.projection.Projection.RotationConstraintMode;
 import ecologylab.sensor.gps.data.GPSDatum;
@@ -34,6 +34,8 @@ public class PlateCarreeProjection extends Projection
 	 * The matrix that performs the transformation from real-world coordinates to virtual world coordinates.
 	 */
 	protected AffineTransform	transformMatrix;
+
+	protected AffineTransform	inverseTransformMatrix;
 
 	private double					scaleFactor;
 
@@ -75,14 +77,14 @@ public class PlateCarreeProjection extends Projection
 
 		for (GPSDatum d : ds)
 		{
-			Point2D.Double  transformedPoint = (Double) p.projectIntoVirtual(d);
+			Point2D.Double transformedPoint = (Double) p.projectIntoVirtual(d);
 
 			System.out.print(d.getLon() + ", " + d.getLat());
 			System.out.print(" > ");
 			System.out.println(transformedPoint.x + ", " + transformedPoint.y);
 
 			// System.out.print(" > ");
-			// Point2D.Double  transformedBackPoint = (Double) p.projectIntoReal(transformedPoint);
+			// Point2D.Double transformedBackPoint = (Double) p.projectIntoReal(transformedPoint);
 			// System.out.println(transformedBackPoint.x + ", " + transformedBackPoint.y);
 		}
 
@@ -106,7 +108,7 @@ public class PlateCarreeProjection extends Projection
 		{
 			this.transformMatrix = new AffineTransform();
 		}
-		
+
 		switch (this.rotConstMode)
 		{
 		case CARDINAL_DIRECTIONS:
@@ -120,11 +122,12 @@ public class PlateCarreeProjection extends Projection
 				break;
 			case CONSTANT_SIZE:
 				// we need to maintain a constant size and aspect ratio for the virtual world
-				
+
 				// first determine the scaling factor
 				// need the longest dimension of the virtual world
 				if (this.virtualWorldHeight > this.virtualWorldWidth)
-				{ // then our "bounding box" specified by the real world coordinates is constraining us on height more than width
+				{ // then our "bounding box" specified by the real world coordinates is constraining us on height more than
+					// width
 					this.scaleFactor = this.virtualWorldHeight / this.realWorldHeight;
 				}
 				else
@@ -150,8 +153,65 @@ public class PlateCarreeProjection extends Projection
 
 			break;
 		case ANCHOR_POINTS:
-			// TODO
+			double rotationAngle = 0;
+
+			switch (this.scaleConstMode)
+			{
+			case CONSTANT_SCALE_FACTOR:
+				// TODO
+				break;
+			case CONSTANT_SIZE:
+				double virtualCenterLineSq = (this.virtualWorldHeight * this.virtualWorldHeight)
+						+ (this.virtualWorldWidth * this.virtualWorldWidth);
+				double realPointsDistance = this.specedPWP1.getPointRepresentation().distance(
+						this.specedPWP2.getPointRepresentation());
+
+				double realCenterLineSq = (this.realWorldHeight * this.realWorldHeight)
+						+ (this.realWorldWidth * this.realWorldWidth);
+
+				// figure out the angle of rotation for the virtual world
+				rotationAngle = Math.sin(0.5 * this.virtualWorldWidth / Math.sqrt(virtualCenterLineSq));
+
+				// we need to maintain a constant size and aspect ratio for the virtual world
+
+				// first determine the scaling factor
+				if (this.virtualWorldHeight < this.virtualWorldWidth)
+				{
+					this.scaleFactor = this.virtualWorldWidth / realPointsDistance;
+				}
+				else
+				{
+					this.scaleFactor = this.virtualWorldHeight / realPointsDistance;
+				}
+
+				double centerRealX = this.physicalWorldPointNE.getLon() - (this.realWorldWidth / 2.0);
+				double centerRealY = this.physicalWorldPointNE.getLat() - (this.realWorldHeight / 2.0);
+
+				double translateToOriginX = Point2D.distance(centerRealX, 0, 0, 0) * (centerRealX > 0 ? -1.0 : 1.0);
+				double translateToOriginY = Point2D.distance(0, centerRealY, 0, 0) * (centerRealY > 0 ? -1.0 : 1.0);
+
+				debug("distance to origin: " + centerRealX + ", " + centerRealY);
+
+				this.transformMatrix.setToIdentity();
+
+				this.transformMatrix.rotate(rotationAngle, 0, 0);
+				this.transformMatrix.scale(scaleFactor, -1.0 * scaleFactor);
+				this.transformMatrix.translate(translateToOriginX, translateToOriginY);
+
+				break;
+			}
+
 			break;
+		}
+
+		// add inverse matrix
+		try
+		{
+			this.inverseTransformMatrix = this.transformMatrix.createInverse();
+		}
+		catch (NoninvertibleTransformException e)
+		{
+			e.printStackTrace();
 		}
 	}
 
@@ -173,16 +233,9 @@ public class PlateCarreeProjection extends Projection
 
 	@Override protected GPSDatum projectIntoRealImpl(Point2D.Double origPoint, GPSDatum destDatum)
 	{
-		try
-		{
-			Point2D.Double inversePoint = (Double) this.transformMatrix.inverseTransform(origPoint, null);
-			destDatum.setLon(inversePoint.getX());
-			destDatum.setLat(inversePoint.getY());
-		}
-		catch (NoninvertibleTransformException e)
-		{
-			e.printStackTrace();
-		}
+		Point2D.Double inversePoint = (Double) this.inverseTransformMatrix.transform(origPoint, null);
+		destDatum.setLon(inversePoint.getX());
+		destDatum.setLat(inversePoint.getY());
 
 		return destDatum;
 	}
@@ -193,5 +246,13 @@ public class PlateCarreeProjection extends Projection
 	public AffineTransform getTransformMatrix()
 	{
 		return transformMatrix;
+	}
+
+	/**
+	 * @return the inverseTransformMatrix
+	 */
+	public AffineTransform getInverseTransformMatrix()
+	{
+		return inverseTransformMatrix;
 	}
 }
