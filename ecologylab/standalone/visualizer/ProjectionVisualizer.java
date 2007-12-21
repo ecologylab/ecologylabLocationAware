@@ -3,11 +3,12 @@
  */
 package ecologylab.standalone.visualizer;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.TooManyListenersException;
 
@@ -15,11 +16,14 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import ecologylab.appframework.ApplicationEnvironment;
+import ecologylab.appframework.PropertiesAndDirectories;
 import ecologylab.projection.PlateCarreeProjection;
 import ecologylab.projection.Projection;
 import ecologylab.projection.SameCoordinatesException;
 import ecologylab.sensor.gps.GPS;
 import ecologylab.sensor.gps.data.GPSDatum;
+import ecologylab.sensor.gps.gui.GPSConnectionControls;
+import ecologylab.sensor.gps.gui.GPSController;
 import ecologylab.sensor.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.gps.listener.GPSDataUpdater;
 import ecologylab.xml.TranslationSpace;
@@ -34,7 +38,7 @@ import gnu.io.UnsupportedCommOperationException;
  * 
  */
 public class ProjectionVisualizer extends ApplicationEnvironment implements GPSDataUpdatedListener, ActionListener,
-		WindowListener
+		WindowListener, GPSController
 {
 	JFrame						mainFrame;
 
@@ -147,7 +151,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 */
 	private void setupVisualization()
 	{
-		this.mainFrame = new JFrame();
+		this.mainFrame = new JFrame(PropertiesAndDirectories.applicationName());
 		
 		this.mainFrame.addWindowListener(this);
 
@@ -164,9 +168,16 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 
 			this.updater.addDataUpdatedListener(this);
 			this.updater.addDataUpdatedListener(panel);
+			
+			GPSConnectionControls v = new GPSConnectionControls(this);
+			v.setPreferredSize(new Dimension(200, 200));
+			
+			this.mainFrame.getContentPane().add(v);
 
+			this.mainFrame.setLayout(new FlowLayout());
+			
 			this.mainFrame.setVisible(true);
-			this.mainFrame.setSize(w, h);
+			this.mainFrame.setSize(w, h+200);
 			this.mainFrame.pack();
 			this.mainFrame.invalidate();
 		}
@@ -183,16 +194,33 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 */
 	private void configureFromPrefs() throws NoSuchPortException, IOException
 	{
-		/*
-		 * this.gps = new GPS("COM41", 115200); try { this.gps.connect(); } catch (PortInUseException e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); } catch (UnsupportedCommOperationException e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); } catch (TooManyListenersException e) { // TODO Auto-generated
-		 * catch block e.printStackTrace(); }
-		 * 
-		 * this.gps.addGPSDataListener(updater); // this.gps.addGPSDataListener(new GPSDataPrinter());
-		 */
 	}
 
+	/**
+	 * @see ecologylab.sensor.gps.gui.GPSController#connectGPS(ecologylab.sensor.gps.GPS)
+	 */
+	public boolean connectGPS(GPS newGPS) throws PortInUseException, UnsupportedCommOperationException, IOException, TooManyListenersException
+	{
+		this.gps = newGPS;
+		
+		this.gps.connect();
+		
+		this.gps.addGPSDataListener(updater);
+	//	this.gps.addGPSDataListener(new GPSDataPrinter());
+		
+		return this.gps.connected();
+	}
+	
+	/**
+	 * @see ecologylab.sensor.gps.gui.GPSController#disconnectGPS()
+	 */
+	public void disconnectGPS()
+	{
+		this.gps.disconnect();
+		
+		this.gps.removeGPSDataListener(updater);
+	}
+	
 	/**
 	 * @param args
 	 * @throws XMLTranslationException
@@ -271,5 +299,13 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 */
 	public void windowOpened(WindowEvent e)
 	{
+	}
+
+	/**
+	 * @see ecologylab.sensor.gps.gui.GPSController#getGps()
+	 */
+	public GPS getGps()
+	{
+		return gps;
 	}
 }

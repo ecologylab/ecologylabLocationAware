@@ -45,16 +45,13 @@ public class GPS extends Debug implements SerialPortEventListener
 
 	private InputStream						portIn					= null;
 
-	private OutputStream						portOut					= null;
-
 	private LinkedList<GPSDataListener>	listeners				= new LinkedList<GPSDataListener>();
 
 	private static final CharsetDecoder	ASCII_DECODER			= Charset.forName("US-ASCII").newDecoder();
-	private static final CharsetEncoder	ASCII_ENCODER			= Charset.forName("US-ASCII").newEncoder();
 
 	private StringBuilder					incomingDataBuffer	= new StringBuilder();
-	
-	private ByteBuffer incomingBytes = ByteBuffer.allocate(10000);
+
+	private ByteBuffer						incomingBytes			= ByteBuffer.allocate(10000);
 
 	/**
 	 * Instantiate a GPS device on a given port and baud rate.
@@ -69,10 +66,15 @@ public class GPS extends Debug implements SerialPortEventListener
 	 */
 	public GPS(String portName, int baud) throws NoSuchPortException, IOException
 	{
+		this (CommPortIdentifier.getPortIdentifier(portName), baud);
+	}
+
+	public GPS(CommPortIdentifier portId, int baud) throws NoSuchPortException, IOException
+	{
 		this.baud = baud;
-
-		portId = CommPortIdentifier.getPortIdentifier(portName);
-
+		
+		this.portId = portId;
+		
 		if (portId.getPortType() == CommPortIdentifier.PORT_PARALLEL)
 		{
 			throw new IOException("GPS is not available for parallel ports.");
@@ -80,7 +82,7 @@ public class GPS extends Debug implements SerialPortEventListener
 
 		debug("port acquired: " + portId.toString());
 	}
-
+	
 	/**
 	 * Connects to the GPS device based on the portName, baud, and device profile and activates the connection.
 	 * 
@@ -109,7 +111,6 @@ public class GPS extends Debug implements SerialPortEventListener
 		port.notifyOnDataAvailable(true);
 
 		portIn = port.getInputStream();
-		portOut = port.getOutputStream();
 
 		if (connected())
 		{
@@ -134,12 +135,14 @@ public class GPS extends Debug implements SerialPortEventListener
 	{
 		if (port != null)
 		{
-			port.setDTR(false);
-			port.close();
+			synchronized (port)
+			{
+				port.setDTR(false);
+				port.close();
 
-			port = null;
-			portIn = null;
-			portOut = null;
+				port = null;
+				portIn = null;
+			}
 		}
 	}
 
@@ -154,7 +157,7 @@ public class GPS extends Debug implements SerialPortEventListener
 			try
 			{
 				incomingBytes.clear();
-				
+
 				int bytesRead = portIn.read(this.incomingBytes.array());
 
 				if (bytesRead > 0)
@@ -169,7 +172,7 @@ public class GPS extends Debug implements SerialPortEventListener
 
 					if (startOfMessage > -1 && endOfMessage > -1)
 					{
-						this.fireGPSDataString(incomingDataBuffer.substring(startOfMessage+1, endOfMessage));
+						this.fireGPSDataString(incomingDataBuffer.substring(startOfMessage + 1, endOfMessage));
 
 						incomingDataBuffer.delete(startOfMessage, endOfMessage + 2);
 					}
@@ -195,6 +198,31 @@ public class GPS extends Debug implements SerialPortEventListener
 		this.listeners.remove(l);
 	}
 
+	public String getPortName()
+	{
+		if (this.port != null)
+		{
+			return this.port.getName();
+		}
+
+		return "";
+	}
+
+	/**
+	 * Gets the baud rate of the port. If the port is not specified (not connected), then returns -1.
+	 * 
+	 * @return an integer representing the baud rate of the current port or -1 if not connected.
+	 */
+	public int getBaudRate()
+	{
+		if (this.port != null)
+		{
+			return this.port.getBaudRate();
+		}
+
+		return -1;
+	}
+
 	private void fireGPSDataString(String gpsDataString)
 	{
 		for (GPSDataListener l : listeners)
@@ -202,27 +230,4 @@ public class GPS extends Debug implements SerialPortEventListener
 			l.readGPSData(gpsDataString);
 		}
 	}
-
-	/**
-	 * @param string
-	 * @throws IOException 
-	 * @throws CharacterCodingException 
-	 */
-	public void send(String string) throws CharacterCodingException, IOException
-	{
-		portOut.write(ASCII_ENCODER.encode(CharBuffer.wrap(string)).array());
-	}
-	
-	public static void main(String[] args) throws IOException
-	{
-		FileInputStream f = new FileInputStream("COM4");
-		
-		while (true)
-		{
-			byte b[] = new byte[1];
-			f.read(b);
-			System.out.println(ASCII_DECODER.decode(ByteBuffer.wrap(b)));
-		}
-	}
-
 }

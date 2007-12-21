@@ -11,5 +11,12 @@ import ecologylab.sensor.gps.data.GPSDatum;
  */
 public interface GPSDataFieldBase
 {
+	/**
+	 * Updates dst's internal data by parsing src according to the interpretation of the current mode.
+	 * 
+	 * @param data
+	 * @param decLoc
+	 * @param dst
+	 */
 	void update(String src, GPSDatum dst);
 }

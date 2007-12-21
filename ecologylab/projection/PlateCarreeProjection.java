@@ -39,6 +39,12 @@ public class PlateCarreeProjection extends Projection
 
 	private double					scaleFactor;
 
+	private double					rotation;
+
+	double							translateToOriginX;
+
+	double							translateToOriginY;
+
 	public PlateCarreeProjection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2, double scaleFactor,
 			RotationConstraintMode rotConstMode) throws SameCoordinatesException
 	{
@@ -77,15 +83,11 @@ public class PlateCarreeProjection extends Projection
 
 		for (GPSDatum d : ds)
 		{
-			Point2D.Double transformedPoint = (Double) p.projectIntoVirtual(d);
+			Point2D.Double transformedPoint = p.projectIntoVirtual(d);
 
 			System.out.print(d.getLon() + ", " + d.getLat());
 			System.out.print(" > ");
 			System.out.println(transformedPoint.x + ", " + transformedPoint.y);
-
-			// System.out.print(" > ");
-			// Point2D.Double transformedBackPoint = (Double) p.projectIntoReal(transformedPoint);
-			// System.out.println(transformedBackPoint.x + ", " + transformedBackPoint.y);
 		}
 
 	}
@@ -104,10 +106,11 @@ public class PlateCarreeProjection extends Projection
 	 */
 	@Override protected void configure()
 	{
-		if (this.transformMatrix == null)
-		{
-			this.transformMatrix = new AffineTransform();
-		}
+		double centerRealX = this.physicalWorldPointNE.getLon() - (this.realWorldWidth / 2.0);
+		double centerRealY = this.physicalWorldPointNE.getLat() - (this.realWorldHeight / 2.0);
+
+		translateToOriginX = Point2D.distance(centerRealX, 0, 0, 0) * (centerRealX > 0 ? -1.0 : 1.0);
+		translateToOriginY = Point2D.distance(0, centerRealY, 0, 0) * (centerRealY > 0 ? -1.0 : 1.0);
 
 		switch (this.rotConstMode)
 		{
@@ -115,84 +118,47 @@ public class PlateCarreeProjection extends Projection
 			// we need to redfine NE and SW so that they correspond to a rectangle with the same aspect ratio as the two
 			// virtual world coordinates
 
-			switch (this.scaleConstMode)
-			{
-			case CONSTANT_SCALE_FACTOR:
-				// TODO
-				break;
-			case CONSTANT_SIZE:
-				// we need to maintain a constant size and aspect ratio for the virtual world
+			// we need to maintain a constant size and aspect ratio for the virtual world
 
-				// first determine the scaling factor
-				// need the longest dimension of the virtual world
-				if (this.virtualWorldHeight > this.virtualWorldWidth)
-				{ // then our "bounding box" specified by the real world coordinates is constraining us on height more than
-					// width
-					this.scaleFactor = this.virtualWorldHeight / this.realWorldHeight;
-				}
-				else
-				{
-					this.scaleFactor = this.virtualWorldWidth / this.realWorldWidth;
-				}
-
-				double centerRealX = this.physicalWorldPointNE.getLon() - (this.realWorldWidth / 2.0);
-				double centerRealY = this.physicalWorldPointNE.getLat() - (this.realWorldHeight / 2.0);
-
-				double translateToOriginX = Point2D.distance(centerRealX, 0, 0, 0) * (centerRealX > 0 ? -1.0 : 1.0);
-				double translateToOriginY = Point2D.distance(0, centerRealY, 0, 0) * (centerRealY > 0 ? -1.0 : 1.0);
-
-				debug("distance to origin: " + centerRealX + ", " + centerRealY);
-
-				this.transformMatrix.setToIdentity();
-
-				this.transformMatrix.scale(scaleFactor, -1.0 * scaleFactor);
-				this.transformMatrix.translate(translateToOriginX, translateToOriginY);
-
-				break;
+			// first determine the scaling factor
+			// need the longest dimension of the virtual world
+			if (this.virtualWorldHeight > this.virtualWorldWidth)
+			{ // then our "bounding box" specified by the real world coordinates is constraining us on height more than
+				// width
+				this.scaleFactor = this.virtualWorldHeight / this.realWorldHeight;
 			}
-
+			else
+			{
+				this.scaleFactor = this.virtualWorldWidth / this.realWorldWidth;
+			}
 			break;
 		case ANCHOR_POINTS:
-			double rotationAngle = 0;
+			double virtualCenterLineSq = (this.virtualWorldHeight * this.virtualWorldHeight)
+					+ (this.virtualWorldWidth * this.virtualWorldWidth);
+			double realPointsDistance = this.specedPWP1.getPointRepresentation().distance(
+					this.specedPWP2.getPointRepresentation());
 
-			switch (this.scaleConstMode)
-			{
-			case CONSTANT_SCALE_FACTOR:
-				// TODO
-				break;
-			case CONSTANT_SIZE:
-				double virtualCenterLineSq = (this.virtualWorldHeight * this.virtualWorldHeight)
-						+ (this.virtualWorldWidth * this.virtualWorldWidth);
-				double realPointsDistance = this.specedPWP1.getPointRepresentation().distance(
-						this.specedPWP2.getPointRepresentation());
+			// figure out the angle of rotation for the virtual world
+			rotation = Math.asin(this.virtualWorldWidth / Math.sqrt(virtualCenterLineSq));
 
-				// figure out the angle of rotation for the virtual world
-				rotationAngle = Math.asin(this.virtualWorldWidth / Math.sqrt(virtualCenterLineSq));
+			// we need to maintain a constant size and aspect ratio for the virtual world
 
-				// we need to maintain a constant size and aspect ratio for the virtual world
-
-				// first determine the scaling factor
-					this.scaleFactor = this.virtualWorldHeight / realPointsDistance;
-
-				double centerRealX = this.physicalWorldPointNE.getLon() - (this.realWorldWidth / 2.0);
-				double centerRealY = this.physicalWorldPointNE.getLat() - (this.realWorldHeight / 2.0);
-
-				double translateToOriginX = Point2D.distance(centerRealX, 0, 0, 0) * (centerRealX > 0 ? -1.0 : 1.0);
-				double translateToOriginY = Point2D.distance(0, centerRealY, 0, 0) * (centerRealY > 0 ? -1.0 : 1.0);
-
-				debug("distance to origin: " + centerRealX + ", " + centerRealY);
-
-				this.transformMatrix.setToIdentity();
-
-				this.transformMatrix.scale(scaleFactor, -1.0 * scaleFactor);
-				this.transformMatrix.rotate(rotationAngle, 0, 0);
-				this.transformMatrix.translate(translateToOriginX, translateToOriginY);
-
-				break;
-			}
+			// determine the scaling factor
+			this.scaleFactor = this.virtualWorldHeight / realPointsDistance;
 
 			break;
 		}
+
+		if (this.transformMatrix == null)
+		{
+			this.transformMatrix = new AffineTransform();
+		}
+
+		this.transformMatrix.setToIdentity();
+
+		this.transformMatrix.scale(scaleFactor, -1.0 * scaleFactor);
+		this.transformMatrix.rotate(rotation, 0, 0);
+		this.transformMatrix.translate(translateToOriginX, translateToOriginY);
 
 		// add inverse matrix
 		try

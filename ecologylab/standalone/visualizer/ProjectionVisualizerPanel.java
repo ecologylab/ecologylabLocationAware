@@ -27,6 +27,8 @@ import ecologylab.sensor.gps.listener.GPSDataUpdatedListener;
  */
 public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedListener
 {
+	private static final long	serialVersionUID	= -7543653734798453833L;
+
 	private static final Color	TRANSLUCENT_GREEN	= new Color(Color.GREEN.getRed(), Color.GREEN.getGreen(), Color.GREEN
 																		.getBlue(), 128);
 
@@ -89,31 +91,6 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 	}
 
 	/**
-	 * @param layout
-	 */
-	private ProjectionVisualizerPanel(LayoutManager layout)
-	{
-		super(layout);
-	}
-
-	/**
-	 * @param isDoubleBuffered
-	 */
-	private ProjectionVisualizerPanel(boolean isDoubleBuffered)
-	{
-		super(isDoubleBuffered);
-	}
-
-	/**
-	 * @param layout
-	 * @param isDoubleBuffered
-	 */
-	private ProjectionVisualizerPanel(LayoutManager layout, boolean isDoubleBuffered)
-	{
-		super(layout, isDoubleBuffered);
-	}
-
-	/**
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 	 */
 	@Override protected void paintComponent(Graphics g)
@@ -150,8 +127,6 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 		}
 
 		g2.setColor(Color.RED);
-
-		GPSDatum temp = new GPSDatum(this.centerPoint.getLat(), this.centerPoint.getLon());
 
 		this.paintVirtualWorld(g2, center);
 		this.paintCorners(g2);
