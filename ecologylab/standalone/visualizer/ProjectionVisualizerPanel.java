@@ -181,30 +181,15 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 		modified.concatenate(currentProjection.getInverseTransformMatrix());
 				
 		g2.setTransform(modified);
-		
-		Point2D.Double uLInVisCoords = this.visualizerProjection.projectIntoVirtual(this.currentProjection
-				.projectIntoReal(new Point2D.Double (currentCenterInVisCoords.getX()
-						- (vWidth / 2.0), currentCenterInVisCoords.getY()
-						- (vHeight / 2.0))));
-		Point2D.Double lRInVisCoords = this.visualizerProjection.projectIntoVirtual(this.currentProjection
-				.projectIntoReal(new Point2D.Double (currentCenterInVisCoords.getX()
-						+ (vWidth / 2.0), currentCenterInVisCoords.getY()
-						+ (vHeight / 2.0))));
-
-		Rectangle2D.Double virtWorldRect = new Rectangle2D.Double(uLInVisCoords.getX(), uLInVisCoords.getY(), Point2D
-				.distance(uLInVisCoords.getX(), 0, lRInVisCoords.getX(), 0), Point2D.distance(0, uLInVisCoords.getY(), 0,
-				lRInVisCoords.getY()));
 
 		// move the rectangle to the center
 		g2.setColor(TRANSLUCENT_GREEN);
-	//	g2.fill(virtWorldRect);
 		g2.fill(virtualWorld);
 
 		g2.setColor(Color.GREEN);
 		g2.draw(virtualWorld);
 
 		g2.setTransform(saveXForm);
-		g2.draw(virtWorldRect);
 	}
 
 	private void paintCorners(Graphics2D g2)
@@ -219,6 +204,10 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 
 		g2.drawLine((int) sw.getX(), (int) sw.getY(), (int) sw.getX() + 5, (int) sw.getY());
 		g2.drawLine((int) sw.getX(), (int) sw.getY(), (int) sw.getX(), (int) sw.getY() - 5);
+		
+		g2.setColor(Color.GREEN);
+		
+		g2.drawLine((int)ne.getX(), (int)ne.getY(), (int)sw.getX(), (int)sw.getY());
 	}
 
 	public void centerOnCurrent()

@@ -166,23 +166,13 @@ public class PlateCarreeProjection extends Projection
 				double realPointsDistance = this.specedPWP1.getPointRepresentation().distance(
 						this.specedPWP2.getPointRepresentation());
 
-				double realCenterLineSq = (this.realWorldHeight * this.realWorldHeight)
-						+ (this.realWorldWidth * this.realWorldWidth);
-
 				// figure out the angle of rotation for the virtual world
-				rotationAngle = Math.sin(0.5 * this.virtualWorldWidth / Math.sqrt(virtualCenterLineSq));
+				rotationAngle = Math.asin(this.virtualWorldWidth / Math.sqrt(virtualCenterLineSq));
 
 				// we need to maintain a constant size and aspect ratio for the virtual world
 
 				// first determine the scaling factor
-				if (this.virtualWorldHeight < this.virtualWorldWidth)
-				{
-					this.scaleFactor = this.virtualWorldWidth / realPointsDistance;
-				}
-				else
-				{
 					this.scaleFactor = this.virtualWorldHeight / realPointsDistance;
-				}
 
 				double centerRealX = this.physicalWorldPointNE.getLon() - (this.realWorldWidth / 2.0);
 				double centerRealY = this.physicalWorldPointNE.getLat() - (this.realWorldHeight / 2.0);
@@ -194,8 +184,8 @@ public class PlateCarreeProjection extends Projection
 
 				this.transformMatrix.setToIdentity();
 
-				this.transformMatrix.rotate(rotationAngle, 0, 0);
 				this.transformMatrix.scale(scaleFactor, -1.0 * scaleFactor);
+				this.transformMatrix.rotate(rotationAngle, 0, 0);
 				this.transformMatrix.translate(translateToOriginX, translateToOriginY);
 
 				break;
