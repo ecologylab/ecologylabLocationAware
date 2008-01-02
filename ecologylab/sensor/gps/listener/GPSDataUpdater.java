@@ -27,7 +27,6 @@ public class GPSDataUpdater extends Debug implements GPSDataListener
 	public void readGPSData(String gpsDataString)
 	{
 		datum.integrateGPSData(gpsDataString);
-		System.out.println(datum.toString());
 	}
 
 	/**

@@ -13,7 +13,7 @@ import ecologylab.sensor.gps.data.GPSDatum;
  */
 public enum GLL implements GPSDataFieldBase
 {
-	LAT, NSLAT, LON, EWLON, UTC_POS_TIME, GPS_QUAL_X, CHECKSUM;
+	LAT, NSLAT, LON, EWLON, UTC_POS_TIME, GPS_DATA_VALID, CHECKSUM;
 
 	/**
 	 * Updates dst's internal data by parsing src according to the interpretation of the current mode.
@@ -40,6 +40,9 @@ public enum GLL implements GPSDataFieldBase
 			break;
 		case EWLON:
 			dst.updateLonHemisphere(src);
+			break;
+		case GPS_DATA_VALID:
+			dst.updateDataValid(src);
 			break;
 		}
 	}

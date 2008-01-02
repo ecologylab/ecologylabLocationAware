@@ -4,6 +4,7 @@
 package ecologylab.sensor.gps.data;
 
 import java.awt.geom.Point2D;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,43 +15,58 @@ import ecologylab.sensor.gps.data.dataset.GSA;
 import ecologylab.sensor.gps.data.dataset.RMC;
 import ecologylab.sensor.gps.listener.GPSDataUpdatedListener;
 import ecologylab.xml.ElementState;
-import ecologylab.xml.XMLTranslationException;
+import ecologylab.xml.types.element.ArrayListState;
 
 /**
- * Represents an instant of GPS data computed from a series of NMEA strings. Each component of the datum is as
- * up-to-date as possible as of the time stamp. Whenever no new data is provided, the old data is retained.
+ * Represents an instant of GPS data computed from a series of NMEA strings.
+ * Each component of the datum is as up-to-date as possible as of the time
+ * stamp. Whenever no new data is provided, the old data is retained.
  * 
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
 public class GPSDatum extends ElementState
 {
-	@xml_attribute float				utcPosTime;
-
-	@xml_attribute double			lat;
-
-	@xml_attribute double			lon;
-
-	/** Quality of GPS data; values will be either GPS_QUAL_NO, GPS_QUAL_GPS, GPS_QUAL_DGPS. */
-	@xml_attribute int				gpsQual;
-
 	/** Indicates no GPS. */
-	public static final int			GPS_QUAL_NO					= 0;
+	public static final int								GPS_QUAL_NO					= 0;
 
 	/** Indicates GPS satellite fix only. */
-	public static final int			GPS_QUAL_GPS				= 1;
+	public static final int								GPS_QUAL_GPS				= 1;
 
 	/** Indicates GPS satellite fix + differential signal. */
-	public static final int			GPS_QUAL_DGPS				= 2;
+	public static final int								GPS_QUAL_DGPS				= 2;
 
-	@xml_attribute int				numSats;
+	/** Indicates that there is no calcuating mode set. */
+	public static final int								CALC_MODE_NONE				= 1;
+
+	/** Indicates that the calculating mode is 2D. */
+	public static final int								CALC_MODE_2D				= 2;
+
+	/** Indicates that the calculating mode is 3D. */
+	public static final int								CALC_MODE_3D				= 3;
+
+	@xml_attribute protected float					utcPosTime;
+
+	@xml_attribute protected double					lat;
+
+	@xml_attribute protected double					lon;
 
 	/**
-	 * Horizontal Dilution of Precision - approximation of the size of the area in which the actual location of the GPS
-	 * is horizontally based on the spread of the fixed satellites; higher numbers are worse, smaller mean better
-	 * precision; this value may range between 1-50.
+	 * Quality of GPS data; values will be either GPS_QUAL_NO, GPS_QUAL_GPS,
+	 * GPS_QUAL_DGPS.
+	 */
+	@xml_attribute protected int						gpsQual;
+
+	@xml_attribute protected int						numSats;
+
+	/**
+	 * Horizontal Dilution of Precision - approximation of the size of the area
+	 * in which the actual location of the GPS is horizontally based on the
+	 * spread of the fixed satellites; higher numbers are worse, smaller mean
+	 * better precision; this value may range between 1-50.
 	 * 
-	 * According to http://www.codepedia.com/1/Geometric+Dilution+of+Precision+(DOP):
+	 * According to
+	 * http://www.codepedia.com/1/Geometric+Dilution+of+Precision+(DOP):
 	 * 
 	 * <table>
 	 * <tr>
@@ -60,63 +76,106 @@ public class GPSDatum extends ElementState
 	 * <tr>
 	 * <td>1</td>
 	 * <td>Ideal</td>
-	 * <td>This is the highest possible confidence level to be used for applications demanding the highest possible
-	 * precision at all times.</td>
+	 * <td>This is the highest possible confidence level to be used for
+	 * applications demanding the highest possible precision at all times.</td>
 	 * </tr>
 	 * <tr>
 	 * <td>2-3</td>
 	 * <td>Excellent</td>
-	 * <td>At this confidence level, positional measurements are considered accurate enough to meet all but the most
-	 * sensitive applications.</td>
+	 * <td>At this confidence level, positional measurements are considered
+	 * accurate enough to meet all but the most sensitive applications.</td>
 	 * </tr>
 	 * <tr>
 	 * <td>4-6</td>
 	 * <td>Good</td>
-	 * <td>Represents a level that marks the minimum appropriate for making business decisions. Positional measurements
-	 * could be used to make reliable in-route navigation suggestions to the user.</td>
+	 * <td>Represents a level that marks the minimum appropriate for making
+	 * business decisions. Positional measurements could be used to make reliable
+	 * in-route navigation suggestions to the user.</td>
 	 * </tr>
 	 * <tr>
 	 * <td>7-8</td>
 	 * <td>Moderate</td>
-	 * <td>Positional measurements could be used for calculations, but the fix quality could still be improved. A more
-	 * open view of the sky is recommended.</td>
+	 * <td>Positional measurements could be used for calculations, but the fix
+	 * quality could still be improved. A more open view of the sky is
+	 * recommended.</td>
 	 * </tr>
 	 * <tr>
 	 * <td>9-20</td>
 	 * <td>Fair</td>
-	 * <td>Represents a low confidence level. Positional measurements should be discarded or used only to indicate a
-	 * very rough estimate of the current location.</td>
+	 * <td>Represents a low confidence level. Positional measurements should be
+	 * discarded or used only to indicate a very rough estimate of the current
+	 * location.</td>
 	 * </tr>
 	 * <tr>
 	 * <td>21-50</td>
-	 * <td>Poor At this level, measurements are inaccurate by half a football field or more and should be discarded.</td>
+	 * <td>Poor At this level, measurements are inaccurate by half a football
+	 * field or more and should be discarded.</td>
 	 * </tr>
 	 * </table>
 	 */
-	@xml_attribute float				hdop;
+	@xml_attribute protected float					hdop;
 
-	/** The altitude of the antenna of the GPS (location where the signals are recieved). In meters. */
-	@xml_attribute float				geoidHeight;
+	/** Position Dillution of Precision */
+	@xml_attribute protected float					pdop;
 
-	/** The differential between the elipsoid and the geoid. In meters. */
-	@xml_attribute float				heightDiff;
-
-	@xml_attribute float				dgpsAge;
-
-	@xml_attribute int				dgpsRefStation;
-
-	char[]								tempDataStore;
-
-	List<GPSDataUpdatedListener>	gpsDataUpdatedListeners	= new LinkedList<GPSDataUpdatedListener>();
+	/** Vertical Dillution of Precision */
+	@xml_attribute protected float					vdop;
 
 	/**
-	 * A Point2D.Double representation of this's latitude and longitude, instantiated and filled through lazy evaluation, when
-	 * needed.
+	 * The altitude of the antenna of the GPS (location where the signals are
+	 * recieved). In meters.
 	 */
-	private Point2D.Double 			pointRepresentation		= null;
+	@xml_attribute protected float					geoidHeight;
 
-	/** Indicates that pointRepresentation is out of synch with the state of this object. */
-	private boolean					pointDirty					= true;
+	/** The differential between the elipsoid and the geoid. In meters. */
+	@xml_attribute protected float					heightDiff;
+
+	@xml_attribute protected float					dgpsAge;
+
+	@xml_attribute protected int						dgpsRefStation;
+
+	/** Indicates whether or not the current GPS data is valid. */
+	@xml_attribute protected boolean					dataValid;
+
+	/**
+	 * Indicates whether or not the calculation mode (2D/3D) is automatically
+	 * selected.
+	 */
+	@xml_attribute protected boolean					autoCalcMode;
+
+	/**
+	 * Calculating mode (2D/3D); valid values are CALC_MODE_NONE, CALC_MODE_2D,
+	 * or CALC_MODE_3D.
+	 */
+	@xml_attribute protected int						calcMode;
+
+	/**
+	 * References to data about the currently-tracked satellites (space vehicles,
+	 * SVs).
+	 */
+	@xml_nested private ArrayListState<SVData>	trackedSVs;
+
+	/**
+	 * All up-to-date data on SVs that have been reported by the GPS hardware.
+	 */
+	protected HashMap<Integer, SVData>				allSVs;
+
+	/** Used for moving data around when processing NMEA sentences. */
+	private char[]											tempDataStore;
+
+	private List<GPSDataUpdatedListener>			gpsDataUpdatedListeners	= new LinkedList<GPSDataUpdatedListener>();
+
+	/**
+	 * A Point2D.Double representation of this's latitude and longitude,
+	 * instantiated and filled through lazy evaluation, when needed.
+	 */
+	private Point2D.Double								pointRepresentation		= null;
+
+	/**
+	 * Indicates that pointRepresentation is out of synch with the state of this
+	 * object.
+	 */
+	private boolean										pointDirty					= true;
 
 	public GPSDatum()
 	{
@@ -150,8 +209,8 @@ public class GPSDatum extends ElementState
 
 	/**
 	 * @param that
-	 * @return positive if this is farther north than that, negative if that is more north; 0 if they lie on exactly the
-	 *         same parallel.
+	 * @return positive if this is farther north than that, negative if that is
+	 *         more north; 0 if they lie on exactly the same parallel.
 	 */
 	public double compareNS(GPSDatum that)
 	{
@@ -160,9 +219,10 @@ public class GPSDatum extends ElementState
 
 	/**
 	 * @param that
-	 * @return compares two GPSDatum's based on the acute angle between their longitudes. Returns 1 if this is farther
-	 *         east than that, -1 if this is farther west, 0 if the two points lie on the same arc, 180/-180 if they are
-	 *         opposite.
+	 * @return compares two GPSDatum's based on the acute angle between their
+	 *         longitudes. Returns 1 if this is farther east than that, -1 if
+	 *         this is farther west, 0 if the two points lie on the same arc,
+	 *         180/-180 if they are opposite.
 	 */
 	public double compareEW(GPSDatum that)
 	{
@@ -254,7 +314,8 @@ public class GPSDatum extends ElementState
 					finishedField = false;
 					dataStart = i;
 
-					// now we will read each data field in, one at at time, since we know the order of the GGA data set.
+					// now we will read each data field in, one at at time, since we
+					// know the order of the GGA data set.
 					// we will break out of each for loop when finished.
 					while (i < dataLength && !finishedField)
 					{
@@ -264,7 +325,8 @@ public class GPSDatum extends ElementState
 						{
 							if (i - dataStart > 0)
 							{
-								field.update(new String(tempData, dataStart, (i - dataStart)), this);
+								field.update(new String(tempData, dataStart,
+										(i - dataStart)), this);
 							}
 							finishedField = true;
 						}
@@ -315,8 +377,9 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateLon(String src)
 	{
-		this.lon = WorldCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 3)), Double.parseDouble(src.substring(3)),
-				0);
+		this.lon = WorldCoord.fromDegMinSec(
+				Integer.parseInt(src.substring(0, 3)), Double.parseDouble(src
+						.substring(3)), 0);
 
 		this.pointDirty = true;
 	}
@@ -341,8 +404,9 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateLat(String src)
 	{
-		this.lat = WorldCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 2)), Double.parseDouble(src.substring(2)),
-				0);
+		this.lat = WorldCoord.fromDegMinSec(
+				Integer.parseInt(src.substring(0, 2)), Double.parseDouble(src
+						.substring(2)), 0);
 
 		this.pointDirty = true;
 	}
@@ -353,14 +417,6 @@ public class GPSDatum extends ElementState
 	public void updateUtcPosTime(String src)
 	{
 		this.utcPosTime = Float.parseFloat(src);
-	}
-
-	/**
-	 * @param src
-	 */
-	public void updateHDOP(String src)
-	{
-		this.hdop = Float.parseFloat(src);
 	}
 
 	/**
@@ -425,13 +481,37 @@ public class GPSDatum extends ElementState
 		this.geoidHeight = Float.parseFloat(src);
 	}
 
+	public void updateDataValid(String src)
+	{
+		switch (src.charAt(0))
+		{
+		case 'A':
+		case 'a':
+			this.dataValid = true;
+			break;
+		case 'V':
+		case 'v':
+			this.dataValid = false;
+			break;
+		}
+	}
+
 	/**
 	 * @param src
 	 */
-	public void updateCalcModeDecision(String src)
+	public void updateAutoCalcMode(String src)
 	{
-		// TODO Auto-generated method stub
-
+		switch (src.charAt(0))
+		{
+		case 'A':
+		case 'a':
+			this.autoCalcMode = true;
+			break;
+		case 'M':
+		case 'm':
+			this.autoCalcMode = false;
+			break;
+		}
 	}
 
 	/**
@@ -439,18 +519,46 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateCalcMode(String src)
 	{
-		// TODO Auto-generated method stub
+		// values will be either 0, 1, or 2
+		this.calcMode = Integer.parseInt(src);
+	}
 
+	/**
+	 * Specifies the SV number to be added to the list of tracked SVs. Because
+	 * NMEA sentences report data on up to 12 tracked SVs, each SV has an index
+	 * (in addition to its ID).
+	 * 
+	 * @param src
+	 *           the data String containing the ID of the tracked SV.
+	 * @param i
+	 *           the index of the tracked SV (will overwrite whichever was stored
+	 *           previously).
+	 */
+	public void updateSV(String src, int i)
+	{
+		Integer index = new Integer(i);
+		int sVID = Integer.parseInt(src);
+
+		HashMap<Integer, SVData> allSVsLocal = this.allSVs();
+
+		SVData currentData = allSVsLocal.get(sVID);
+
+		if (currentData == null)
+		{
+			currentData = new SVData(sVID);
+
+			allSVsLocal.put(index, currentData);
+		}
+
+		this.trackedSVs().set(i, currentData);
 	}
 
 	/**
 	 * @param src
-	 * @param i
 	 */
-	public void updateSat(String src, int i)
+	public void updateHDOP(String src)
 	{
-		// TODO Auto-generated method stub
-
+		this.hdop = Float.parseFloat(src);
 	}
 
 	/**
@@ -458,8 +566,7 @@ public class GPSDatum extends ElementState
 	 */
 	public void updatePDOP(String src)
 	{
-		// TODO Auto-generated method stub
-
+		this.pdop = Float.parseFloat(src);
 	}
 
 	/**
@@ -467,8 +574,7 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateVDOP(String src)
 	{
-		// TODO Auto-generated method stub
-
+		this.vdop = Float.parseFloat(src);
 	}
 
 	/**
@@ -478,67 +584,6 @@ public class GPSDatum extends ElementState
 	{
 		// TODO Auto-generated method stub
 
-	}
-
-	public static void main(String[] args)
-	{
-		GPSDatum a = new GPSDatum(0, 0);
-		GPSDatum b = new GPSDatum(10, 10);
-		GPSDatum c = new GPSDatum(120, 120);
-		GPSDatum d = new GPSDatum(-35, -35);
-		GPSDatum e = new GPSDatum(-150, -150);
-		GPSDatum f = new GPSDatum(-180, -180);
-
-		GPSDatum[] all =
-		{ a, b, c, d, e, f };
-
-		for (int i = 0; i < all.length; i++)
-		{
-			for (int j = 0; j < all.length; j++)
-			{
-				System.out.println("-------------------");
-				System.out.println("pt lat: " + all[i].getLat() + ", lon: " + all[i].getLon() + " is "
-						+ nsString(all[i].compareNS(all[j])) + " lat: " + all[j].getLat() + ", lon: " + all[j].getLon());
-				System.out.println("pt lat: " + all[i].getLat() + ", lon: " + all[i].getLon() + " is "
-						+ ewString(all[i].compareEW(all[j])) + " lat: " + all[j].getLat() + ", lon: " + all[j].getLon());
-			}
-		}
-	}
-
-	static String nsString(double dir)
-	{
-		if (dir > 0)
-		{
-			return "north of";
-		}
-		else if (dir < 0)
-		{
-			return "south of";
-		}
-		else
-		{
-			return "the same latitude as";
-		}
-	}
-
-	static String ewString(double dir)
-	{
-		if (dir > 0)
-		{
-			return "west of";
-		}
-		else if (dir < 0)
-		{
-			return "east of";
-		}
-		else if (dir == -180 || dir == 180)
-		{
-			return "opposite the earth from";
-		}
-		else
-		{
-			return "the same longitude as";
-		}
 	}
 
 	/**
@@ -580,15 +625,16 @@ public class GPSDatum extends ElementState
 	}
 
 	/**
-	 * Gets the latitude and longitude of this datum as a Point2D, where x = longitude and y = latitude.
+	 * Gets the latitude and longitude of this datum as a Point2D, where x =
+	 * longitude and y = latitude.
 	 * 
 	 * @return the pointRepresentation
 	 */
-	public Point2D.Double  getPointRepresentation()
+	public Point2D.Double getPointRepresentation()
 	{
 		if (pointRepresentation == null)
 		{
-			pointRepresentation = new Point2D.Double ();
+			pointRepresentation = new Point2D.Double();
 		}
 
 		if (this.pointDirty)
@@ -599,9 +645,94 @@ public class GPSDatum extends ElementState
 
 		return pointRepresentation;
 	}
-	
+
 	public void addGPSDataUpdatedListener(GPSDataUpdatedListener l)
 	{
 		this.gpsDataUpdatedListeners.add(l);
+	}
+
+	private HashMap<Integer, SVData> allSVs()
+	{
+		if (this.allSVs == null)
+		{
+			this.allSVs = new HashMap<Integer, SVData>();
+		}
+
+		return this.allSVs;
+	}
+
+	protected ArrayListState<SVData> trackedSVs()
+	{
+		if (this.trackedSVs == null)
+		{
+			this.trackedSVs = new ArrayListState<SVData>();
+		}
+
+		return this.trackedSVs;
+	}
+
+	public static void main(String[] args)
+	{
+		GPSDatum a = new GPSDatum(0, 0);
+		GPSDatum b = new GPSDatum(10, 10);
+		GPSDatum c = new GPSDatum(120, 120);
+		GPSDatum d = new GPSDatum(-35, -35);
+		GPSDatum e = new GPSDatum(-150, -150);
+		GPSDatum f = new GPSDatum(-180, -180);
+
+		GPSDatum[] all =
+		{ a, b, c, d, e, f };
+
+		for (int i = 0; i < all.length; i++)
+		{
+			for (int j = 0; j < all.length; j++)
+			{
+				System.out.println("-------------------");
+				System.out.println("pt lat: " + all[i].getLat() + ", lon: "
+						+ all[i].getLon() + " is "
+						+ nsString(all[i].compareNS(all[j])) + " lat: "
+						+ all[j].getLat() + ", lon: " + all[j].getLon());
+				System.out.println("pt lat: " + all[i].getLat() + ", lon: "
+						+ all[i].getLon() + " is "
+						+ ewString(all[i].compareEW(all[j])) + " lat: "
+						+ all[j].getLat() + ", lon: " + all[j].getLon());
+			}
+		}
+	}
+
+	static String nsString(double dir)
+	{
+		if (dir > 0)
+		{
+			return "north of";
+		}
+		else if (dir < 0)
+		{
+			return "south of";
+		}
+		else
+		{
+			return "the same latitude as";
+		}
+	}
+
+	static String ewString(double dir)
+	{
+		if (dir > 0)
+		{
+			return "west of";
+		}
+		else if (dir < 0)
+		{
+			return "east of";
+		}
+		else if (dir == -180 || dir == 180)
+		{
+			return "opposite the earth from";
+		}
+		else
+		{
+			return "the same longitude as";
+		}
 	}
 }

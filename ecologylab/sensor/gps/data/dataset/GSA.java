@@ -11,18 +11,19 @@ import ecologylab.sensor.gps.data.GPSDatum;
  * According to GPS Basics:
  * 
  * TheGSAdataset(GNSSDOPandActiveSatellites)containsinformationonthemeasuringmode(2Dor3D),the
- * numberof satellitesused to determine the positionand theaccuracy of themeasurements (DOP:Dilution of
- * Precision).
+ * numberofsatellitesusedtodetermine the positionand theaccuracy
+ * ofthemeasurements (DOP:Dilutionof Precision).
  * 
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
 public enum GSA implements GPSDataFieldBase
 {
-	CALC_MODE_DECISION, CALC_MODE, SAT00, SAT01, SAT02, SAT03, SAT04, SAT05, SAT06, SAT07, SAT08, SAT09, SAT10, SAT11, PDOP, HDOP, VDOP, CHECKSUM;
+	AUTO_CALC_MODE, CALC_MODE, SAT00, SAT01, SAT02, SAT03, SAT04, SAT05, SAT06, SAT07, SAT08, SAT09, SAT10, SAT11, PDOP, HDOP, VDOP, CHECKSUM;
 
 	/**
-	 * Updates dst's internal data by parsing src according to the interpretation of the current mode.
+	 * Updates dst's internal data by parsing src according to the interpretation
+	 * of the current mode.
 	 * 
 	 * @param data
 	 * @param decLoc
@@ -34,8 +35,8 @@ public enum GSA implements GPSDataFieldBase
 
 		switch (this)
 		{
-		case CALC_MODE_DECISION:
-			dst.updateCalcModeDecision(src);
+		case AUTO_CALC_MODE:
+			dst.updateAutoCalcMode(src);
 			break;
 		case CALC_MODE:
 			dst.updateCalcMode(src);
@@ -63,7 +64,7 @@ public enum GSA implements GPSDataFieldBase
 		case SAT01:
 			i++;
 		case SAT00:
-			dst.updateSat(src, i);
+			dst.updateSV(src, i);
 			break;
 		case PDOP:
 			dst.updatePDOP(src);
