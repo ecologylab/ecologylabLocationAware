@@ -16,7 +16,9 @@ import ecologylab.xml.ElementState.xml_tag;
 @xml_tag("Placemark")
 public class Placemark extends KmlFeature
 {
-	@xml_collection("Point") ArrayList<Point> geometry = new ArrayList<Point>(1);
+	@xml_collection("Point") ArrayList<Point> points = new ArrayList<Point>(1);
+
+	// TODO LineString, LinearRing, Polygon, MultiGeometry, Model
 	
 	/**
 	 * 

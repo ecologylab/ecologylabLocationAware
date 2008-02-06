@@ -18,28 +18,28 @@ public abstract class KmlFeature extends KmlObject
 	
 	@xml_leaf int open; // actually a boolean -- can only be 0 or 1
 	
-	//atom:author??
+	//TODO atom:author??
 	
-	//atom:link??
+	//TODO atom:link??
 	
 	@xml_leaf String address;
 	
-	//xal:AddressDetails??
+	//TODO xal:AddressDetails??
 	
 	@xml_leaf @xml_tag("phoneNumber") String phoneNumber;
 	
-	//Snippet??
+	//TODO Snippet??
 	
 	@xml_leaf String description;
 	
-	//AbstractView??
+	//TODO AbstractView??
 	
-	//TimePrimitive??
+	//TODO TimePrimitive??
 	
-	// styleUrl??
-	// StyleSelector??
-	// Region??
-	// ExtendData??
+	//TODO  styleUrl??
+	//TODO  StyleSelector??
+	//TODO  Region??
+	//TODO  ExtendData??
 	
 	/**
 	 * 

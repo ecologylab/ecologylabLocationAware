@@ -3,8 +3,6 @@
  */
 package ecologylab.xml.library.kml;
 
-import java.util.ArrayList;
-
 import ecologylab.xml.xml_inherit;
 import ecologylab.xml.ElementState.xml_tag;
 
@@ -14,9 +12,8 @@ import ecologylab.xml.ElementState.xml_tag;
  */
 @xml_inherit
 @xml_tag("Document")
-public class Document extends Container
+public class Document extends Container // TODO - unclear, does this subclass container, or feature??
 {
-	@xml_collection("Placemark") ArrayList<Placemark> placemarks = new ArrayList<Placemark>();
 	// TODO StyleSelector
 	// TODO Schema
 
