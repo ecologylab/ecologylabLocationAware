@@ -14,7 +14,7 @@ import ecologylab.xml.ElementState;
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
-public class WorldCoord extends ElementState implements Comparable<WorldCoord>
+public class AngularCoord extends ElementState implements Comparable<AngularCoord>
 {
 	public static double fromDegMinSec(double deg, double min, double sec)
 	{
@@ -37,9 +37,9 @@ public class WorldCoord extends ElementState implements Comparable<WorldCoord>
 
 	public static void main(String args[])
 	{
-		WorldCoord w1 = new WorldCoord(10.123278);
+		AngularCoord w1 = new AngularCoord(10.123278);
 
-		WorldCoord w2 = new WorldCoord(10, 7.38, 1);
+		AngularCoord w2 = new AngularCoord(10, 7.38, 1);
 
 		System.out.println(w1.getCoord() + " deg.");
 		System.out.println(w2.getCoord() + " deg.");
@@ -64,7 +64,7 @@ public class WorldCoord extends ElementState implements Comparable<WorldCoord>
 	/**
 	 * 
 	 */
-	public WorldCoord()
+	public AngularCoord()
 	{
 	}
 
@@ -73,7 +73,7 @@ public class WorldCoord extends ElementState implements Comparable<WorldCoord>
 	 * 
 	 * @param coord
 	 */
-	public WorldCoord(double coord)
+	public AngularCoord(double coord)
 	{
 		this.coord = coord;
 	}
@@ -86,7 +86,7 @@ public class WorldCoord extends ElementState implements Comparable<WorldCoord>
 	 * @param deg
 	 * @param min
 	 */
-	public WorldCoord(double deg, double min, double sec)
+	public AngularCoord(double deg, double min, double sec)
 	{
 		this.coord = fromDegMinSec(deg, min, sec);
 	}
@@ -101,7 +101,7 @@ public class WorldCoord extends ElementState implements Comparable<WorldCoord>
 	 *           a character indicating the hemisphere for the coordinate, North and East are positive, South and West
 	 *           are negative.
 	 */
-	public WorldCoord(double deg, double min, double sec, char hemisphere)
+	public AngularCoord(double deg, double min, double sec, char hemisphere)
 	{
 		this(deg, min, sec);
 
@@ -111,7 +111,7 @@ public class WorldCoord extends ElementState implements Comparable<WorldCoord>
 	/**
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
-	public int compareTo(WorldCoord that)
+	public int compareTo(AngularCoord that)
 	{
 		return (int) (this.getCoord() - that.getCoord());
 	}

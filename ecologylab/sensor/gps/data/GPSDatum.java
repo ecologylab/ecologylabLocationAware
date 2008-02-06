@@ -183,8 +183,8 @@ public class GPSDatum extends ElementState
 
 	public GPSDatum(double latDeg, double latMin, double lonDeg, double lonMin)
 	{
-		this.lat = WorldCoord.fromDegMinSec(latDeg, latMin, 0);
-		this.lon = WorldCoord.fromDegMinSec(lonDeg, lonMin, 0);
+		this.lat = AngularCoord.fromDegMinSec(latDeg, latMin, 0);
+		this.lon = AngularCoord.fromDegMinSec(lonDeg, lonMin, 0);
 	}
 
 	public GPSDatum(double latDeg, double lonDeg)
@@ -377,7 +377,7 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateLon(String src)
 	{
-		this.lon = WorldCoord.fromDegMinSec(
+		this.lon = AngularCoord.fromDegMinSec(
 				Integer.parseInt(src.substring(0, 3)), Double.parseDouble(src
 						.substring(3)), 0);
 
@@ -404,7 +404,7 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateLat(String src)
 	{
-		this.lat = WorldCoord.fromDegMinSec(
+		this.lat = AngularCoord.fromDegMinSec(
 				Integer.parseInt(src.substring(0, 2)), Double.parseDouble(src
 						.substring(2)), 0);
 
