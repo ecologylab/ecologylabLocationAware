@@ -45,9 +45,7 @@ public class GPSDataLogger implements GPSDataListener
 		outStream = new FileOutputStream(this.targetFile);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/** 
 	 * @see ecologylab.sensor.gps.data.GPSDataListener#readGPSData(java.lang.String)
 	 */
 	public void readGPSData(String gpsDataString)

@@ -14,7 +14,7 @@ import ecologylab.xml.XMLTranslationException;
  */
 public class Kml extends ElementState
 {
-	@xml_collection ArrayList<KmlFeature> features = new ArrayList<KmlFeature>();
+	@xml_collection("Document") ArrayList<Document> documents = new ArrayList<Document>();
 	
 	/**
 	 * No-argument constructor for automatic translation to/from KML.

@@ -8,7 +8,7 @@ import java.io.File;
 import ecologylab.xml.ElementState;
 import ecologylab.xml.XMLTranslationException;
 import ecologylab.xml.library.kml.KMLTranslations;
-import ecologylab.xml.library.kml.Kml;
+import ecologylab.xml.library.kml.Point;
 
 /**
  * @author Zach
@@ -37,7 +37,7 @@ public class TestKML
 	 */
 	public static void main(String[] args) throws XMLTranslationException
 	{
-		ElementState k =  ElementState.translateFromXML(new File("c:\\kml2.xml"), KMLTranslations.get());
+		ElementState k =  ElementState.translateFromXML(new File("c:\\kml.xml"), KMLTranslations.get());
 		
 		k.translateToXML(System.out);
 	}

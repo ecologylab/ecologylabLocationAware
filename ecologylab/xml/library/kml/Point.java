@@ -15,7 +15,7 @@ import ecologylab.xml.ElementState.xml_tag;
 public class Point extends Geometry
 {
 	@xml_leaf int extrude; // actually a boolean; can be either 0 or 1
-	@xml_leaf Coordinates	coordinates;
+	@xml_leaf private Coordinates	coordinates = new Coordinates();
 	@xml_leaf @xml_tag("altitudeMode") String altitudeMode; // enum values: "clampToGround", "relativeToGround", or "absolute"
 	
 	/**
@@ -23,5 +23,15 @@ public class Point extends Geometry
 	 */
 	public Point()
 	{
+	}
+
+	public void setCoordinates(Coordinates coordinates)
+	{
+		this.coordinates = coordinates;
+	}
+
+	public Coordinates getCoordinates()
+	{
+		return coordinates;
 	}
 }

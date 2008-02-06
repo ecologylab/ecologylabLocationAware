@@ -41,7 +41,7 @@ public class Coordinates extends ElementState
 	private static final Pattern	PATTERN							= Pattern
 																						.compile(COORDINATE_PATTERN_STRING);
 
-	@xml_leaf String					coords;
+	@xml_leaf private String					coords;
 
 	/**
 	 * Parses and adds the geographic coordinates in coords to the
@@ -52,7 +52,7 @@ public class Coordinates extends ElementState
 	{
 		super.postTranslationProcessingHook();
 
-		this.appendStringRepresentation(this.coords);
+		this.appendStringRepresentation(this.getCoords());
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class Coordinates extends ElementState
 			}
 		}
 		
-		this.coords = newCoord.toString();
+		this.setCoords(newCoord.toString());
 	}
 
 	ArrayList<GeoCoordinate>	coordinateList	= new ArrayList<GeoCoordinate>();
@@ -102,12 +102,12 @@ public class Coordinates extends ElementState
 	 */
 	public Coordinates(String coords)
 	{
-		this.coords = coords;
+		this.setCoords(coords);
 	}
 
 	@Override public String toString()
 	{
-		return coords;
+		return getCoords();
 	}
 
 	/**
@@ -171,5 +171,15 @@ public class Coordinates extends ElementState
 	public ArrayList<GeoCoordinate> getCoordinateList()
 	{
 		return coordinateList;
+	}
+
+	public void setCoords(String coords)
+	{
+		this.coords = coords;
+	}
+
+	public String getCoords()
+	{
+		return coords;
 	}
 }

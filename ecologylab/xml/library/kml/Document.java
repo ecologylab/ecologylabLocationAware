@@ -16,7 +16,7 @@ import ecologylab.xml.ElementState.xml_tag;
 @xml_tag("Document")
 public class Document extends Container
 {
-	@xml_collection ArrayList<KmlFeature> features = new ArrayList<KmlFeature>();
+	@xml_collection("Placemark") ArrayList<Placemark> placemarks = new ArrayList<Placemark>();
 	// TODO StyleSelector
 	// TODO Schema
 
