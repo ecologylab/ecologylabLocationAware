@@ -3,10 +3,10 @@
  */
 package ecologylab.xml.types.scalar;
 
-import ecologylab.xml.library.kml.Coordinates;
+import ecologylab.xml.library.kml.geometry.Coordinates;
 
 /**
- * Type system entry for {@link ecologylab.xml.library.kml.Coordinates Coordinates}. A very simple case.
+ * Type system entry for {@link ecologylab.xml.library.kml.geometry.Coordinates Coordinates}. A very simple case.
  * 
  * @author Zachary O. Toups (touspz@gmail.com)
  */

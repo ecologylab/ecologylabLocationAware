@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ecologylab.xml.library.kml;
+package ecologylab.xml.library.kml.feature.container;
 
 import ecologylab.xml.xml_inherit;
 import ecologylab.xml.ElementState.xml_tag;

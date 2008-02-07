@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ecologylab.xml.library.kml;
+package ecologylab.xml.library.kml.geometry;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -74,7 +74,7 @@ public class Coordinates extends ElementState
 
 		for (int i = 0; i < this.coordinateList.size(); i++)
 		{
-			newCoord.append(this.coordinateList.get(i));
+			newCoord.append(this.coordinateList.get(i).getKMLCommaDelimitedString());
 
 			if (i < (this.coordinateList.size() - 1))
 			{ // every time but the last time, we need a comma

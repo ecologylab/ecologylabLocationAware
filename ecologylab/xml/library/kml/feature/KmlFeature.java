@@ -1,9 +1,10 @@
 /**
  * 
  */
-package ecologylab.xml.library.kml;
+package ecologylab.xml.library.kml.feature;
 
 import ecologylab.xml.xml_inherit;
+import ecologylab.xml.library.kml.KmlObject;
 
 /**
  * @author Zach
