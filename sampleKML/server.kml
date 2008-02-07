@@ -8,7 +8,7 @@
       <refreshVisibility>1</refreshVisibility>
       <flyToView>1</flyToView>
       <Url>
-        <href>http://localhost:8080/GoogleEarth</href>
+        <href>http://localhost:8080</href>
 <refreshInterval>10</refreshInterval>
 <refreshMode>onInterval</refreshMode>
       </Url>
