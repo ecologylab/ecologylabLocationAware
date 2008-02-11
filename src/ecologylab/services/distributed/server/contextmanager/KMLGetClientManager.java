@@ -68,7 +68,7 @@ public class KMLGetClientManager extends ClientManager
 	@Override protected void clearOutgoingMessageBuffer(
 			StringBuilder outgoingMessageBuf)
 	{
-		super.clearOutgoingMessageBuffer(outgoingMessageBuf);
+		outgoingMessageBuf.setLength(0);
 	}
 
 	@Override protected void clearOutgoingMessageHeaderBuffer(
@@ -97,5 +97,9 @@ public class KMLGetClientManager extends ClientManager
 		outgoingMessageHeaderBuf.append("content-type: text/xml");
 		outgoingMessageHeaderBuf.append(HTTP_HEADER_TERMINATOR);
 
+	}
+
+	@Override protected void prepareBuffers(StringBuilder incomingMessageBuf, StringBuilder outgoingMessageBuf, StringBuilder outgoingMessageHeaderBuf)
+	{
 	}
 }
