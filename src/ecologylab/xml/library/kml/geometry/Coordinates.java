@@ -31,59 +31,17 @@ import ecologylab.xml.types.scalar.TypeRegistry;
  */
 public class Coordinates extends ElementState
 {
-	static
-	{
-		TypeRegistry.register(CoordinatesType.class);
-	}
-
 	private static final String	COORDINATE_PATTERN_STRING	= "([+-]?\\d+(?:\\.\\d+)?)[\\\\z,]?";
 
 	private static final Pattern	PATTERN							= Pattern
 																						.compile(COORDINATE_PATTERN_STRING);
 
+	static
+	{
+		TypeRegistry.register(CoordinatesType.class);
+	}
+
 	@xml_leaf private String					coords;
-
-	/**
-	 * Parses and adds the geographic coordinates in coords to the
-	 * coordinateList; called automatically immediately after translating FROM
-	 * KML.
-	 */
-	@Override protected void postTranslationProcessingHook()
-	{
-		super.postTranslationProcessingHook();
-
-		this.appendStringRepresentation(this.getCoords());
-	}
-
-	/**
-	 * Loads coords with the current values from coordinateList; called
-	 * automatically immediately before translating this TO KML.
-	 */
-	@Override protected void preTranslationProcessingHook()
-	{
-		super.preTranslationProcessingHook();
-
-		this.loadCoordsFromCoordinateList();
-	}
-
-	private void loadCoordsFromCoordinateList()
-	{
-		// make a stringbuilder for the intermediate values; estimate needed size
-		StringBuilder newCoord = new StringBuilder(
-				this.coordinateList.size() * 15);
-
-		for (int i = 0; i < this.coordinateList.size(); i++)
-		{
-			newCoord.append(this.coordinateList.get(i).getKMLCommaDelimitedString());
-
-			if (i < (this.coordinateList.size() - 1))
-			{ // every time but the last time, we need a comma
-				newCoord.append(',');
-			}
-		}
-		
-		this.setCoords(newCoord.toString());
-	}
 
 	ArrayList<GeoCoordinate>	coordinateList	= new ArrayList<GeoCoordinate>();
 
@@ -103,11 +61,6 @@ public class Coordinates extends ElementState
 	public Coordinates(String coords)
 	{
 		this.setCoords(coords);
-	}
-
-	@Override public String toString()
-	{
-		return getCoords();
 	}
 
 	/**
@@ -173,13 +126,60 @@ public class Coordinates extends ElementState
 		return coordinateList;
 	}
 
+	public String getCoords()
+	{
+		return coords;
+	}
+
+	private void loadCoordsFromCoordinateList()
+	{
+		// make a stringbuilder for the intermediate values; estimate needed size
+		StringBuilder newCoord = new StringBuilder(
+				this.coordinateList.size() * 15);
+
+		for (int i = 0; i < this.coordinateList.size(); i++)
+		{
+			newCoord.append(this.coordinateList.get(i).getKMLCommaDelimitedString());
+
+			if (i < (this.coordinateList.size() - 1))
+			{ // every time but the last time, we need a comma
+				newCoord.append(',');
+			}
+		}
+		
+		this.setCoords(newCoord.toString());
+	}
+
+	/**
+	 * Parses and adds the geographic coordinates in coords to the
+	 * coordinateList; called automatically immediately after translating FROM
+	 * KML.
+	 */
+	@Override protected void postTranslationProcessingHook()
+	{
+		super.postTranslationProcessingHook();
+
+		this.appendStringRepresentation(this.getCoords());
+	}
+
+	/**
+	 * Loads coords with the current values from coordinateList; called
+	 * automatically immediately before translating this TO KML.
+	 */
+	@Override protected void preTranslationProcessingHook()
+	{
+		super.preTranslationProcessingHook();
+
+		this.loadCoordsFromCoordinateList();
+	}
+
 	public void setCoords(String coords)
 	{
 		this.coords = coords;
 	}
 
-	public String getCoords()
+	@Override public String toString()
 	{
-		return coords;
+		return getCoords();
 	}
 }

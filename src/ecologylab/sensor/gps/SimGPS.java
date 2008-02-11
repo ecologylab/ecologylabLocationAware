@@ -3,6 +3,9 @@
  */
 package ecologylab.sensor.gps;
 
+import gnu.io.PortInUseException;
+import gnu.io.UnsupportedCommOperationException;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -10,6 +13,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.TooManyListenersException;
 
 import javax.swing.Timer;
 
@@ -80,14 +84,27 @@ public class SimGPS extends GPS implements ActionListener
 
 	public void start(int millisecondsBetweenSends)
 	{
-		t = new Timer(millisecondsBetweenSends, this);
-		t.start();
+		if (t == null)
+		{
+			t = new Timer(millisecondsBetweenSends, this);
+
+			synchronized (t)
+			{
+				t.start();
+			}
+		}
 	}
 
 	public void stop()
 	{
-		t.stop();
-		t = null;
+		if (t != null)
+		{
+			synchronized (t)
+			{
+				t.stop();
+				t = null;
+			}
+		}
 	}
 
 	/**
@@ -95,7 +112,7 @@ public class SimGPS extends GPS implements ActionListener
 	 */
 	public void sendSentence()
 	{
-		this.incomingDataBuffer.append(this.nmeaStrings.get(currentSentence));
+		this.incomingDataBuffer.append(this.nmeaStrings.get(currentSentence)+"\r\n");
 
 		this.handleIncomingChars();
 
@@ -135,5 +152,30 @@ public class SimGPS extends GPS implements ActionListener
 				}
 			}
 		}
+	}
+
+	/**
+	 * Calls start with a 250ms delay.
+	 */
+	@Override public boolean connect() throws PortInUseException,
+			UnsupportedCommOperationException, IOException,
+			TooManyListenersException
+	{
+		this.start(50);
+
+		return this.connected();
+	}
+
+	@Override public boolean connected()
+	{
+		return true;
+	}
+
+	/**
+	 * Calls stop();
+	 */
+	@Override public void disconnect()
+	{
+		this.stop();
 	}
 }

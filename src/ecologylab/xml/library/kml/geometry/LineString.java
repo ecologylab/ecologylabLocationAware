@@ -4,7 +4,6 @@
 package ecologylab.xml.library.kml.geometry;
 
 import ecologylab.xml.xml_inherit;
-import ecologylab.xml.ElementState.xml_leaf;
 import ecologylab.xml.ElementState.xml_tag;
 
 /**
@@ -43,12 +42,11 @@ import ecologylab.xml.ElementState.xml_tag;
 	@xml_leaf int										tessellate;
 
 	@xml_leaf @xml_tag("altitudeMode") String	altitudeMode;	// enum values:
-																				// "clampToGround",
-																				// "relativeToGround",
-																				// or "absolute"
 
-	
-	
+	// "clampToGround",
+	// "relativeToGround",
+	// or "absolute"
+
 	/**
 	 * 
 	 */
@@ -57,4 +55,33 @@ import ecologylab.xml.ElementState.xml_tag;
 		super();
 	}
 
+	public boolean isExtrude()
+	{
+		return extrude == 1 ? true : false;
+	}
+
+	public void setExtrude(boolean extrude)
+	{
+		this.extrude = extrude ? 1 : 0;
+	}
+
+	public boolean isTessellate()
+	{
+		return tessellate == 1 ? true : false;
+	}
+
+	public void setTessellate(boolean tessellate)
+	{
+		this.tessellate = tessellate ? 1 : 0;
+	}
+
+	public String getAltitudeMode()
+	{
+		return altitudeMode;
+	}
+
+	public void setAltitudeMode(String altitudeMode)
+	{
+		this.altitudeMode = altitudeMode;
+	}
 }

@@ -28,4 +28,10 @@ public abstract class KmlObject extends ElementState
 	public KmlObject()
 	{
 	}
+
+	public KmlObject(String id)
+	{
+		super();
+		this.id = id;
+	}
 }

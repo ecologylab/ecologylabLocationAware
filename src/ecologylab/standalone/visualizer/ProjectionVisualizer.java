@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.TooManyListenersException;
 
 import javax.swing.JFrame;
@@ -37,8 +38,8 @@ import gnu.io.UnsupportedCommOperationException;
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
-public class ProjectionVisualizer extends ApplicationEnvironment implements GPSDataUpdatedListener, ActionListener,
-		WindowListener, GPSController
+public class ProjectionVisualizer extends ApplicationEnvironment implements
+		GPSDataUpdatedListener, ActionListener, WindowListener, GPSController
 {
 	JFrame						mainFrame;
 
@@ -62,7 +63,8 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public ProjectionVisualizer(String applicationName) throws XMLTranslationException, NoSuchPortException, IOException
+	public ProjectionVisualizer(String applicationName)
+			throws XMLTranslationException, NoSuchPortException, IOException
 	{
 		super(applicationName);
 
@@ -78,8 +80,10 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public ProjectionVisualizer(String applicationName, TranslationSpace translationSpace, String[] args,
-			float prefsAssetVersion) throws XMLTranslationException, NoSuchPortException, IOException
+	public ProjectionVisualizer(String applicationName,
+			TranslationSpace translationSpace, String[] args,
+			float prefsAssetVersion) throws XMLTranslationException,
+			NoSuchPortException, IOException
 	{
 		super(applicationName, translationSpace, args, prefsAssetVersion);
 
@@ -93,8 +97,8 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public ProjectionVisualizer(String applicationName, String[] args) throws XMLTranslationException,
-			NoSuchPortException, IOException
+	public ProjectionVisualizer(String applicationName, String[] args)
+			throws XMLTranslationException, NoSuchPortException, IOException
 	{
 		super(applicationName, args);
 
@@ -109,8 +113,9 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public ProjectionVisualizer(Class baseClass, String applicationName, String[] args) throws XMLTranslationException,
-			NoSuchPortException, IOException
+	public ProjectionVisualizer(Class baseClass, String applicationName,
+			String[] args) throws XMLTranslationException, NoSuchPortException,
+			IOException
 	{
 		super(baseClass, applicationName, args);
 
@@ -127,10 +132,13 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public ProjectionVisualizer(Class baseClass, String applicationName, TranslationSpace translationSpace,
-			String[] args, float prefsAssetVersion) throws XMLTranslationException, NoSuchPortException, IOException
+	public ProjectionVisualizer(Class baseClass, String applicationName,
+			TranslationSpace translationSpace, String[] args,
+			float prefsAssetVersion) throws XMLTranslationException,
+			NoSuchPortException, IOException
 	{
-		super(baseClass, applicationName, translationSpace, args, prefsAssetVersion);
+		super(baseClass, applicationName, translationSpace, args,
+				prefsAssetVersion);
 
 		configure();
 	}
@@ -152,32 +160,33 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	private void setupVisualization()
 	{
 		this.mainFrame = new JFrame(PropertiesAndDirectories.applicationName());
-		
+
 		this.mainFrame.addWindowListener(this);
 
 		PlateCarreeProjection p;
 		try
 		{
-			p = new PlateCarreeProjection(new GPSDatum(29.9611133702 - .05, -95.6697746507 + .05), new GPSDatum(
-					29.9611133702 + .07, -95.6697746507 - .17), 200.0, 100.0,
+			p = new PlateCarreeProjection(new GPSDatum(29.9611133702 - .05,
+					-95.6697746507 + .05), new GPSDatum(29.9611133702 + .07,
+					-95.6697746507 - .17), 200.0, 100.0,
 					Projection.RotationConstraintMode.ANCHOR_POINTS);
 
-			ProjectionVisualizerPanel panel = new ProjectionVisualizerPanel(new GPSDatum(29.9611133702, -95.6697746507),
-					p, w, h);
+			ProjectionVisualizerPanel panel = new ProjectionVisualizerPanel(
+					new GPSDatum(29.9611133702, -95.6697746507), p, w, h);
 			this.mainFrame.getContentPane().add(panel);
 
 			this.updater.addDataUpdatedListener(this);
 			this.updater.addDataUpdatedListener(panel);
-			
+
 			GPSConnectionControls v = new GPSConnectionControls(this);
 			v.setPreferredSize(new Dimension(200, 200));
-			
+
 			this.mainFrame.getContentPane().add(v);
 
 			this.mainFrame.setLayout(new FlowLayout());
-			
+
 			this.mainFrame.setVisible(true);
-			this.mainFrame.setSize(w, h+200);
+			this.mainFrame.setSize(w, h + 200);
 			this.mainFrame.pack();
 			this.mainFrame.invalidate();
 		}
@@ -199,35 +208,38 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	/**
 	 * @see ecologylab.sensor.gps.gui.GPSController#connectGPS(ecologylab.sensor.gps.GPS)
 	 */
-	public boolean connectGPS(GPS newGPS) throws PortInUseException, UnsupportedCommOperationException, IOException, TooManyListenersException
+	public boolean connectGPS(GPS newGPS) throws PortInUseException,
+			UnsupportedCommOperationException, IOException,
+			TooManyListenersException
 	{
 		this.gps = newGPS;
-		
+
 		this.gps.connect();
-		
+
 		this.gps.addGPSDataListener(updater);
-	//	this.gps.addGPSDataListener(new GPSDataPrinter());
-		
+		// this.gps.addGPSDataListener(new GPSDataPrinter());
+
 		return this.gps.connected();
 	}
-	
+
 	/**
 	 * @see ecologylab.sensor.gps.gui.GPSController#disconnectGPS()
 	 */
 	public void disconnectGPS()
 	{
 		this.gps.disconnect();
-		
+
 		this.gps.removeGPSDataListener(updater);
 	}
-	
+
 	/**
 	 * @param args
 	 * @throws XMLTranslationException
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public static void main(String[] args) throws XMLTranslationException, NoSuchPortException, IOException
+	public static void main(String[] args) throws XMLTranslationException,
+			NoSuchPortException, IOException
 	{
 		new ProjectionVisualizer("Projection Visualizer");
 	}
@@ -259,7 +271,8 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 * @see java.awt.event.WindowListener#windowClosed(java.awt.event.WindowEvent)
 	 */
 	public void windowClosed(WindowEvent e)
-	{}
+	{
+	}
 
 	/**
 	 * @see java.awt.event.WindowListener#windowClosing(java.awt.event.WindowEvent)
@@ -267,9 +280,9 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	public void windowClosing(WindowEvent e)
 	{
 		debug("Window closed.");
-		
+
 		t.stop();
-		
+
 		System.exit(1);
 	}
 
@@ -307,5 +320,20 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	public GPS getGps()
 	{
 		return gps;
+	}
+
+	/**
+	 * Indicates which GPS update operations this is interested in; in this case,
+	 * all of them.
+	 */
+	private static EnumSet<GPSUpdateInterest>	interestSet	= EnumSet
+																					.of(
+																							GPSUpdateInterest.LAT_LON,
+																							GPSUpdateInterest.ALT,
+																							GPSUpdateInterest.OTHERS);
+
+	public EnumSet<GPSUpdateInterest> getInterestSet()
+	{
+		return interestSet;
 	}
 }

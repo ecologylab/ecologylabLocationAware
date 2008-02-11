@@ -8,7 +8,6 @@ import java.io.File;
 import ecologylab.xml.ElementState;
 import ecologylab.xml.XMLTranslationException;
 import ecologylab.xml.library.kml.KMLTranslations;
-import ecologylab.xml.library.kml.geometry.Point;
 
 /**
  * @author Zach

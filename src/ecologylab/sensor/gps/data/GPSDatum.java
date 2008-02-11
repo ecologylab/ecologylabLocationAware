@@ -4,9 +4,12 @@
 package ecologylab.sensor.gps.data;
 
 import java.awt.geom.Point2D;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import ecologylab.sensor.gps.data.dataset.GGA;
 import ecologylab.sensor.gps.data.dataset.GLL;
@@ -14,6 +17,7 @@ import ecologylab.sensor.gps.data.dataset.GPSDataFieldBase;
 import ecologylab.sensor.gps.data.dataset.GSA;
 import ecologylab.sensor.gps.data.dataset.RMC;
 import ecologylab.sensor.gps.listener.GPSDataUpdatedListener;
+import ecologylab.sensor.gps.listener.GPSDataUpdatedListener.GPSUpdateInterest;
 import ecologylab.xml.ElementState;
 import ecologylab.xml.types.element.ArrayListState;
 
@@ -28,22 +32,22 @@ import ecologylab.xml.types.element.ArrayListState;
 public class GPSDatum extends ElementState
 {
 	/** Indicates no GPS. */
-	public static final int								GPS_QUAL_NO					= 0;
+	public static final int								GPS_QUAL_NO								= 0;
 
 	/** Indicates GPS satellite fix only. */
-	public static final int								GPS_QUAL_GPS				= 1;
+	public static final int								GPS_QUAL_GPS							= 1;
 
 	/** Indicates GPS satellite fix + differential signal. */
-	public static final int								GPS_QUAL_DGPS				= 2;
+	public static final int								GPS_QUAL_DGPS							= 2;
 
 	/** Indicates that there is no calcuating mode set. */
-	public static final int								CALC_MODE_NONE				= 1;
+	public static final int								CALC_MODE_NONE							= 1;
 
 	/** Indicates that the calculating mode is 2D. */
-	public static final int								CALC_MODE_2D				= 2;
+	public static final int								CALC_MODE_2D							= 2;
 
 	/** Indicates that the calculating mode is 3D. */
-	public static final int								CALC_MODE_3D				= 3;
+	public static final int								CALC_MODE_3D							= 3;
 
 	@xml_attribute protected float					utcPosTime;
 
@@ -163,19 +167,38 @@ public class GPSDatum extends ElementState
 	/** Used for moving data around when processing NMEA sentences. */
 	private char[]											tempDataStore;
 
-	private List<GPSDataUpdatedListener>			gpsDataUpdatedListeners	= new LinkedList<GPSDataUpdatedListener>();
+	/**
+	 * List of listeners who want to be notified of latitude or longitude
+	 * updates.
+	 */
+	private List<GPSDataUpdatedListener>			latLonUpdatedListeners;
+
+	/** List of listeners who want to be notified of altitude updates. */
+	private List<GPSDataUpdatedListener>			altUpdatedListeners;
+
+	/**
+	 * List of listeners who want to be notified of any updates not covered
+	 * above.
+	 */
+	private List<GPSDataUpdatedListener>			otherUpdatedListeners;
+
+	/** Semaphore for instantiating the above lists lazilly. */
+	private Object											listenerLock							= new Object();
+
+	/** Set of listeners to notify for this update, as determined by interest. */
+	private Set<GPSDataUpdatedListener>				gpsDataUpdatedListenersToUpdate	= new HashSet<GPSDataUpdatedListener>();
 
 	/**
 	 * A Point2D.Double representation of this's latitude and longitude,
 	 * instantiated and filled through lazy evaluation, when needed.
 	 */
-	private Point2D.Double								pointRepresentation		= null;
+	private Point2D.Double								pointRepresentation					= null;
 
 	/**
 	 * Indicates that pointRepresentation is out of synch with the state of this
 	 * object.
 	 */
-	private boolean										pointDirty					= true;
+	private boolean										pointDirty								= true;
 
 	public GPSDatum()
 	{
@@ -190,6 +213,54 @@ public class GPSDatum extends ElementState
 	public GPSDatum(double latDeg, double lonDeg)
 	{
 		this(latDeg, 0f, lonDeg, 0f);
+	}
+
+	private List<GPSDataUpdatedListener> latLonUpdatedListeners()
+	{
+		if (this.latLonUpdatedListeners == null)
+		{
+			synchronized (this.listenerLock)
+			{
+				if (this.latLonUpdatedListeners == null)
+				{
+					this.latLonUpdatedListeners = new LinkedList<GPSDataUpdatedListener>();
+				}
+			}
+		}
+
+		return this.latLonUpdatedListeners;
+	}
+
+	private List<GPSDataUpdatedListener> altUpdatedListeners()
+	{
+		if (this.altUpdatedListeners == null)
+		{
+			synchronized (this.listenerLock)
+			{
+				if (this.altUpdatedListeners == null)
+				{
+					this.altUpdatedListeners = new LinkedList<GPSDataUpdatedListener>();
+				}
+			}
+		}
+
+		return this.altUpdatedListeners;
+	}
+
+	private List<GPSDataUpdatedListener> otherUpdatedListeners()
+	{
+		if (this.otherUpdatedListeners == null)
+		{
+			synchronized (this.listenerLock)
+			{
+				if (this.otherUpdatedListeners == null)
+				{
+					this.otherUpdatedListeners = new LinkedList<GPSDataUpdatedListener>();
+				}
+			}
+		}
+
+		return this.otherUpdatedListeners;
 	}
 
 	/**
@@ -341,12 +412,14 @@ public class GPSDatum extends ElementState
 			System.out.println("data type unidentified");
 		}
 
+		// TODO GET OTHER GPS INTERESTS!!!
+		
 		this.fireGPSDataUpdatedEvent();
 	}
 
 	private void fireGPSDataUpdatedEvent()
 	{
-		for (GPSDataUpdatedListener l : this.gpsDataUpdatedListeners)
+		for (GPSDataUpdatedListener l : this.gpsDataUpdatedListenersToUpdate)
 		{
 			l.gpsDatumUpdated(this);
 		}
@@ -377,11 +450,17 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateLon(String src)
 	{
-		this.lon = AngularCoord.fromDegMinSec(
-				Integer.parseInt(src.substring(0, 3)), Double.parseDouble(src
-						.substring(3)), 0);
+		double oldLon = this.lon;
+		
+		this.lon = AngularCoord.fromDegMinSec(Integer.parseInt(src
+				.substring(0, 3)), Double.parseDouble(src.substring(3)), 0);
 
 		this.pointDirty = true;
+		
+		if (oldLon != this.lon && this.latLonUpdatedListeners != null)
+		{
+			this.gpsDataUpdatedListenersToUpdate.addAll(this.latLonUpdatedListeners);
+		}
 	}
 
 	/**
@@ -404,11 +483,17 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateLat(String src)
 	{
-		this.lat = AngularCoord.fromDegMinSec(
-				Integer.parseInt(src.substring(0, 2)), Double.parseDouble(src
-						.substring(2)), 0);
+		double oldLat = this.lat;
+		
+		this.lat = AngularCoord.fromDegMinSec(Integer.parseInt(src
+				.substring(0, 2)), Double.parseDouble(src.substring(2)), 0);
 
 		this.pointDirty = true;
+		
+		if (oldLat != this.lat && this.latLonUpdatedListeners != null)
+		{
+			this.gpsDataUpdatedListenersToUpdate.addAll(this.latLonUpdatedListeners);
+		}
 	}
 
 	/**
@@ -550,7 +635,7 @@ public class GPSDatum extends ElementState
 			allSVsLocal.put(index, currentData);
 		}
 
-		this.trackedSVs().set(i, currentData);
+		// TODO !!! this.trackedSVs().set(i, currentData);
 	}
 
 	/**
@@ -648,7 +733,20 @@ public class GPSDatum extends ElementState
 
 	public void addGPSDataUpdatedListener(GPSDataUpdatedListener l)
 	{
-		this.gpsDataUpdatedListeners.add(l);
+		EnumSet<GPSUpdateInterest> interestSet = l.getInterestSet();
+		
+		if (interestSet.contains(GPSUpdateInterest.LAT_LON))
+		{
+			this.latLonUpdatedListeners().add(l);
+		}
+		if (interestSet.contains(GPSUpdateInterest.ALT))
+		{
+			this.altUpdatedListeners().add(l);
+		}
+		if (interestSet.contains(GPSUpdateInterest.OTHERS))
+		{
+			this.otherUpdatedListeners().add(l);
+		}
 	}
 
 	private HashMap<Integer, SVData> allSVs()

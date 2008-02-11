@@ -12,6 +12,7 @@ import java.awt.LayoutManager;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.EnumSet;
 
 import javax.swing.JPanel;
 
@@ -20,6 +21,7 @@ import ecologylab.projection.Projection;
 import ecologylab.projection.SameCoordinatesException;
 import ecologylab.sensor.gps.data.GPSDatum;
 import ecologylab.sensor.gps.listener.GPSDataUpdatedListener;
+import ecologylab.sensor.gps.listener.GPSDataUpdatedListener.GPSUpdateInterest;
 
 /**
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
@@ -197,5 +199,20 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 	public void gpsDatumUpdated(GPSDatum datum)
 	{
 		this.currentPosition = datum;
+	}
+	
+	/**
+	 * Indicates which GPS update operations this is interested in; in this case,
+	 * all of them.
+	 */
+	private static EnumSet<GPSUpdateInterest>	interestSet	= EnumSet
+																					.of(
+																							GPSUpdateInterest.LAT_LON,
+																							GPSUpdateInterest.ALT,
+																							GPSUpdateInterest.OTHERS);
+
+	public EnumSet<GPSUpdateInterest> getInterestSet()
+	{
+		return interestSet;
 	}
 }
