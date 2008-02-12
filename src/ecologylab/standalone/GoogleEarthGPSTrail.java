@@ -21,6 +21,7 @@ import ecologylab.xml.library.kml.geometry.LineString;
 import ecologylab.xml.library.kml.style.LineStyle;
 import ecologylab.xml.library.kml.style.PolyStyle;
 import ecologylab.xml.library.kml.style.Style;
+import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 
@@ -33,14 +34,17 @@ public class GoogleEarthGPSTrail
 	 * @throws TooManyListenersException
 	 * @throws UnsupportedCommOperationException
 	 * @throws PortInUseException
+	 * @throws NoSuchPortException 
 	 */
 	public static void main(String[] args) throws IOException,
 			PortInUseException, UnsupportedCommOperationException,
-			TooManyListenersException
+			TooManyListenersException, NoSuchPortException
 	{
-		GPS gps = new SimGPS(new File("sampleLogs/zachToGrocery.txt"),
-				PlayMode.FORWARD_BACKWARD);
+//		GPS gps = new SimGPS(new File("sampleLogs/zachToGrocery.txt"),
+	//			PlayMode.FORWARD_BACKWARD);
 
+		GPS gps = new GPS("COM8", 115200);
+		
 		Kml kmlData = new Kml();
 
 		Style lineStyle = new Style("yellowLineGreenPoly",
@@ -82,17 +86,17 @@ public class GoogleEarthGPSTrail
 
 		gps.addGPSDataListener(new GPSToKMLTrail(line, 2000, 100));
 
-		System.out.println("Attempting to load the entire simulation file...");
+		//System.out.println("Attempting to load the entire simulation file...");
 
-		for (int i = 0; i < 33000; i++)
-		{
-			((SimGPS) gps).sendSentence();
-		}
+		//for (int i = 0; i < 33000; i++)
+		//{
+		//	((SimGPS) gps).sendSentence();
+	//	}
 
-		System.out.println("...done.");
+//		System.out.println("...done.");
 
 		// System.out.println("Starting simulator.");
 
-		// gps.connect();
+		 gps.connect();
 	}
 }

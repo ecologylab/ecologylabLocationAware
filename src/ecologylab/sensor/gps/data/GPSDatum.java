@@ -318,7 +318,7 @@ public class GPSDatum extends ElementState
 		GPSDatum d = new GPSDatum();
 
 		d
-				.integrateGPSData("GPRMC,224741.000,A,2957.4416,N,09540.3954,W,0.00,280.22,060208,,,D*74");
+				.integrateGPSData("GPRMC,223832.804,V,3037.3725,N,09620.2286,W,0.00,0.00,120208,,,N*6C");
 	}
 
 	/**
@@ -349,7 +349,7 @@ public class GPSDatum extends ElementState
 		String computedCheckSum = Integer.toHexString((checkSum & 0xF0) >>> 4)
 				+ Integer.toHexString(checkSum & 0x0F);
 
-		if (computedCheckSum.equals(gpsData.substring(checkSumSplit + 1)))
+		if (computedCheckSum.toUpperCase().equals(gpsData.substring(checkSumSplit + 1)))
 		{
 
 			int dataLength = gpsData.length();
