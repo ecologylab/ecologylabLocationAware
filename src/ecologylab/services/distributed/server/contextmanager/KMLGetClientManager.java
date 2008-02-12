@@ -6,7 +6,7 @@ package ecologylab.services.distributed.server.contextmanager;
 import java.io.UnsupportedEncodingException;
 import java.nio.channels.SelectionKey;
 
-import ecologylab.appframework.ObjectRegistry;
+import ecologylab.appframework.Scope;
 import ecologylab.services.distributed.impl.NIOServerBackend;
 import ecologylab.services.distributed.server.NIOServerFrontend;
 import ecologylab.services.distributed.server.clientmanager.ClientManager;
@@ -37,7 +37,7 @@ public class KMLGetClientManager extends ClientManager
 	public KMLGetClientManager(Object token, int maxPacketSize,
 			NIOServerBackend server, NIOServerFrontend frontend,
 			SelectionKey socketKey, TranslationSpace translationSpace,
-			ObjectRegistry<?> registry)
+			Scope<?> registry)
 	{
 		super(token, maxPacketSize, server, frontend, socketKey,
 				translationSpace, registry);

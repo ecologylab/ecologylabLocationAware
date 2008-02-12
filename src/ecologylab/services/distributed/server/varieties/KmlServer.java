@@ -8,7 +8,7 @@ import java.net.BindException;
 import java.net.InetAddress;
 import java.nio.channels.SelectionKey;
 
-import ecologylab.appframework.ObjectRegistry;
+import ecologylab.appframework.Scope;
 import ecologylab.net.NetTools;
 import ecologylab.services.distributed.server.clientmanager.AbstractClientManager;
 import ecologylab.services.distributed.server.contextmanager.KMLGetClientManager;
@@ -49,7 +49,7 @@ public class KmlServer extends HttpGetServer
 	 */
 	public KmlServer(int portNumber, InetAddress[] inetAddresses,
 			TranslationSpace requestTranslationSpace,
-			ObjectRegistry objectRegistry, int idleConnectionTimeout,
+			Scope objectRegistry, int idleConnectionTimeout,
 			int maxPacketSize, Kml kmlData) throws IOException, BindException
 	{
 		super(portNumber, inetAddresses, TranslationSpace.get(
@@ -58,7 +58,7 @@ public class KmlServer extends HttpGetServer
 				KMLTranslations.get()), objectRegistry, idleConnectionTimeout,
 				maxPacketSize);
 
-		this.registry.registerObject(KmlRequest.KML_DATA, kmlData);
+		this.registry.bind(KmlRequest.KML_DATA, kmlData);
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class KmlServer extends HttpGetServer
 	 */
 	public KmlServer(int portNumber, InetAddress inetAddress,
 			TranslationSpace requestTranslationSpace,
-			ObjectRegistry objectRegistry, int idleConnectionTimeout,
+			Scope objectRegistry, int idleConnectionTimeout,
 			int maxPacketSize, Kml kmlData) throws IOException, BindException
 	{
 		this(portNumber, addressToAddresses(inetAddress),
@@ -95,14 +95,14 @@ public class KmlServer extends HttpGetServer
 		
 		KmlServer s = new KmlServer(8080, NetTools
 				.getAllInetAddressesForLocalhost(), serverTranslations,
-				new ObjectRegistry(), 1000000, 1000000, kmlData);
+				new Scope(), 1000000, 1000000, kmlData);
 
 		s.start();
 	}
 
 	@Override protected AbstractClientManager generateContextManager(
 			Object token, SelectionKey sk, TranslationSpace translationSpaceIn,
-			ObjectRegistry registryIn)
+			Scope registryIn)
 	{
 		return new KMLGetClientManager(token, maxPacketSize, this.getBackend(),
 				this, sk, translationSpaceIn, registryIn);

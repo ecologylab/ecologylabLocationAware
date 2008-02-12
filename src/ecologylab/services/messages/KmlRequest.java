@@ -3,7 +3,7 @@
  */
 package ecologylab.services.messages;
 
-import ecologylab.appframework.ObjectRegistry;
+import ecologylab.appframework.Scope;
 import ecologylab.xml.library.kml.Kml;
 
 /**
@@ -24,12 +24,12 @@ public class KmlRequest extends RequestMessage
 	}
 
 	/**
-	 * @see ecologylab.services.messages.RequestMessage#performService(ecologylab.appframework.ObjectRegistry, java.lang.String)
+	 * @see ecologylab.services.messages.RequestMessage#performService(ecologylab.appframework.Scope, java.lang.String)
 	 */
 	@Override public ResponseMessage performService(
-			ObjectRegistry objectRegistry, String sessionId)
+			Scope objectRegistry, String sessionId)
 	{
-		KmlResponse resp = new KmlResponse((Kml)objectRegistry.lookupObject(KML_DATA));
+		KmlResponse resp = new KmlResponse((Kml)objectRegistry.lookup(KML_DATA));
 		
 		return resp;
 	}

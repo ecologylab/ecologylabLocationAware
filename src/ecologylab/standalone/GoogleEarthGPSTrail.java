@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.TooManyListenersException;
 
-import ecologylab.appframework.ObjectRegistry;
+import ecologylab.appframework.Scope;
 import ecologylab.net.NetTools;
 import ecologylab.sensor.gps.GPS;
 import ecologylab.sensor.gps.SimGPS;
@@ -76,7 +76,7 @@ public class GoogleEarthGPSTrail
 
 		KmlServer s = new KmlServer(8080, NetTools
 				.getAllInetAddressesForLocalhost(), serverTranslations,
-				new ObjectRegistry(), 1000000, 1000000, kmlData);
+				new Scope(), 1000000, 1000000, kmlData);
 
 		s.start();
 
