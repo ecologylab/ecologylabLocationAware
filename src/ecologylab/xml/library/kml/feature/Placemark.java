@@ -26,6 +26,11 @@ import ecologylab.xml.library.kml.geometry.Point;
 	public Placemark()
 	{
 	}
+	
+	public Placemark(String name, String description, String styleUrl)
+	{
+		super(name, description, styleUrl);
+	}
 
 	public Point getPoint()
 	{

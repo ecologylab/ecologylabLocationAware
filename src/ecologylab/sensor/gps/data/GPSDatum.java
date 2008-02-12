@@ -313,6 +313,14 @@ public class GPSDatum extends ElementState
 		}
 	}
 
+	public static void main(String[] args)
+	{
+		GPSDatum d = new GPSDatum();
+
+		d
+				.integrateGPSData("GPRMC,224741.000,A,2957.4416,N,09540.3954,W,0.00,280.22,060208,,,D*74");
+	}
+
 	/**
 	 * Splits and stores data from an NMEA GPS data set.
 	 * 
@@ -323,98 +331,128 @@ public class GPSDatum extends ElementState
 	{
 		char[] tempData = tempDataStore();
 
-		int dataLength = gpsData.length();
-		int i = 6; // start looking after "GPXXX," -- the header of the message
+		// check the checksum before doing any processing
+		int checkSumSplit = gpsData.lastIndexOf('*'); // TODO maybe more
+																		// efficient just to
+																		// assume last 2 are
+																		// checksum
 
-		int dataStart = i;
-		boolean finishedField = false;
+		String messageStringToCheck = gpsData.substring(0, checkSumSplit);
 
-		GPSDataFieldBase[] fieldBase = null;
+		int checkSum = 0;
 
-		switch (gpsData.charAt(2))
+		for (int i = 0; i < messageStringToCheck.length(); i++)
 		{
-		case ('G'):
-			// either GGA, GLL, GSA, or GSV
-			switch (gpsData.charAt(3))
+			checkSum = (checkSum ^ messageStringToCheck.charAt(i));
+		}
+
+		String computedCheckSum = Integer.toHexString((checkSum & 0xF0) >>> 4)
+				+ Integer.toHexString(checkSum & 0x0F);
+
+		if (computedCheckSum.equals(gpsData.substring(checkSumSplit + 1)))
+		{
+
+			int dataLength = gpsData.length();
+			int i = 6; // start looking after "GPXXX," -- the header of the
+							// message
+
+			int dataStart = i;
+			boolean finishedField = false;
+
+			GPSDataFieldBase[] fieldBase = null;
+
+			switch (gpsData.charAt(2))
 			{
 			case ('G'):
-				// assume GGA
-				fieldBase = GGA.values();
-				break;
-			case ('L'):
-				// assume GLL
-				fieldBase = GLL.values();
-				break;
-			case ('S'):
-				switch (gpsData.charAt(4))
+				// either GGA, GLL, GSA, or GSV
+				switch (gpsData.charAt(3))
 				{
-				case ('A'): // GSA
-					fieldBase = GSA.values();
+				case ('G'):
+					// assume GGA
+					fieldBase = GGA.values();
 					break;
-				case ('V'): // GSV
-					// TODO
-					System.out.print("GSV - ");
+				case ('L'):
+					// assume GLL
+					fieldBase = GLL.values();
+					break;
+				case ('S'):
+					switch (gpsData.charAt(4))
+					{
+					case ('A'): // GSA
+						fieldBase = GSA.values();
+						break;
+					case ('V'): // GSV
+						// TODO
+						System.out.print("GSV - ");
+						break;
+					}
 					break;
 				}
 				break;
+			case ('R'): // assume RMC
+				fieldBase = RMC.values();
+				break;
+
+			case ('V'):
+				// assume VTG
+				System.out.print("VTG - ");
+				// TODO
+				break;
+
+			case ('Z'):
+				// assume ZDA
+				System.out.print("ZDA - ");
+				// TODO
+				break;
 			}
-			break;
-		case ('R'): // assume RMC
-			fieldBase = RMC.values();
-			break;
 
-		case ('V'):
-			// assume VTG
-			System.out.print("VTG - ");
-			// TODO
-			break;
+			// TODO don't assume anything!!!
 
-		case ('Z'):
-			// assume ZDA
-			System.out.print("ZDA - ");
-			// TODO
-			break;
-		}
-
-		if (fieldBase != null)
-		{
-			synchronized (tempDataStore)
+			if (fieldBase != null)
 			{
-				for (GPSDataFieldBase field : fieldBase)
+				synchronized (tempDataStore)
 				{
-					finishedField = false;
-					dataStart = i;
-
-					// now we will read each data field in, one at at time, since we
-					// know the order of the GGA data set.
-					// we will break out of each for loop when finished.
-					while (i < dataLength && !finishedField)
+					for (GPSDataFieldBase field : fieldBase)
 					{
-						tempData[i] = gpsData.charAt(i);
+						finishedField = false;
+						dataStart = i;
 
-						if (tempData[i] == ',')
+						// now we will read each data field in, one at at time, since
+						// we
+						// know the order of the GGA data set.
+						// we will break out of each for loop when finished.
+						while (i < dataLength && !finishedField)
 						{
-							if (i - dataStart > 0)
-							{
-								field.update(new String(tempData, dataStart,
-										(i - dataStart)), this);
-							}
-							finishedField = true;
-						}
+							tempData[i] = gpsData.charAt(i);
 
-						i++;
+							if (tempData[i] == ',')
+							{
+								if (i - dataStart > 0)
+								{
+									field.update(new String(tempData, dataStart,
+											(i - dataStart)), this);
+								}
+								finishedField = true;
+							}
+
+							i++;
+						}
 					}
 				}
 			}
+			else
+			{
+				System.out.println("data type unidentified");
+			}
+
+			// TODO GET OTHER GPS INTERESTS!!!
+
+			this.fireGPSDataUpdatedEvent();
 		}
 		else
 		{
-			System.out.println("data type unidentified");
+			debug("NMEA sentence checksum bad: " + gpsData);
 		}
-
-		// TODO GET OTHER GPS INTERESTS!!!
-		
-		this.fireGPSDataUpdatedEvent();
 	}
 
 	private void fireGPSDataUpdatedEvent()
@@ -451,15 +489,16 @@ public class GPSDatum extends ElementState
 	public void updateLon(String src)
 	{
 		double oldLon = this.lon;
-		
+
 		this.lon = AngularCoord.fromDegMinSec(Integer.parseInt(src
 				.substring(0, 3)), Double.parseDouble(src.substring(3)), 0);
 
 		this.pointDirty = true;
-		
+
 		if (oldLon != this.lon && this.latLonUpdatedListeners != null)
 		{
-			this.gpsDataUpdatedListenersToUpdate.addAll(this.latLonUpdatedListeners);
+			this.gpsDataUpdatedListenersToUpdate
+					.addAll(this.latLonUpdatedListeners);
 		}
 	}
 
@@ -484,15 +523,16 @@ public class GPSDatum extends ElementState
 	public void updateLat(String src)
 	{
 		double oldLat = this.lat;
-		
+
 		this.lat = AngularCoord.fromDegMinSec(Integer.parseInt(src
 				.substring(0, 2)), Double.parseDouble(src.substring(2)), 0);
 
 		this.pointDirty = true;
-		
+
 		if (oldLat != this.lat && this.latLonUpdatedListeners != null)
 		{
-			this.gpsDataUpdatedListenersToUpdate.addAll(this.latLonUpdatedListeners);
+			this.gpsDataUpdatedListenersToUpdate
+					.addAll(this.latLonUpdatedListeners);
 		}
 	}
 
@@ -734,7 +774,7 @@ public class GPSDatum extends ElementState
 	public void addGPSDataUpdatedListener(GPSDataUpdatedListener l)
 	{
 		EnumSet<GPSUpdateInterest> interestSet = l.getInterestSet();
-		
+
 		if (interestSet.contains(GPSUpdateInterest.LAT_LON))
 		{
 			this.latLonUpdatedListeners().add(l);
@@ -767,35 +807,6 @@ public class GPSDatum extends ElementState
 		}
 
 		return this.trackedSVs;
-	}
-
-	public static void main(String[] args)
-	{
-		GPSDatum a = new GPSDatum(0, 0);
-		GPSDatum b = new GPSDatum(10, 10);
-		GPSDatum c = new GPSDatum(120, 120);
-		GPSDatum d = new GPSDatum(-35, -35);
-		GPSDatum e = new GPSDatum(-150, -150);
-		GPSDatum f = new GPSDatum(-180, -180);
-
-		GPSDatum[] all =
-		{ a, b, c, d, e, f };
-
-		for (int i = 0; i < all.length; i++)
-		{
-			for (int j = 0; j < all.length; j++)
-			{
-				System.out.println("-------------------");
-				System.out.println("pt lat: " + all[i].getLat() + ", lon: "
-						+ all[i].getLon() + " is "
-						+ nsString(all[i].compareNS(all[j])) + " lat: "
-						+ all[j].getLat() + ", lon: " + all[j].getLon());
-				System.out.println("pt lat: " + all[i].getLat() + ", lon: "
-						+ all[i].getLon() + " is "
-						+ ewString(all[i].compareEW(all[j])) + " lat: "
-						+ all[j].getLat() + ", lon: " + all[j].getLon());
-			}
-		}
 	}
 
 	static String nsString(double dir)

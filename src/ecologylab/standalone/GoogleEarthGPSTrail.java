@@ -30,11 +30,13 @@ public class GoogleEarthGPSTrail
 	/**
 	 * @param args
 	 * @throws IOException
-	 * @throws TooManyListenersException 
-	 * @throws UnsupportedCommOperationException 
-	 * @throws PortInUseException 
+	 * @throws TooManyListenersException
+	 * @throws UnsupportedCommOperationException
+	 * @throws PortInUseException
 	 */
-	public static void main(String[] args) throws IOException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException
+	public static void main(String[] args) throws IOException,
+			PortInUseException, UnsupportedCommOperationException,
+			TooManyListenersException
 	{
 		GPS gps = new SimGPS(new File("sampleLogs/zachToGrocery.txt"),
 				PlayMode.FORWARD_BACKWARD);
@@ -43,31 +45,32 @@ public class GoogleEarthGPSTrail
 
 		Style lineStyle = new Style("yellowLineGreenPoly",
 
-		new LineStyle(new Color(Integer.parseInt("7f", 16), Integer.parseInt(
-				"00", 16), Integer.parseInt("ff", 16), Integer.parseInt("ff", 16)),
+		new LineStyle(new Color(Integer.parseInt("ff", 16), Integer.parseInt(
+				"ff", 16), Integer.parseInt("00", 16), Integer.parseInt("7f", 16)),
 				"normal", 4),
 
-		new PolyStyle(new Color(Integer.parseInt("7f", 16), Integer.parseInt(
-				"00", 16), Integer.parseInt("ff", 16), Integer.parseInt("00", 16)),
+		new PolyStyle(new Color(Integer.parseInt("00", 16), Integer.parseInt(
+				"ff", 16), Integer.parseInt("00", 16), Integer.parseInt("7f", 16)),
 				"normal", false, false));
 
 		Document doc = new Document("To the grocery store",
 				"This was my trip to the grocery store one day.", lineStyle);
-		
-		Placemark trail = new Placemark();
-		
+
+		Placemark trail = new Placemark("To the grocery store",
+				"This was my trip to the grocery store one day.", lineStyle.getId());
+
 		LineString line = new LineString();
-		
+
 		line.setExtrude(true);
 		line.setTessellate(true);
 		line.setAltitudeMode("clampToGround");
-		
+
 		trail.setLineString(line);
-		
+
 		doc.addPlacemark(trail);
-		
+
 		kmlData.setDocument(doc);
-		
+
 		// setup server
 		TranslationSpace serverTranslations = DefaultServicesTranslations.get();
 
@@ -76,20 +79,20 @@ public class GoogleEarthGPSTrail
 				new ObjectRegistry(), 1000000, 1000000, kmlData);
 
 		s.start();
-		
+
 		gps.addGPSDataListener(new GPSToKMLTrail(line, 2000, 100));
-		
+
 		System.out.println("Attempting to load the entire simulation file...");
-		
+
 		for (int i = 0; i < 33000; i++)
 		{
-			((SimGPS)gps).sendSentence();
+			((SimGPS) gps).sendSentence();
 		}
-		
-		System.out.println("...done.");		
-		
-//		System.out.println("Starting simulator.");
-		
-	//	gps.connect();
+
+		System.out.println("...done.");
+
+		// System.out.println("Starting simulator.");
+
+		// gps.connect();
 	}
 }

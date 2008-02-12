@@ -62,8 +62,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 
 	public KmlFeature(String name, String description, StyleSelector sSelector)
 	{
-		this.name = name;
-		this.description = description;
+		this(name, description);
 
 		// because we can only have either a style or a stylemap, we have to set
 		// the right one
@@ -75,6 +74,19 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 		{
 			// set stylemap instead.
 		}
+	}
+	
+	public KmlFeature(String name, String description, String styleUrl)
+	{
+		this(name, description);
+		
+		this.styleUrl = styleUrl;
+	}
+	
+	public KmlFeature(String name, String description)
+	{
+		this.name = name;
+		this.description = description;
 	}
 
 	public String getStyleUrl()

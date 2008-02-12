@@ -7,6 +7,7 @@ import java.awt.Color;
 
 import ecologylab.xml.xml_inherit;
 import ecologylab.xml.library.kml.KmlObject;
+import ecologylab.xml.types.scalar.KMLColor;
 
 /**
  * @author Zach
@@ -14,7 +15,7 @@ import ecologylab.xml.library.kml.KmlObject;
  */
 @xml_inherit public class ColorStyle extends KmlObject
 {
-	@xml_leaf Color								color;
+	@xml_leaf KMLColor								color;
 
 	@xml_leaf @xml_tag("colorMode") String	colorMode;	// either normal or random
 
@@ -27,7 +28,12 @@ import ecologylab.xml.library.kml.KmlObject;
 
 	public ColorStyle(Color color, String colorMode)
 	{
-		this.color = color;
+		this.color = new KMLColor(color);
 		this.colorMode = colorMode;
+	}
+	
+	public Color getColor()
+	{
+		return color;
 	}
 }
