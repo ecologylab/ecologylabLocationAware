@@ -6,7 +6,7 @@ package ecologylab.services.distributed.server.contextmanager;
 import java.io.UnsupportedEncodingException;
 import java.nio.channels.SelectionKey;
 
-import ecologylab.appframework.Scope;
+import ecologylab.collections.Scope;
 import ecologylab.services.distributed.impl.NIOServerBackend;
 import ecologylab.services.distributed.server.NIOServerFrontend;
 import ecologylab.services.distributed.server.clientmanager.ClientManager;

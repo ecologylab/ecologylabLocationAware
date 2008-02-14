@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.TooManyListenersException;
 
-import ecologylab.appframework.Scope;
+import ecologylab.collections.Scope;
 import ecologylab.net.NetTools;
 import ecologylab.sensor.gps.GPS;
 import ecologylab.sensor.gps.SimGPS;

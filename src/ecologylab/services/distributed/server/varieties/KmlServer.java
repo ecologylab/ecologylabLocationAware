@@ -8,7 +8,7 @@ import java.net.BindException;
 import java.net.InetAddress;
 import java.nio.channels.SelectionKey;
 
-import ecologylab.appframework.Scope;
+import ecologylab.collections.Scope;
 import ecologylab.net.NetTools;
 import ecologylab.services.distributed.server.clientmanager.AbstractClientManager;
 import ecologylab.services.distributed.server.contextmanager.KMLGetClientManager;
@@ -58,7 +58,7 @@ public class KmlServer extends HttpGetServer
 				KMLTranslations.get()), objectRegistry, idleConnectionTimeout,
 				maxPacketSize);
 
-		this.registry.bind(KmlRequest.KML_DATA, kmlData);
+		this.registry.put(KmlRequest.KML_DATA, kmlData);
 	}
 
 	/**
