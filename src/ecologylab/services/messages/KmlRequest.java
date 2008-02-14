@@ -24,10 +24,10 @@ public class KmlRequest extends RequestMessage
 	}
 
 	/**
-	 * @see ecologylab.services.messages.RequestMessage#performService(ecologylab.collections.Scope, java.lang.String)
+	 * @see ecologylab.services.messages.RequestMessage#performService(ecologylab.collections.Scope)
 	 */
 	@Override public ResponseMessage performService(
-			Scope objectRegistry, String sessionId)
+			Scope objectRegistry)
 	{
 		KmlResponse resp = new KmlResponse((Kml)objectRegistry.get(KML_DATA));
 		
