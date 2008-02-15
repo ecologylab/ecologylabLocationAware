@@ -21,12 +21,12 @@ import ecologylab.appframework.PropertiesAndDirectories;
 import ecologylab.projection.PlateCarreeProjection;
 import ecologylab.projection.Projection;
 import ecologylab.projection.SameCoordinatesException;
-import ecologylab.sensor.gps.GPS;
-import ecologylab.sensor.gps.data.GPSDatum;
-import ecologylab.sensor.gps.gui.GPSConnectionControls;
-import ecologylab.sensor.gps.gui.GPSController;
-import ecologylab.sensor.gps.listener.GPSDataUpdatedListener;
-import ecologylab.sensor.gps.listener.GPSDataUpdater;
+import ecologylab.sensor.location.gps.GPS;
+import ecologylab.sensor.location.gps.data.GPSDatum;
+import ecologylab.sensor.location.gps.gui.GPSConnectionControls;
+import ecologylab.sensor.location.gps.gui.GPSController;
+import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
+import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
 import ecologylab.xml.TranslationSpace;
 import ecologylab.xml.XMLTranslationException;
 import ecologylab.xml.library.geom.Rectangle2DDoubleState;
@@ -206,7 +206,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	}
 
 	/**
-	 * @see ecologylab.sensor.gps.gui.GPSController#connectGPS(ecologylab.sensor.gps.GPS)
+	 * @see ecologylab.sensor.location.gps.gui.GPSController#connectGPS(ecologylab.sensor.location.gps.GPS)
 	 */
 	public boolean connectGPS(GPS newGPS) throws PortInUseException,
 			UnsupportedCommOperationException, IOException,
@@ -223,7 +223,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	}
 
 	/**
-	 * @see ecologylab.sensor.gps.gui.GPSController#disconnectGPS()
+	 * @see ecologylab.sensor.location.gps.gui.GPSController#disconnectGPS()
 	 */
 	public void disconnectGPS()
 	{
@@ -245,7 +245,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	}
 
 	/**
-	 * @see ecologylab.sensor.gps.listener.GPSDataUpdatedListener#gpsDatumUpdated(ecologylab.sensor.gps.data.GPSDatum)
+	 * @see ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener#gpsDatumUpdated(ecologylab.sensor.location.gps.data.GPSDatum)
 	 */
 	public void gpsDatumUpdated(GPSDatum datum)
 	{
@@ -315,7 +315,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	}
 
 	/**
-	 * @see ecologylab.sensor.gps.gui.GPSController#getGps()
+	 * @see ecologylab.sensor.location.gps.gui.GPSController#getGps()
 	 */
 	public GPS getGps()
 	{

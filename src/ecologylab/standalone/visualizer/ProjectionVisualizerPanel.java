@@ -19,9 +19,9 @@ import javax.swing.JPanel;
 import ecologylab.projection.PlateCarreeProjection;
 import ecologylab.projection.Projection;
 import ecologylab.projection.SameCoordinatesException;
-import ecologylab.sensor.gps.data.GPSDatum;
-import ecologylab.sensor.gps.listener.GPSDataUpdatedListener;
-import ecologylab.sensor.gps.listener.GPSDataUpdatedListener.GPSUpdateInterest;
+import ecologylab.sensor.location.gps.data.GPSDatum;
+import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
+import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener.GPSUpdateInterest;
 
 /**
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
@@ -194,7 +194,7 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 	}
 
 	/**
-	 * @see ecologylab.sensor.gps.listener.GPSDataUpdatedListener#gpsDatumUpdated(ecologylab.sensor.gps.data.GPSDatum)
+	 * @see ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener#gpsDatumUpdated(ecologylab.sensor.location.gps.data.GPSDatum)
 	 */
 	public void gpsDatumUpdated(GPSDatum datum)
 	{

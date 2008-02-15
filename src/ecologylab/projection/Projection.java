@@ -8,7 +8,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
 import ecologylab.generic.Debug;
-import ecologylab.sensor.gps.data.GPSDatum;
+import ecologylab.sensor.location.gps.data.GPSDatum;
 
 /**
  * Using two GPSDatum objects, demarking two corners of real-world space, provides functionality to map real-world

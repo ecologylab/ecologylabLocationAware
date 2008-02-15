@@ -1,16 +1,9 @@
 package ecologylab.standalone;
 
-import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
-import java.util.TooManyListenersException;
-
 import ecologylab.collections.Scope;
 import ecologylab.net.NetTools;
-import ecologylab.sensor.gps.GPS;
-import ecologylab.sensor.gps.SimGPS;
-import ecologylab.sensor.gps.SimGPS.PlayMode;
-import ecologylab.sensor.gps.listener.GPSToKMLTrail;
+import ecologylab.sensor.location.gps.GPS;
+import ecologylab.sensor.location.gps.listener.GPSToKMLTrail;
 import ecologylab.services.distributed.server.varieties.KmlServer;
 import ecologylab.services.messages.DefaultServicesTranslations;
 import ecologylab.xml.TranslationSpace;
@@ -24,6 +17,10 @@ import ecologylab.xml.library.kml.style.Style;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
+
+import java.awt.Color;
+import java.io.IOException;
+import java.util.TooManyListenersException;
 
 public class GoogleEarthGPSTrail
 {

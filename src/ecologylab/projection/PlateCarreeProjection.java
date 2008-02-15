@@ -9,7 +9,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 
 import ecologylab.projection.Projection.RotationConstraintMode;
-import ecologylab.sensor.gps.data.GPSDatum;
+import ecologylab.sensor.location.gps.data.GPSDatum;
 
 /**
  * A plate carree projection directly maps X coordinates to longitude and Y coordinates to latitude. This projection is

@@ -6,9 +6,9 @@ package ecologylab.standalone;
 import java.util.LinkedList;
 import java.util.List;
 
-import ecologylab.sensor.gps.listener.GPSDataListener;
-import ecologylab.sensor.gps.listener.GPSDataPrinter;
-import ecologylab.sensor.gps.listener.GPSDataUpdater;
+import ecologylab.sensor.location.gps.listener.GPSDataListener;
+import ecologylab.sensor.location.gps.listener.GPSDataPrinter;
+import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
 
 /**
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)

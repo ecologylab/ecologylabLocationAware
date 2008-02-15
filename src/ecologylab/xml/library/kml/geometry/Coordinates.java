@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ecologylab.sensor.gps.data.GeoCoordinate;
+import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.xml.ElementState;
 import ecologylab.xml.types.scalar.CoordinatesType;
 import ecologylab.xml.types.scalar.TypeRegistry;
