@@ -36,7 +36,7 @@ public class SVData extends ElementState implements Mappable<Integer>
 	 * The signal-to-noise ratio for the satellite's signal, in db-Hz (1-99); -1
 	 * (null) if not tracking.
 	 */
-	@xml_attribute private int	s2nRatio;
+	@xml_attribute private int	snr;
 
 	/**
 	 * No-argument constructor for automatic XML translation.
@@ -58,7 +58,7 @@ public class SVData extends ElementState implements Mappable<Integer>
 		this.id = id;
 		this.elevation = elevation;
 		this.azimuth = azimuth;
-		this.s2nRatio = s2nRatio;
+		this.snr = s2nRatio;
 	}
 	
 	public SVData(int id)
@@ -101,10 +101,50 @@ public class SVData extends ElementState implements Mappable<Integer>
 	}
 
 	/**
-	 * @return the s2nRatio
+	 * @return the key
 	 */
-	public int getS2nRatio()
+	public Integer getKey()
 	{
-		return s2nRatio;
+		return key;
+	}
+
+	/**
+	 * @param key the key to set
+	 */
+	public void setKey(Integer key)
+	{
+		this.key = key;
+	}
+
+	/**
+	 * @return the snr
+	 */
+	public int getSnr()
+	{
+		return snr;
+	}
+
+	/**
+	 * @param snr the snr to set
+	 */
+	public void setSnr(int snr)
+	{
+		this.snr = snr;
+	}
+
+	/**
+	 * @param elevation the elevation to set
+	 */
+	public void setElevation(int elevation)
+	{
+		this.elevation = elevation;
+	}
+
+	/**
+	 * @param azimuth the azimuth to set
+	 */
+	public void setAzimuth(int azimuth)
+	{
+		this.azimuth = azimuth;
 	}
 }

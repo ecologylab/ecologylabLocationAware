@@ -64,7 +64,7 @@ public enum GSA implements GPSDataFieldBase
 		case SAT01:
 			i++;
 		case SAT00:
-			dst.updateSV(src, i);
+			dst.addSVToTrackedList(src, i);
 			break;
 		case PDOP:
 			dst.updatePDOP(src);

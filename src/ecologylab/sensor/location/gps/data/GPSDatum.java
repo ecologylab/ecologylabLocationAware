@@ -16,6 +16,7 @@ import ecologylab.sensor.location.gps.data.dataset.GGA;
 import ecologylab.sensor.location.gps.data.dataset.GLL;
 import ecologylab.sensor.location.gps.data.dataset.GPSDataFieldBase;
 import ecologylab.sensor.location.gps.data.dataset.GSA;
+import ecologylab.sensor.location.gps.data.dataset.GSV;
 import ecologylab.sensor.location.gps.data.dataset.RMC;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener.GPSUpdateInterest;
@@ -37,9 +38,13 @@ import ecologylab.xml.types.element.ArrayListState;
 	 * Quality of GPS data; values will be either GPS_QUAL_NO, GPS_QUAL_GPS,
 	 * GPS_QUAL_DGPS.
 	 */
-	@xml_attribute protected int						gpsQual;
+	@xml_attribute protected int			gpsQual;
 
-	@xml_attribute protected int						numSats;
+	/**
+	 * The number of satellites the GPS receiver is using to compute the
+	 * solution.
+	 */
+	@xml_attribute protected int			numSats;
 
 	/**
 	 * Horizontal Dilution of Precision - approximation of the size of the area
@@ -50,55 +55,64 @@ import ecologylab.xml.types.element.ArrayListState;
 	 * See http://www.codepedia.com/1/Geometric+Dilution+of+Precision+(DOP) for
 	 * more information.
 	 */
-	@xml_attribute protected float					hdop;
+	@xml_attribute protected float		hdop;
 
 	/** Position Dillution of Precision */
-	@xml_attribute protected float					pdop;
+	@xml_attribute protected float		pdop;
 
 	/** Vertical Dillution of Precision */
-	@xml_attribute protected float					vdop;
+	@xml_attribute protected float		vdop;
 
 	/**
 	 * The altitude of the antenna of the GPS (location where the signals are
 	 * recieved). In meters.
 	 */
-	@xml_attribute protected float					geoidHeight;
+	@xml_attribute protected float		geoidHeight;
 
 	/** The differential between the elipsoid and the geoid. In meters. */
-	@xml_attribute protected float					heightDiff;
+	@xml_attribute protected float		heightDiff;
 
-	@xml_attribute protected float					dgpsAge;
+	@xml_attribute protected float		dgpsAge;
 
-	@xml_attribute protected int						dgpsRefStation;
+	@xml_attribute protected int			dgpsRefStation;
 
 	/** Indicates whether or not the current GPS data is valid. */
-	@xml_attribute protected boolean					dataValid;
+	@xml_attribute protected boolean		dataValid;
 
 	/**
 	 * Indicates whether or not the calculation mode (2D/3D) is automatically
 	 * selected.
 	 */
-	@xml_attribute protected boolean					autoCalcMode;
+	@xml_attribute protected boolean		autoCalcMode;
 
 	/**
 	 * Calculating mode (2D/3D); valid values are CALC_MODE_NONE, CALC_MODE_2D,
 	 * or CALC_MODE_3D.
 	 */
-	@xml_attribute protected int						calcMode;
+	@xml_attribute protected int			calcMode;
+
+	/**
+	 * Used during the processing of a GSV (GNSS Satellites in View) sentence.
+	 * Specifies which SV's data is being updated. Because specific SV data comes
+	 * over several pieces of a message, and these pieces are processed
+	 * independently using enums, the GSPDatum object must track the current SV,
+	 * to ensure that it is updated correctly.
+	 */
+	private SVData								currentSV;
 
 	/**
 	 * References to data about the currently-tracked satellites (space vehicles,
 	 * SVs).
 	 */
-	@xml_nested private ArrayListState<SVData>	trackedSVs;
+	@xml_nested private SVData[]			trackedSVs;
 
 	/**
-	 * All up-to-date data on SVs that have been reported by the GPS hardware.
+	 * All up-to-date data on SVs that have been reported on by the GPS hardware.
 	 */
-	protected HashMap<Integer, SVData>				allSVs;
+	protected HashMap<Integer, SVData>	allSVs;
 
 	/** Used for moving data around when processing NMEA sentences. */
-	private char[]											tempDataStore;
+	private char[]								tempDataStore;
 
 	public GPSDatum()
 	{
@@ -119,7 +133,9 @@ import ecologylab.xml.types.element.ArrayListState;
 	}
 
 	/**
-	 * Ensure that tempDataStore is instantiated and clean, then return it.
+	 * Ensure that tempDataStore is instantiated and clean, then return it. Used
+	 * for lazy instantiation; no need to instantiate it if this is a serialized
+	 * set of data from somewhere else (for example).
 	 * 
 	 * @return
 	 */
@@ -221,12 +237,18 @@ import ecologylab.xml.types.element.ArrayListState;
 				switch (gpsData.charAt(3))
 				{
 				case ('G'):
-					// assume GGA
-					fieldBase = GGA.values();
+					// check GGA
+					if (gpsData.charAt(4) == 'A')
+					{
+						fieldBase = GGA.values();
+					}
 					break;
 				case ('L'):
-					// assume GLL
-					fieldBase = GLL.values();
+					// check GLL
+					if (gpsData.charAt(4) == 'L')
+					{
+						fieldBase = GLL.values();
+					}
 					break;
 				case ('S'):
 					switch (gpsData.charAt(4))
@@ -235,31 +257,25 @@ import ecologylab.xml.types.element.ArrayListState;
 						fieldBase = GSA.values();
 						break;
 					case ('V'): // GSV
-						// TODO
-						System.out.print("GSV - ");
+						fieldBase = GSV.values();
 						break;
 					}
 					break;
 				}
 				break;
-			case ('R'): // assume RMC
-				fieldBase = RMC.values();
+			case ('R'): // check RMC
+				if (gpsData.charAt(3) == 'M' && gpsData.charAt(4) == 'C')
+				{
+					fieldBase = RMC.values();
+				}
 				break;
-
 			case ('V'):
-				// assume VTG
-				System.out.print("VTG - ");
-				// TODO
+				// TODO check VTG
 				break;
-
 			case ('Z'):
-				// assume ZDA
-				System.out.print("ZDA - ");
-				// TODO
+				// TODO check ZDA
 				break;
 			}
-
-			// TODO don't assume anything!!!
 
 			if (fieldBase != null)
 			{
@@ -270,10 +286,11 @@ import ecologylab.xml.types.element.ArrayListState;
 						finishedField = false;
 						dataStart = i;
 
-						// now we will read each data field in, one at at time, since
-						// we
-						// know the order of the GGA data set.
-						// we will break out of each for loop when finished.
+						/*
+						 * now we will read each data field in, one at at time, since
+						 * we know the order of the data set. we will break out of
+						 * each for loop when finished.
+						 */
 						while (i < dataLength && !finishedField)
 						{
 							tempData[i] = gpsData.charAt(i);
@@ -295,7 +312,7 @@ import ecologylab.xml.types.element.ArrayListState;
 			}
 			else
 			{
-				System.out.println("data type unidentified");
+				debug(gpsData.substring(2, 5) + " not recognized.");
 			}
 
 			// TODO GET OTHER GPS INTERESTS!!!
@@ -546,16 +563,16 @@ import ecologylab.xml.types.element.ArrayListState;
 	 * NMEA sentences report data on up to 12 tracked SVs, each SV has an index
 	 * (in addition to its ID).
 	 * 
-	 * @param src
+	 * @param sVIDString
 	 *           the data String containing the ID of the tracked SV.
 	 * @param i
 	 *           the index of the tracked SV (will overwrite whichever was stored
 	 *           previously).
 	 */
-	public void updateSV(String src, int i)
+	public void addSVToTrackedList(String sVIDString, int i)
 	{
 		Integer index = new Integer(i);
-		int sVID = Integer.parseInt(src);
+		int sVID = Integer.parseInt(sVIDString);
 
 		HashMap<Integer, SVData> allSVsLocal = this.allSVs();
 
@@ -568,7 +585,78 @@ import ecologylab.xml.types.element.ArrayListState;
 			allSVsLocal.put(index, currentData);
 		}
 
-		// TODO !!! this.trackedSVs().set(i, currentData);
+		SVData[] trackedSVsLocal = this.trackedSVs();
+		trackedSVsLocal[i] = currentData;
+	}
+
+	/**
+	 * Specifies which SV is going to be updated by the following calls to
+	 * setCurrentSVElev(...), setCurrentSVAzi(...), setCurrentSVSNR(...).
+	 * 
+	 * @param sVIDString
+	 *           the ID of the SV to set.
+	 */
+	public void setCurrentSV(String sVIDString)
+	{
+		int sVID = Integer.parseInt(sVIDString);
+
+		HashMap<Integer, SVData> allSVsLocal = this.allSVs();
+
+		SVData tempCurrentSV = allSVsLocal.get(sVID);
+
+		if (tempCurrentSV == null)
+		{
+			tempCurrentSV = new SVData(sVID);
+		}
+
+		this.currentSV = tempCurrentSV;
+	}
+
+	/**
+	 * Sets the elevation on the current SV. THIS METHOD ASSUMES THAT
+	 * setCurrentSV(...) has been called in advance; if it has not, your program
+	 * will crash.
+	 * 
+	 * @param currentSVElevationString
+	 */
+	public void setCurrentSVElev(String currentSVElevationString)
+	{
+		int elevation = Integer.parseInt(currentSVElevationString);
+
+		this.currentSV.setElevation(elevation);
+	}
+
+	/**
+	 * Sets the azimuth on the current SV. THIS METHOD ASSUMES THAT
+	 * setCurrentSV(...) has been called in advance; if it has not, your program
+	 * will crash.
+	 * 
+	 * @param currentSVElevationString
+	 */
+	public void setCurrentSVAzi(String currentSVAzimuthString)
+	{
+		int azimuth = Integer.parseInt(currentSVAzimuthString);
+
+		this.currentSV.setAzimuth(azimuth);
+	}
+
+	/**
+	 * Sets the signal-to-noise ratio on the current SV. THIS METHOD ASSUMES THAT
+	 * setCurrentSV(...) has been called in advance; if it has not, your program
+	 * will crash.
+	 * 
+	 * @param currentSVElevationString
+	 */
+	public void setCurrentSVSNR(String currentSVSNRString)
+	{
+		int snr = Integer.parseInt(currentSVSNRString);
+
+		this.currentSV.setSnr(snr);
+	}
+
+	public void unsetCurrentSV()
+	{
+		this.currentSV = null;
 	}
 
 	/**
@@ -652,48 +740,48 @@ import ecologylab.xml.types.element.ArrayListState;
 		return this.allSVs;
 	}
 
-	protected ArrayListState<SVData> trackedSVs()
+	protected SVData[] trackedSVs()
 	{
 		if (this.trackedSVs == null)
 		{
-			this.trackedSVs = new ArrayListState<SVData>();
+			this.trackedSVs = new SVData[12];
 		}
 
 		return this.trackedSVs;
 	}
-	
+
 	/**
 	 * List of listeners who want to be notified of latitude or longitude
 	 * updates.
 	 */
-	private List<GPSDataUpdatedListener>			latLonUpdatedListeners;
+	private List<GPSDataUpdatedListener>	latLonUpdatedListeners;
 
 	/** List of listeners who want to be notified of altitude updates. */
-	private List<GPSDataUpdatedListener>			altUpdatedListeners;
+	private List<GPSDataUpdatedListener>	altUpdatedListeners;
 
 	/**
 	 * List of listeners who want to be notified of any updates not covered
 	 * above.
 	 */
-	private List<GPSDataUpdatedListener>			otherUpdatedListeners;
+	private List<GPSDataUpdatedListener>	otherUpdatedListeners;
 
 	/** Semaphore for instantiating the above lists lazilly. */
-	private Object											listenerLock							= new Object();
+	private Object									listenerLock							= new Object();
 
 	/** Set of listeners to notify for this update, as determined by interest. */
-	private Set<GPSDataUpdatedListener>				gpsDataUpdatedListenersToUpdate	= new HashSet<GPSDataUpdatedListener>();
+	private Set<GPSDataUpdatedListener>		gpsDataUpdatedListenersToUpdate	= new HashSet<GPSDataUpdatedListener>();
 
 	/**
 	 * A Point2D.Double representation of this's latitude and longitude,
 	 * instantiated and filled through lazy evaluation, when needed.
 	 */
-	private Point2D.Double								pointRepresentation					= null;
+	private Point2D.Double						pointRepresentation					= null;
 
 	/**
 	 * Indicates that pointRepresentation is out of synch with the state of this
 	 * object.
 	 */
-	private boolean										pointDirty								= true;
+	private boolean								pointDirty								= true;
 
 	private List<GPSDataUpdatedListener> latLonUpdatedListeners()
 	{
@@ -742,7 +830,7 @@ import ecologylab.xml.types.element.ArrayListState;
 
 		return this.otherUpdatedListeners;
 	}
-	
+
 	/**
 	 * Gets the latitude and longitude of this datum as a Point2D, where x =
 	 * longitude and y = latitude.
