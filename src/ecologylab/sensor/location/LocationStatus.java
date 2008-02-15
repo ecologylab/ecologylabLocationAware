@@ -26,5 +26,4 @@ public class LocationStatus<LOC extends Location> extends ElementState
 	public LocationStatus()
 	{
 	}
-
 }

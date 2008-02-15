@@ -9,6 +9,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 
 import ecologylab.projection.Projection.RotationConstraintMode;
+import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 
 /**
@@ -187,7 +188,7 @@ public class PlateCarreeProjection extends Projection
 		return (Double) this.transformMatrix.transform(origPoint.getPointRepresentation(), destPoint);
 	}
 
-	@Override protected GPSDatum projectIntoRealImpl(Point2D.Double origPoint, GPSDatum destDatum)
+	@Override protected GPSConstants projectIntoRealImpl(Point2D.Double origPoint, GPSDatum destDatum)
 	{
 		Point2D.Double inversePoint = (Double) this.inverseTransformMatrix.transform(origPoint, null);
 		destDatum.setLon(inversePoint.getX());

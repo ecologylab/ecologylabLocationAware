@@ -8,6 +8,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
 import ecologylab.generic.Debug;
+import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 
 /**
@@ -204,12 +205,12 @@ public abstract class Projection extends Debug
 		return virtualWorldWidth;
 	}
 
-	public final GPSDatum projectIntoReal(Point2D.Double origPoint)
+	public final GPSConstants projectIntoReal(Point2D.Double origPoint)
 	{
 		return this.projectIntoReal(origPoint, null);
 	}
 
-	public final GPSDatum projectIntoReal(Point2D.Double origPoint, GPSDatum destDatum)
+	public final GPSConstants projectIntoReal(Point2D.Double origPoint, GPSDatum destDatum)
 	{
 		if (destDatum == null)
 		{
@@ -316,7 +317,7 @@ public abstract class Projection extends Debug
 	 * @param destDatum
 	 * @return
 	 */
-	protected abstract GPSDatum projectIntoRealImpl(Point2D.Double destPoint, GPSDatum destDatum);
+	protected abstract GPSConstants projectIntoRealImpl(Point2D.Double destPoint, GPSDatum destDatum);
 
 	/**
 	 * This method does the real work of projectIntoVirtual; all calls to it are guaranteed to pass an instantiated

@@ -3,7 +3,6 @@
  */
 package ecologylab.sensor;
 
-import ecologylab.sensor.location.Location;
 import ecologylab.sensor.location.LocationStatus;
 import ecologylab.sensor.network.NetworkStatus;
 import ecologylab.services.logging.MixedInitiativeOp;
@@ -16,18 +15,43 @@ import ecologylab.services.logging.MixedInitiativeOp;
  * network status.
  * 
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
- * 
  */
-public class LocationNetworkStatus<LOC extends Location, LOC_STATUS extends LocationStatus<LOC>, NET_STATUS extends NetworkStatus>
+public class LocationNetworkStatus<LOC_STATUS extends LocationStatus<?>, NET_STATUS extends NetworkStatus>
 		extends MixedInitiativeOp
 {
+	/**
+	 * The status from the location system at the moment this was recorded.
+	 * Becomes frozen when the event is recorded.
+	 */
+	@xml_nested protected LOC_STATUS	locationStatus;
+
+	/**
+	 * The status from the network system at the moment this was recorded.
+	 * Becomes frozen when the event is recorded.
+	 */
+	@xml_nested protected NET_STATUS	netStatus;
+
+	@xml_attribute protected String	utcTime;
 
 	/**
 	 * 
 	 */
 	public LocationNetworkStatus()
 	{
-		// TODO Auto-generated constructor stub
+	}
+
+	public LocationNetworkStatus(LOC_STATUS locationStatus,
+			NET_STATUS netStatus, String utcTime)
+	{
+		this.reconfigure(locationStatus, netStatus, utcTime);
+	}
+
+	public void reconfigure(LOC_STATUS locationStatus, NET_STATUS netStatus,
+			String utcTime)
+	{
+		this.locationStatus = locationStatus;
+		this.netStatus = netStatus;
+		this.utcTime = utcTime;
 	}
 
 	/**
@@ -35,35 +59,5 @@ public class LocationNetworkStatus<LOC extends Location, LOC_STATUS extends Loca
 	 */
 	@Override public void performAction(boolean invert)
 	{
-		// TODO Auto-generated method stub
-
 	}
-
-	/**
-	 * @see java.util.List#add(java.lang.Object)
-	 */
-	public boolean add(Object o)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * @see java.util.List#add(int, java.lang.Object)
-	 */
-	public void add(int index, Object element)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * @see java.util.List#set(int, java.lang.Object)
-	 */
-	public Object set(int index, Object element)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

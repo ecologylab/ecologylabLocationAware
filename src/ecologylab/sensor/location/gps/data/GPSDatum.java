@@ -20,8 +20,6 @@ import ecologylab.sensor.location.gps.data.dataset.RMC;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener.GPSUpdateInterest;
 import ecologylab.xml.xml_inherit;
-import ecologylab.xml.ElementState.xml_attribute;
-import ecologylab.xml.ElementState.xml_nested;
 import ecologylab.xml.types.element.ArrayListState;
 
 /**
@@ -33,25 +31,8 @@ import ecologylab.xml.types.element.ArrayListState;
  * 
  */
 @xml_inherit public class GPSDatum extends LocationStatus<GeoCoordinate>
+		implements GPSConstants
 {
-	/** Indicates no GPS. */
-	public static final int								GPS_QUAL_NO								= 0;
-
-	/** Indicates GPS satellite fix only. */
-	public static final int								GPS_QUAL_GPS							= 1;
-
-	/** Indicates GPS satellite fix + differential signal. */
-	public static final int								GPS_QUAL_DGPS							= 2;
-
-	/** Indicates that there is no calcuating mode set. */
-	public static final int								CALC_MODE_NONE							= 1;
-
-	/** Indicates that the calculating mode is 2D. */
-	public static final int								CALC_MODE_2D							= 2;
-
-	/** Indicates that the calculating mode is 3D. */
-	public static final int								CALC_MODE_3D							= 3;
-
 	/**
 	 * Quality of GPS data; values will be either GPS_QUAL_NO, GPS_QUAL_GPS,
 	 * GPS_QUAL_DGPS.
@@ -66,53 +47,8 @@ import ecologylab.xml.types.element.ArrayListState;
 	 * spread of the fixed satellites; higher numbers are worse, smaller mean
 	 * better precision; this value may range between 1-50.
 	 * 
-	 * According to
-	 * http://www.codepedia.com/1/Geometric+Dilution+of+Precision+(DOP):
-	 * 
-	 * <table>
-	 * <tr>
-	 * <td>DOP</td>
-	 * <td>Rating</td>
-	 * <td>Description</td>
-	 * <tr>
-	 * <td>1</td>
-	 * <td>Ideal</td>
-	 * <td>This is the highest possible confidence level to be used for
-	 * applications demanding the highest possible precision at all times.</td>
-	 * </tr>
-	 * <tr>
-	 * <td>2-3</td>
-	 * <td>Excellent</td>
-	 * <td>At this confidence level, positional measurements are considered
-	 * accurate enough to meet all but the most sensitive applications.</td>
-	 * </tr>
-	 * <tr>
-	 * <td>4-6</td>
-	 * <td>Good</td>
-	 * <td>Represents a level that marks the minimum appropriate for making
-	 * business decisions. Positional measurements could be used to make reliable
-	 * in-route navigation suggestions to the user.</td>
-	 * </tr>
-	 * <tr>
-	 * <td>7-8</td>
-	 * <td>Moderate</td>
-	 * <td>Positional measurements could be used for calculations, but the fix
-	 * quality could still be improved. A more open view of the sky is
-	 * recommended.</td>
-	 * </tr>
-	 * <tr>
-	 * <td>9-20</td>
-	 * <td>Fair</td>
-	 * <td>Represents a low confidence level. Positional measurements should be
-	 * discarded or used only to indicate a very rough estimate of the current
-	 * location.</td>
-	 * </tr>
-	 * <tr>
-	 * <td>21-50</td>
-	 * <td>Poor At this level, measurements are inaccurate by half a football
-	 * field or more and should be discarded.</td>
-	 * </tr>
-	 * </table>
+	 * See http://www.codepedia.com/1/Geometric+Dilution+of+Precision+(DOP) for
+	 * more information.
 	 */
 	@xml_attribute protected float					hdop;
 
@@ -164,45 +100,15 @@ import ecologylab.xml.types.element.ArrayListState;
 	/** Used for moving data around when processing NMEA sentences. */
 	private char[]											tempDataStore;
 
-	/**
-	 * List of listeners who want to be notified of latitude or longitude
-	 * updates.
-	 */
-	private List<GPSDataUpdatedListener>			latLonUpdatedListeners;
-
-	/** List of listeners who want to be notified of altitude updates. */
-	private List<GPSDataUpdatedListener>			altUpdatedListeners;
-
-	/**
-	 * List of listeners who want to be notified of any updates not covered
-	 * above.
-	 */
-	private List<GPSDataUpdatedListener>			otherUpdatedListeners;
-
-	/** Semaphore for instantiating the above lists lazilly. */
-	private Object											listenerLock							= new Object();
-
-	/** Set of listeners to notify for this update, as determined by interest. */
-	private Set<GPSDataUpdatedListener>				gpsDataUpdatedListenersToUpdate	= new HashSet<GPSDataUpdatedListener>();
-
-	/**
-	 * A Point2D.Double representation of this's latitude and longitude,
-	 * instantiated and filled through lazy evaluation, when needed.
-	 */
-	private Point2D.Double								pointRepresentation					= null;
-
-	/**
-	 * Indicates that pointRepresentation is out of synch with the state of this
-	 * object.
-	 */
-	private boolean										pointDirty								= true;
-
 	public GPSDatum()
 	{
+		this.currentLocation = new GeoCoordinate();
 	}
 
 	public GPSDatum(double latDeg, double latMin, double lonDeg, double lonMin)
 	{
+		this();
+
 		this.currentLocation.setLat(new AngularCoord(latDeg, latMin, 0));
 		this.currentLocation.setLon(new AngularCoord(lonDeg, lonMin, 0));
 	}
@@ -210,54 +116,6 @@ import ecologylab.xml.types.element.ArrayListState;
 	public GPSDatum(double latDeg, double lonDeg)
 	{
 		this(latDeg, 0f, lonDeg, 0f);
-	}
-
-	private List<GPSDataUpdatedListener> latLonUpdatedListeners()
-	{
-		if (this.latLonUpdatedListeners == null)
-		{
-			synchronized (this.listenerLock)
-			{
-				if (this.latLonUpdatedListeners == null)
-				{
-					this.latLonUpdatedListeners = new LinkedList<GPSDataUpdatedListener>();
-				}
-			}
-		}
-
-		return this.latLonUpdatedListeners;
-	}
-
-	private List<GPSDataUpdatedListener> altUpdatedListeners()
-	{
-		if (this.altUpdatedListeners == null)
-		{
-			synchronized (this.listenerLock)
-			{
-				if (this.altUpdatedListeners == null)
-				{
-					this.altUpdatedListeners = new LinkedList<GPSDataUpdatedListener>();
-				}
-			}
-		}
-
-		return this.altUpdatedListeners;
-	}
-
-	private List<GPSDataUpdatedListener> otherUpdatedListeners()
-	{
-		if (this.otherUpdatedListeners == null)
-		{
-			synchronized (this.listenerLock)
-			{
-				if (this.otherUpdatedListeners == null)
-				{
-					this.otherUpdatedListeners = new LinkedList<GPSDataUpdatedListener>();
-				}
-			}
-		}
-
-		return this.otherUpdatedListeners;
 	}
 
 	/**
@@ -329,10 +187,7 @@ import ecologylab.xml.types.element.ArrayListState;
 		char[] tempData = tempDataStore();
 
 		// check the checksum before doing any processing
-		int checkSumSplit = gpsData.lastIndexOf('*'); // TODO maybe more
-		// efficient just to
-		// assume last 2 are
-		// checksum
+		int checkSumSplit = gpsData.length() - 3;
 
 		String messageStringToCheck = gpsData.substring(0, checkSumSplit);
 
@@ -547,7 +402,11 @@ import ecologylab.xml.types.element.ArrayListState;
 	}
 
 	/**
-	 * @param src
+	 * Update the number of satellites the GPS receiver is using to produce a
+	 * solution.
+	 * 
+	 * @param src -
+	 *           part of the NMEA string carrying the relevant data.
 	 */
 	public void updateNumSats(String src)
 	{
@@ -555,7 +414,11 @@ import ecologylab.xml.types.element.ArrayListState;
 	}
 
 	/**
-	 * @param src
+	 * Update the quality rating for the GPS receiver: none (0), GPS (1), or DGPS
+	 * (2).
+	 * 
+	 * @param src -
+	 *           part of the NMEA string carrying the relevant data.
 	 */
 	public void updateGPSQual(String src)
 	{
@@ -563,7 +426,10 @@ import ecologylab.xml.types.element.ArrayListState;
 	}
 
 	/**
-	 * @param src
+	 * Update the differential GPS reference station.
+	 * 
+	 * @param src -
+	 *           part of the NMEA string carrying the relevant data.
 	 */
 	public void updateDGPSRef(String src)
 	{
@@ -571,7 +437,14 @@ import ecologylab.xml.types.element.ArrayListState;
 	}
 
 	/**
-	 * @param src
+	 * Checks the unit mode for height; this should be meters, and thus should be
+	 * "M".
+	 * 
+	 * TODO handle other units, instead of printing an error? I haven't seen any
+	 * documentation describing the use of other units - Zach
+	 * 
+	 * @param src -
+	 *           part of the NMEA string carrying the relevant data.
 	 */
 	public void updateDiffHeightUnit(String src)
 	{
@@ -582,7 +455,10 @@ import ecologylab.xml.types.element.ArrayListState;
 	}
 
 	/**
-	 * @param src
+	 * Updates the age of the differential GPS reading, per the GPS.
+	 * 
+	 * @param src -
+	 *           part of the NMEA string carrying the relevant data.
 	 */
 	public void updateDGPSAge(String src)
 	{
@@ -590,7 +466,8 @@ import ecologylab.xml.types.element.ArrayListState;
 	}
 
 	/**
-	 * @param src
+	 * @param src -
+	 *           part of the NMEA string carrying the relevant data.
 	 */
 	public void updateHeightUnit(String src)
 	{
@@ -601,13 +478,23 @@ import ecologylab.xml.types.element.ArrayListState;
 	}
 
 	/**
-	 * @param src
+	 * Updates the height of the geoid, indicated at this location.
+	 * 
+	 * @param src -
+	 *           part of the NMEA string carrying the relevant data.
 	 */
 	public void updateGeoidHeight(String src)
 	{
 		this.geoidHeight = Float.parseFloat(src);
 	}
 
+	/**
+	 * Updates the validity rating for the data. Data can be valid ("A") or
+	 * invalid ("V").
+	 * 
+	 * @param src -
+	 *           part of the NMEA string carrying the relevant data.
+	 */
 	public void updateDataValid(String src)
 	{
 		switch (src.charAt(0))
@@ -624,7 +511,11 @@ import ecologylab.xml.types.element.ArrayListState;
 	}
 
 	/**
-	 * @param src
+	 * Updates the auto calculation mode setting. Can be automatic ("A") or
+	 * manual ("M").
+	 * 
+	 * @param src -
+	 *           part of the NMEA string carrying the relevant data.
 	 */
 	public void updateAutoCalcMode(String src)
 	{
@@ -751,6 +642,107 @@ import ecologylab.xml.types.element.ArrayListState;
 		this.pointDirty = true;
 	}
 
+	private HashMap<Integer, SVData> allSVs()
+	{
+		if (this.allSVs == null)
+		{
+			this.allSVs = new HashMap<Integer, SVData>();
+		}
+
+		return this.allSVs;
+	}
+
+	protected ArrayListState<SVData> trackedSVs()
+	{
+		if (this.trackedSVs == null)
+		{
+			this.trackedSVs = new ArrayListState<SVData>();
+		}
+
+		return this.trackedSVs;
+	}
+	
+	/**
+	 * List of listeners who want to be notified of latitude or longitude
+	 * updates.
+	 */
+	private List<GPSDataUpdatedListener>			latLonUpdatedListeners;
+
+	/** List of listeners who want to be notified of altitude updates. */
+	private List<GPSDataUpdatedListener>			altUpdatedListeners;
+
+	/**
+	 * List of listeners who want to be notified of any updates not covered
+	 * above.
+	 */
+	private List<GPSDataUpdatedListener>			otherUpdatedListeners;
+
+	/** Semaphore for instantiating the above lists lazilly. */
+	private Object											listenerLock							= new Object();
+
+	/** Set of listeners to notify for this update, as determined by interest. */
+	private Set<GPSDataUpdatedListener>				gpsDataUpdatedListenersToUpdate	= new HashSet<GPSDataUpdatedListener>();
+
+	/**
+	 * A Point2D.Double representation of this's latitude and longitude,
+	 * instantiated and filled through lazy evaluation, when needed.
+	 */
+	private Point2D.Double								pointRepresentation					= null;
+
+	/**
+	 * Indicates that pointRepresentation is out of synch with the state of this
+	 * object.
+	 */
+	private boolean										pointDirty								= true;
+
+	private List<GPSDataUpdatedListener> latLonUpdatedListeners()
+	{
+		if (this.latLonUpdatedListeners == null)
+		{
+			synchronized (this.listenerLock)
+			{
+				if (this.latLonUpdatedListeners == null)
+				{
+					this.latLonUpdatedListeners = new LinkedList<GPSDataUpdatedListener>();
+				}
+			}
+		}
+
+		return this.latLonUpdatedListeners;
+	}
+
+	private List<GPSDataUpdatedListener> altUpdatedListeners()
+	{
+		if (this.altUpdatedListeners == null)
+		{
+			synchronized (this.listenerLock)
+			{
+				if (this.altUpdatedListeners == null)
+				{
+					this.altUpdatedListeners = new LinkedList<GPSDataUpdatedListener>();
+				}
+			}
+		}
+
+		return this.altUpdatedListeners;
+	}
+
+	private List<GPSDataUpdatedListener> otherUpdatedListeners()
+	{
+		if (this.otherUpdatedListeners == null)
+		{
+			synchronized (this.listenerLock)
+			{
+				if (this.otherUpdatedListeners == null)
+				{
+					this.otherUpdatedListeners = new LinkedList<GPSDataUpdatedListener>();
+				}
+			}
+		}
+
+		return this.otherUpdatedListeners;
+	}
+	
 	/**
 	 * Gets the latitude and longitude of this datum as a Point2D, where x =
 	 * longitude and y = latitude.
@@ -790,62 +782,6 @@ import ecologylab.xml.types.element.ArrayListState;
 		if (interestSet.contains(GPSUpdateInterest.OTHERS))
 		{
 			this.otherUpdatedListeners().add(l);
-		}
-	}
-
-	private HashMap<Integer, SVData> allSVs()
-	{
-		if (this.allSVs == null)
-		{
-			this.allSVs = new HashMap<Integer, SVData>();
-		}
-
-		return this.allSVs;
-	}
-
-	protected ArrayListState<SVData> trackedSVs()
-	{
-		if (this.trackedSVs == null)
-		{
-			this.trackedSVs = new ArrayListState<SVData>();
-		}
-
-		return this.trackedSVs;
-	}
-
-	static String nsString(double dir)
-	{
-		if (dir > 0)
-		{
-			return "north of";
-		}
-		else if (dir < 0)
-		{
-			return "south of";
-		}
-		else
-		{
-			return "the same latitude as";
-		}
-	}
-
-	static String ewString(double dir)
-	{
-		if (dir > 0)
-		{
-			return "west of";
-		}
-		else if (dir < 0)
-		{
-			return "east of";
-		}
-		else if (dir == -180 || dir == 180)
-		{
-			return "opposite the earth from";
-		}
-		else
-		{
-			return "the same longitude as";
 		}
 	}
 }

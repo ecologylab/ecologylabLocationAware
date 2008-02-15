@@ -22,6 +22,7 @@ import ecologylab.projection.PlateCarreeProjection;
 import ecologylab.projection.Projection;
 import ecologylab.projection.SameCoordinatesException;
 import ecologylab.sensor.location.gps.GPS;
+import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.sensor.location.gps.gui.GPSConnectionControls;
 import ecologylab.sensor.location.gps.gui.GPSController;
@@ -43,7 +44,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 {
 	JFrame						mainFrame;
 
-	GPSDatum						currentGPSReportedPos;
+	GPSConstants						currentGPSReportedPos;
 
 	Rectangle2DDoubleState	virtualField;
 

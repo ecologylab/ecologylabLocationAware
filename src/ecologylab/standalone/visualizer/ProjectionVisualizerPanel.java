@@ -19,6 +19,7 @@ import javax.swing.JPanel;
 import ecologylab.projection.PlateCarreeProjection;
 import ecologylab.projection.Projection;
 import ecologylab.projection.SameCoordinatesException;
+import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener.GPSUpdateInterest;
@@ -45,9 +46,9 @@ public class ProjectionVisualizerPanel extends JPanel implements GPSDataUpdatedL
 	 */
 	PlateCarreeProjection		visualizerProjection;
 
-	GPSDatum							point1;
+	GPSConstants							point1;
 
-	GPSDatum							point2;
+	GPSConstants							point2;
 
 	boolean							drawing;
 

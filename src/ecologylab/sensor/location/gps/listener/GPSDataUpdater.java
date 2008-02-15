@@ -4,6 +4,7 @@
 package ecologylab.sensor.location.gps.listener;
 
 import ecologylab.generic.Debug;
+import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 
 /**
@@ -41,7 +42,7 @@ public class GPSDataUpdater extends Debug implements GPSDataListener
 	/**
 	 * @return the datum
 	 */
-	public GPSDatum getDatum()
+	public GPSConstants getDatum()
 	{
 		return datum;
 	}
