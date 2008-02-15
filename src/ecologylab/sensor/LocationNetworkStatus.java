@@ -3,6 +3,9 @@
  */
 package ecologylab.sensor;
 
+import ecologylab.sensor.location.Location;
+import ecologylab.sensor.location.LocationStatus;
+import ecologylab.sensor.network.NetworkStatus;
 import ecologylab.services.logging.MixedInitiativeOp;
 
 /**
@@ -15,7 +18,8 @@ import ecologylab.services.logging.MixedInitiativeOp;
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
-public class LocationNetworkStatus extends MixedInitiativeOp
+public class LocationNetworkStatus<LOC extends Location, LOC_STATUS extends LocationStatus<LOC>, NET_STATUS extends NetworkStatus>
+		extends MixedInitiativeOp
 {
 
 	/**

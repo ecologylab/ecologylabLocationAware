@@ -3,7 +3,7 @@
  */
 package ecologylab.sensor.network.wireless;
 
-import ecologylab.sensor.network.Network;
+import ecologylab.sensor.network.NetworkStatus;
 import ecologylab.xml.xml_inherit;
 
 /**
@@ -11,7 +11,7 @@ import ecologylab.xml.xml_inherit;
  * 
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  */
-@xml_inherit public abstract class WirelessNetwork extends Network
+@xml_inherit public abstract class WirelessNetwork extends NetworkStatus
 {
 	/** Signal strength to the specified wireless access point in terms of dBm. */
 	@xml_attribute @xml_tag("ss") protected int	signalStrength	= Integer.MIN_VALUE;

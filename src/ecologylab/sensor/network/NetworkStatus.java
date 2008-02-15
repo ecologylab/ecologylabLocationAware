@@ -12,7 +12,7 @@ import ecologylab.xml.ElementState;
  * 
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  */
-public abstract class Network extends ElementState
+public abstract class NetworkStatus extends ElementState
 {
 	/**
 	 * The identifier for the network, for example, SSID for a wifi network. Note
@@ -23,11 +23,11 @@ public abstract class Network extends ElementState
 	/**
 	 * 
 	 */
-	public Network()
+	public NetworkStatus()
 	{
 	}
 
-	public Network(String id)
+	public NetworkStatus(String id)
 	{
 		this.id = id;
 	}
