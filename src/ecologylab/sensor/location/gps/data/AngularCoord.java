@@ -130,4 +130,9 @@ public class AngularCoord extends ElementState implements Comparable<AngularCoor
 	{
 		this.coord = signForHemisphere(h, this.coord);
 	}
+
+	public void set(double coordVal)
+	{
+		this.coord = coordVal;
+	}
 }

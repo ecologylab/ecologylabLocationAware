@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import ecologylab.sensor.location.LocationStatus;
 import ecologylab.sensor.location.gps.data.dataset.GGA;
 import ecologylab.sensor.location.gps.data.dataset.GLL;
 import ecologylab.sensor.location.gps.data.dataset.GPSDataFieldBase;
@@ -18,7 +19,9 @@ import ecologylab.sensor.location.gps.data.dataset.GSA;
 import ecologylab.sensor.location.gps.data.dataset.RMC;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener.GPSUpdateInterest;
-import ecologylab.xml.ElementState;
+import ecologylab.xml.xml_inherit;
+import ecologylab.xml.ElementState.xml_attribute;
+import ecologylab.xml.ElementState.xml_nested;
 import ecologylab.xml.types.element.ArrayListState;
 
 /**
@@ -29,7 +32,7 @@ import ecologylab.xml.types.element.ArrayListState;
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
-public class GPSDatum extends ElementState
+@xml_inherit public class GPSDatum extends LocationStatus<GeoCoordinate>
 {
 	/** Indicates no GPS. */
 	public static final int								GPS_QUAL_NO								= 0;
@@ -48,12 +51,6 @@ public class GPSDatum extends ElementState
 
 	/** Indicates that the calculating mode is 3D. */
 	public static final int								CALC_MODE_3D							= 3;
-
-	@xml_attribute protected float					utcPosTime;
-
-	@xml_attribute protected double					lat;
-
-	@xml_attribute protected double					lon;
 
 	/**
 	 * Quality of GPS data; values will be either GPS_QUAL_NO, GPS_QUAL_GPS,
@@ -206,8 +203,8 @@ public class GPSDatum extends ElementState
 
 	public GPSDatum(double latDeg, double latMin, double lonDeg, double lonMin)
 	{
-		this.lat = AngularCoord.fromDegMinSec(latDeg, latMin, 0);
-		this.lon = AngularCoord.fromDegMinSec(lonDeg, lonMin, 0);
+		this.currentLocation.setLat(new AngularCoord(latDeg, latMin, 0));
+		this.currentLocation.setLon(new AngularCoord(lonDeg, lonMin, 0));
 	}
 
 	public GPSDatum(double latDeg, double lonDeg)
@@ -297,7 +294,7 @@ public class GPSDatum extends ElementState
 	 */
 	public double compareEW(GPSDatum that)
 	{
-		double diff = this.lon - that.getLon();
+		double diff = this.currentLocation.getLon().coord - that.getLon();
 
 		if (diff > 180)
 		{
@@ -333,9 +330,9 @@ public class GPSDatum extends ElementState
 
 		// check the checksum before doing any processing
 		int checkSumSplit = gpsData.lastIndexOf('*'); // TODO maybe more
-																		// efficient just to
-																		// assume last 2 are
-																		// checksum
+		// efficient just to
+		// assume last 2 are
+		// checksum
 
 		String messageStringToCheck = gpsData.substring(0, checkSumSplit);
 
@@ -349,12 +346,13 @@ public class GPSDatum extends ElementState
 		String computedCheckSum = Integer.toHexString((checkSum & 0xF0) >>> 4)
 				+ Integer.toHexString(checkSum & 0x0F);
 
-		if (computedCheckSum.toUpperCase().equals(gpsData.substring(checkSumSplit + 1)))
+		if (computedCheckSum.toUpperCase().equals(
+				gpsData.substring(checkSumSplit + 1)))
 		{
 
 			int dataLength = gpsData.length();
 			int i = 6; // start looking after "GPXXX," -- the header of the
-							// message
+			// message
 
 			int dataStart = i;
 			boolean finishedField = false;
@@ -465,7 +463,8 @@ public class GPSDatum extends ElementState
 
 	@Override public String toString()
 	{
-		return new String("GPSDatum: " + this.lat + ", " + this.lon);
+		return new String("GPSDatum: " + this.currentLocation.getLat().coord
+				+ ", " + this.currentLocation.getLon().coord);
 	}
 
 	/**
@@ -475,8 +474,7 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateLonHemisphere(String src)
 	{
-		if (src.charAt(0) == 'W') // southern hemisphere == negative latitude
-			this.lon *= -1;
+		this.currentLocation.lon.setHemisphere(src.charAt(0));
 
 		this.pointDirty = true;
 	}
@@ -488,14 +486,15 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateLon(String src)
 	{
-		double oldLon = this.lon;
+		double oldLon = this.currentLocation.getLon().coord;
 
-		this.lon = AngularCoord.fromDegMinSec(Integer.parseInt(src
-				.substring(0, 3)), Double.parseDouble(src.substring(3)), 0);
+		this.currentLocation.setLon(new AngularCoord(Integer.parseInt(src
+				.substring(0, 3)), Double.parseDouble(src.substring(3)), 0));
 
 		this.pointDirty = true;
 
-		if (oldLon != this.lon && this.latLonUpdatedListeners != null)
+		if (oldLon != this.currentLocation.getLon().coord
+				&& this.latLonUpdatedListeners != null)
 		{
 			this.gpsDataUpdatedListenersToUpdate
 					.addAll(this.latLonUpdatedListeners);
@@ -509,8 +508,7 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateLatHemisphere(String src)
 	{
-		if (src.charAt(0) == 'S') // southern hemisphere == negative latitude
-			this.lat *= -1;
+		this.currentLocation.getLat().setHemisphere(src.charAt(0));
 
 		this.pointDirty = true;
 	}
@@ -522,14 +520,15 @@ public class GPSDatum extends ElementState
 	 */
 	public void updateLat(String src)
 	{
-		double oldLat = this.lat;
+		double oldLat = this.currentLocation.getLat().coord;
 
-		this.lat = AngularCoord.fromDegMinSec(Integer.parseInt(src
-				.substring(0, 2)), Double.parseDouble(src.substring(2)), 0);
+		this.currentLocation.setLat(new AngularCoord(Integer.parseInt(src
+				.substring(0, 2)), Double.parseDouble(src.substring(2)), 0));
 
 		this.pointDirty = true;
 
-		if (oldLat != this.lat && this.latLonUpdatedListeners != null)
+		if (oldLat != this.currentLocation.getLat().coord
+				&& this.latLonUpdatedListeners != null)
 		{
 			this.gpsDataUpdatedListenersToUpdate
 					.addAll(this.latLonUpdatedListeners);
@@ -537,11 +536,14 @@ public class GPSDatum extends ElementState
 	}
 
 	/**
+	 * Stores the UTC time according to the way it is represented in the NMEA
+	 * sentence: HHMMSS.S
+	 * 
 	 * @param src
 	 */
 	public void updateUtcPosTime(String src)
 	{
-		this.utcPosTime = Float.parseFloat(src);
+		this.utcTime = src;
 	}
 
 	/**
@@ -716,7 +718,7 @@ public class GPSDatum extends ElementState
 	 */
 	public double getLat()
 	{
-		return lat;
+		return this.currentLocation.getLat().coord;
 	}
 
 	/**
@@ -724,7 +726,7 @@ public class GPSDatum extends ElementState
 	 */
 	public double getLon()
 	{
-		return lon;
+		return this.currentLocation.getLon().coord;
 	}
 
 	/**
@@ -733,7 +735,7 @@ public class GPSDatum extends ElementState
 	 */
 	public void setLat(double lat)
 	{
-		this.lat = lat;
+		this.currentLocation.setLat(lat);
 
 		this.pointDirty = true;
 	}
@@ -744,7 +746,7 @@ public class GPSDatum extends ElementState
 	 */
 	public void setLon(double lon)
 	{
-		this.lon = lon;
+		this.currentLocation.setLon(lon);
 
 		this.pointDirty = true;
 	}
@@ -764,7 +766,9 @@ public class GPSDatum extends ElementState
 
 		if (this.pointDirty)
 		{
-			this.pointRepresentation.setLocation(this.lon, this.lat);
+			this.pointRepresentation.setLocation(
+					this.currentLocation.getLon().coord, this.currentLocation
+							.getLat().coord);
 			this.pointDirty = false;
 		}
 

@@ -3,13 +3,13 @@
  */
 package ecologylab.sensor.location.gps.data;
 
-import ecologylab.xml.ElementState;
+import ecologylab.sensor.location.Location;
+import ecologylab.xml.xml_inherit;
 
 /**
  * @author Zach
- * 
  */
-public class GeoCoordinate extends ElementState
+@xml_inherit public class GeoCoordinate extends Location
 {
 	/** The latitude, expressed in degrees in double-precision degrees. */
 	@xml_attribute AngularCoord	lat;
@@ -80,5 +80,15 @@ public class GeoCoordinate extends ElementState
 		}
 		
 		return kMLCommaDelimited;
+	}
+
+	public void setLon(double lon)
+	{
+		this.lon.set(lon);
+	}
+
+	public void setLat(double lat)
+	{
+		this.lat.set(lat);
 	}
 }
