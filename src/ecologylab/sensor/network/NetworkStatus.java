@@ -6,7 +6,7 @@ package ecologylab.sensor.network;
 import ecologylab.xml.ElementState;
 
 /**
- * Represents a data network, most likely wireless. 
+ * Represents a data network, most likely wireless.
  * 
  * TODO Support for current data rate, etc.??
  * 
@@ -18,7 +18,7 @@ public abstract class NetworkStatus extends ElementState
 	 * The identifier for the network, for example, SSID for a wifi network. Note
 	 * that id is not necessarily unique.
 	 */
-	@xml_attribute String	id;
+	@xml_attribute protected String	id;
 
 	/**
 	 * 
@@ -41,7 +41,8 @@ public abstract class NetworkStatus extends ElementState
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *           the id to set
 	 */
 	public void setId(String id)
 	{
