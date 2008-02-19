@@ -8,7 +8,7 @@ package ecologylab.sensor.location.gps.listener;
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
-public interface GPSDataListener
+public interface NMEAStringListener
 {
-	public void readGPSData(String gpsDataString);
+	public void processIncomingNMEAString(String gpsDataString);
 }

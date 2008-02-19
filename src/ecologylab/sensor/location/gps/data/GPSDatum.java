@@ -31,8 +31,8 @@ import ecologylab.xml.types.element.ArrayListState;
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
-@xml_inherit public class GPSDatum extends LocationStatus<GeoCoordinate>
-		implements GPSConstants
+@xml_inherit public class GPSDatum extends LocationStatus implements
+		GPSConstants
 {
 	/**
 	 * Quality of GPS data; values will be either GPS_QUAL_NO, GPS_QUAL_GPS,
@@ -123,8 +123,10 @@ import ecologylab.xml.types.element.ArrayListState;
 	{
 		this();
 
-		this.currentLocation.setLat(new AngularCoord(latDeg, latMin, 0));
-		this.currentLocation.setLon(new AngularCoord(lonDeg, lonMin, 0));
+		this.currentLocation
+				.setLat(AngularCoord.fromDegMinSec(latDeg, latMin, 0));
+		this.currentLocation
+				.setLon(AngularCoord.fromDegMinSec(lonDeg, lonMin, 0));
 	}
 
 	public GPSDatum(double latDeg, double lonDeg)
@@ -168,7 +170,7 @@ import ecologylab.xml.types.element.ArrayListState;
 	 */
 	public double compareEW(GPSDatum that)
 	{
-		double diff = this.currentLocation.getLon().coord - that.getLon();
+		double diff = this.currentLocation.getLon() - that.getLon();
 
 		if (diff > 180)
 		{
@@ -335,8 +337,8 @@ import ecologylab.xml.types.element.ArrayListState;
 
 	@Override public String toString()
 	{
-		return new String("GPSDatum: " + this.currentLocation.getLat().coord
-				+ ", " + this.currentLocation.getLon().coord);
+		return new String("GPSDatum: " + this.currentLocation.getLat() + ", "
+				+ this.currentLocation.getLon());
 	}
 
 	/**
@@ -346,7 +348,8 @@ import ecologylab.xml.types.element.ArrayListState;
 	 */
 	public void updateLonHemisphere(String src)
 	{
-		this.currentLocation.lon.setHemisphere(src.charAt(0));
+		this.currentLocation.setLon(AngularCoord.signForHemisphere(src.charAt(0),
+				currentLocation.getLon()));
 
 		this.pointDirty = true;
 	}
@@ -358,14 +361,15 @@ import ecologylab.xml.types.element.ArrayListState;
 	 */
 	public void updateLon(String src)
 	{
-		double oldLon = this.currentLocation.getLon().coord;
+		double oldLon = this.currentLocation.getLon();
 
-		this.currentLocation.setLon(new AngularCoord(Integer.parseInt(src
-				.substring(0, 3)), Double.parseDouble(src.substring(3)), 0));
+		this.currentLocation.setLon(AngularCoord.fromDegMinSec(Integer
+				.parseInt(src.substring(0, 3)), Double
+				.parseDouble(src.substring(3)), 0));
 
 		this.pointDirty = true;
 
-		if (oldLon != this.currentLocation.getLon().coord
+		if (oldLon != this.currentLocation.getLon()
 				&& this.latLonUpdatedListeners != null)
 		{
 			this.gpsDataUpdatedListenersToUpdate
@@ -380,7 +384,8 @@ import ecologylab.xml.types.element.ArrayListState;
 	 */
 	public void updateLatHemisphere(String src)
 	{
-		this.currentLocation.getLat().setHemisphere(src.charAt(0));
+		this.currentLocation.setLat(AngularCoord.signForHemisphere(src.charAt(0),
+				currentLocation.getLat()));
 
 		this.pointDirty = true;
 	}
@@ -392,14 +397,15 @@ import ecologylab.xml.types.element.ArrayListState;
 	 */
 	public void updateLat(String src)
 	{
-		double oldLat = this.currentLocation.getLat().coord;
+		double oldLat = this.currentLocation.getLat();
 
-		this.currentLocation.setLat(new AngularCoord(Integer.parseInt(src
-				.substring(0, 2)), Double.parseDouble(src.substring(2)), 0));
+		this.currentLocation.setLat(AngularCoord.fromDegMinSec(Integer
+				.parseInt(src.substring(0, 2)), Double
+				.parseDouble(src.substring(2)), 0));
 
 		this.pointDirty = true;
 
-		if (oldLat != this.currentLocation.getLat().coord
+		if (oldLat != this.currentLocation.getLat()
 				&& this.latLonUpdatedListeners != null)
 		{
 			this.gpsDataUpdatedListenersToUpdate
@@ -411,11 +417,11 @@ import ecologylab.xml.types.element.ArrayListState;
 	 * Stores the UTC time according to the way it is represented in the NMEA
 	 * sentence: HHMMSS.S
 	 * 
-	 * @param src
+	 * @param utcString
 	 */
-	public void updateUtcPosTime(String src)
+	public void updateUtcPosTime(String utcString)
 	{
-		this.utcTime = src;
+		this.utcTime = utcString;
 	}
 
 	/**
@@ -697,7 +703,7 @@ import ecologylab.xml.types.element.ArrayListState;
 	 */
 	public double getLat()
 	{
-		return this.currentLocation.getLat().coord;
+		return this.currentLocation.getLat();
 	}
 
 	/**
@@ -705,7 +711,7 @@ import ecologylab.xml.types.element.ArrayListState;
 	 */
 	public double getLon()
 	{
-		return this.currentLocation.getLon().coord;
+		return this.currentLocation.getLon();
 	}
 
 	/**
@@ -846,9 +852,8 @@ import ecologylab.xml.types.element.ArrayListState;
 
 		if (this.pointDirty)
 		{
-			this.pointRepresentation.setLocation(
-					this.currentLocation.getLon().coord, this.currentLocation
-							.getLat().coord);
+			this.pointRepresentation.setLocation(this.currentLocation.getLon(),
+					this.currentLocation.getLat());
 			this.pointDirty = false;
 		}
 

@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import java.util.TooManyListenersException;
 
 import ecologylab.generic.Debug;
-import ecologylab.sensor.location.gps.listener.GPSDataListener;
+import ecologylab.sensor.location.gps.listener.NMEAStringListener;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
@@ -41,7 +41,7 @@ public class GPS extends Debug implements SerialPortEventListener
 
 	private InputStream						portIn					= null;
 
-	private LinkedList<GPSDataListener>	listeners				= new LinkedList<GPSDataListener>();
+	private LinkedList<NMEAStringListener>	listeners				= new LinkedList<NMEAStringListener>();
 
 	private static final CharsetDecoder	ASCII_DECODER			= Charset.forName(
 																						"US-ASCII")
@@ -213,12 +213,12 @@ public class GPS extends Debug implements SerialPortEventListener
 		}
 	}
 
-	public void addGPSDataListener(GPSDataListener l)
+	public void addGPSDataListener(NMEAStringListener l)
 	{
 		this.listeners.add(l);
 	}
 
-	public void removeGPSDataListener(GPSDataListener l)
+	public void removeGPSDataListener(NMEAStringListener l)
 	{
 		this.listeners.remove(l);
 	}
@@ -252,9 +252,9 @@ public class GPS extends Debug implements SerialPortEventListener
 
 	private void fireGPSDataString(String gpsDataString)
 	{
-		for (GPSDataListener l : listeners)
+		for (NMEAStringListener l : listeners)
 		{
-			l.readGPSData(gpsDataString);
+			l.processIncomingNMEAString(gpsDataString);
 		}
 	}
 }

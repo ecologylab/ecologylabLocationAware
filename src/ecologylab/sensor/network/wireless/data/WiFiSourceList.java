@@ -1,13 +1,12 @@
 /**
  * 
  */
-package ecologylab.sensor.network.wireless;
-
-import java.util.Collection;
+package ecologylab.sensor.network.wireless.data;
 
 import ecologylab.generic.ResourcePool;
-import ecologylab.xml.ElementState;
-import ecologylab.xml.types.element.HashMapState;
+import ecologylab.sensor.network.NetworkList;
+import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
+import ecologylab.xml.xml_inherit;
 
 /**
  * A moment of data on wifi status objects, which are hashed according to MAC
@@ -21,45 +20,47 @@ import ecologylab.xml.types.element.HashMapState;
  * 
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  */
-public class WiFiList extends ElementState
+@xml_inherit public class WiFiSourceList extends NetworkList<WiFiSource>
+		implements WiFiStringDataListener
 {
-	@xml_nested protected HashMapState<String, WiFiStatus>	aps	= new HashMapState<String, WiFiStatus>();
-
 	/**
 	 * 
 	 */
-	public WiFiList()
+	public WiFiSourceList()
 	{
+		super();
 	}
 
-	/**
-	 * Clears the ap list and adds all the currentWiFiStatuses. Order(n+m) time,
-	 * where n = currentWiFiStatuses.size() and m = aps.size().
-	 * 
-	 * The ap list contains clones of the data in the Collection, so it is safe
-	 * to modify currentWiFiStatuses after this method call.
-	 * 
-	 * @param currentWiFiStatuses
-	 */
-	public void update(Collection<WiFiStatus> currentWiFiStatuses)
+	@Override public void updateFromDataString(String newData)
 	{
-		for (String macAddr : aps.keySet())
+		String[] aps = newData.split("\\*\n");
+
+		for (String s : aps)
 		{
-			this.pool().release(aps.remove(macAddr));
+			if (s.length() > 0)
+			{
+				String[] apData = s.split("\n");
+
+				WiFiSource wfs = this.get(apData[1]);
+
+				if (wfs == null)
+				{
+					wfs = new WiFiSource();
+					this.put(apData[1], wfs);
+				}
+
+				wfs.updateData(s);
+			}
 		}
+	}
 
-		for (WiFiStatus w : currentWiFiStatuses)
-		{
-			// we need to add it, gotta get a fresh one from the pool and make
-			// its data match
-			WiFiStatus newW = pool().acquire();
+	public void apListUpdate(String newData)
+	{
+		this.updateFromDataString(newData);
+	}
 
-			newW.setId(w.getId());
-			newW.setMacAddr(w.getMacAddr());
-			newW.setSignalStrength(w.getSignalStrength());
-
-			aps.add(newW);
-		}
+	public void macAddressUpdate(String newData)
+	{
 	}
 
 	/**
@@ -86,7 +87,7 @@ public class WiFiList extends ElementState
 	 * 
 	 * @return
 	 */
-	private WiFiStatusPool pool()
+	@Override protected WiFiStatusPool pool()
 	{
 		if (pool == null)
 		{
@@ -109,23 +110,23 @@ public class WiFiList extends ElementState
 	 * 
 	 * @author Zachary O. Toups (toupsz@cs.tamu.edu)
 	 */
-	class WiFiStatusPool extends ResourcePool<WiFiStatus>
+	class WiFiStatusPool extends ResourcePool<WiFiSource>
 	{
 		public WiFiStatusPool(int initialPoolSize, int minimumPoolSize)
 		{
 			super(initialPoolSize, minimumPoolSize);
 		}
 
-		@Override protected void clean(WiFiStatus objectToClean)
+		@Override protected void clean(WiFiSource objectToClean)
 		{
 			objectToClean.setId(null);
 			objectToClean.setMacAddr(null);
 			objectToClean.setSignalStrength(-1);
 		}
 
-		@Override protected WiFiStatus generateNewResource()
+		@Override protected WiFiSource generateNewResource()
 		{
-			return new WiFiStatus();
+			return new WiFiSource();
 		}
 	}
 }

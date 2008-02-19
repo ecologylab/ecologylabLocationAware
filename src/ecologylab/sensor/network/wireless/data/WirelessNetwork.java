@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ecologylab.sensor.network.wireless;
+package ecologylab.sensor.network.wireless.data;
 
 import ecologylab.sensor.network.NetworkStatus;
 import ecologylab.xml.xml_inherit;
@@ -47,5 +47,13 @@ import ecologylab.xml.xml_inherit;
 	public void setSignalStrength(int signalStrength)
 	{
 		this.signalStrength = signalStrength;
+	}
+
+	public <NS extends WirelessNetwork> void conformTo(NS that)
+	{
+		super.conformTo(that);
+		
+		this.signalStrength = that.signalStrength;
+		this.signalStrengthPercent = that.signalStrengthPercent;
 	}
 }

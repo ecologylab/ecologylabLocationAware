@@ -15,10 +15,10 @@ import ecologylab.xml.xml_inherit;
 @xml_inherit public class GeoCoordinate extends Location
 {
 	/** The latitude, expressed in degrees in double-precision degrees. */
-	@xml_attribute AngularCoord	lat;
+	@xml_attribute double	lat;
 
 	/** The longitude, expressed in degrees in double-precision degrees. */
-	@xml_attribute AngularCoord	lon;
+	@xml_attribute double	lon;
 
 	/** The altitude, expressed in meters. */
 	@xml_attribute double			alt;
@@ -32,39 +32,29 @@ import ecologylab.xml.xml_inherit;
 
 	public GeoCoordinate(double lat, double lon, double alt)
 	{
-		this.lat = new AngularCoord(lat);
-		this.lon = new AngularCoord(lon);
+		this.lat = lat;
+		this.lon = lon;
 		this.alt = alt;
 	}
 
-	public AngularCoord getLat()
+	public double getLat()
 	{
-		if (this.lat == null)
-		{
-			lat = new AngularCoord();
-		}
-
 		return lat;
 	}
 
-	public void setLat(AngularCoord lat)
+	public void setLat(double lat)
 	{
 		this.lat = lat;
 
 		kMLCommaDelimited = null;
 	}
 
-	public AngularCoord getLon()
+	public double getLon()
 	{
-		if (this.lon == null)
-		{
-			lon = new AngularCoord();
-		}
-
 		return lon;
 	}
 
-	public void setLon(AngularCoord lon)
+	public void setLon(double lon)
 	{
 		this.lon = lon;
 
@@ -83,16 +73,6 @@ import ecologylab.xml.xml_inherit;
 		kMLCommaDelimited = null;
 	}
 
-	public void setLon(double lon)
-	{
-		this.getLon().set(lon);
-	}
-
-	public void setLat(double lat)
-	{
-		this.getLat().set(lat);
-	}
-
 	/**
 	 * A String reprsenting the current data for KML; cached for re-use and
 	 * computed only when needed.
@@ -108,7 +88,7 @@ import ecologylab.xml.xml_inherit;
 	{
 		if (kMLCommaDelimited == null)
 		{
-			kMLCommaDelimited = this.lon.getCoord() + "," + this.lat.getCoord()
+			kMLCommaDelimited = this.lon + "," + this.lat
 					+ "," + this.alt;
 		}
 

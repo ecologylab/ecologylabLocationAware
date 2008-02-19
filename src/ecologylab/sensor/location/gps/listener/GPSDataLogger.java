@@ -14,7 +14,7 @@ import java.io.OutputStream;
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
-public class GPSDataLogger implements GPSDataListener
+public class GPSDataLogger implements NMEAStringListener
 {
 	File	targetFile;
 	
@@ -46,9 +46,9 @@ public class GPSDataLogger implements GPSDataListener
 	}
 
 	/** 
-	 * @see ecologylab.sensor.location.gps.data.GPSDataListener#readGPSData(java.lang.String)
+	 * @see ecologylab.sensor.location.gps.data.NMEAStringListener#processIncomingNMEAString(java.lang.String)
 	 */
-	public void readGPSData(String gpsDataString)
+	public void processIncomingNMEAString(String gpsDataString)
 	{
 		try
 		{

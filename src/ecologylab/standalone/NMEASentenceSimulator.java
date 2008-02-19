@@ -6,7 +6,7 @@ package ecologylab.standalone;
 import java.util.LinkedList;
 import java.util.List;
 
-import ecologylab.sensor.location.gps.listener.GPSDataListener;
+import ecologylab.sensor.location.gps.listener.NMEAStringListener;
 import ecologylab.sensor.location.gps.listener.GPSDataPrinter;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
 
@@ -34,23 +34,23 @@ public class NMEASentenceSimulator
 			"$GPGSV,2,2,8,01,52,187,43,25,25,074,39,07,37,286,40,04,09,306,33*44\\r\\n" 
 			};
 	
-	List<GPSDataListener> listeners = new LinkedList<GPSDataListener>();
+	List<NMEAStringListener> listeners = new LinkedList<NMEAStringListener>();
 	
 	public NMEASentenceSimulator()
 	{
 		
 	}
 	
-	public void addListener(GPSDataListener l)
+	public void addListener(NMEAStringListener l)
 	{
 		listeners.add(l);
 	}
 	
 	private void fireGPSEvent(String s)
 	{
-		for (GPSDataListener l : listeners)
+		for (NMEAStringListener l : listeners)
 		{
-			l.readGPSData(s);
+			l.processIncomingNMEAString(s);
 		}
 	}
 	

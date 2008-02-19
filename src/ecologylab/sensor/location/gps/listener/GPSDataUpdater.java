@@ -9,11 +9,11 @@ import ecologylab.sensor.location.gps.data.GPSDatum;
 
 /**
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
- *
+ * 
  */
-public class GPSDataUpdater extends Debug implements GPSDataListener
+public class GPSDataUpdater extends Debug implements NMEAStringListener
 {
-	GPSDatum datum = new GPSDatum();
+	GPSDatum	datum	= new GPSDatum();
 
 	/**
 	 * 
@@ -23,15 +23,27 @@ public class GPSDataUpdater extends Debug implements GPSDataListener
 	}
 
 	/**
-	 * @see ecologylab.sensor.location.gps.listener.GPSDataListener#readGPSData(java.lang.String)
+	 * Constructs a GPSDataUpdater that updates the instance passed in.
+	 * 
+	 * @param datum
+	 *           the instance to update with NMEA strings.
 	 */
-	public void readGPSData(String gpsDataString)
+	public GPSDataUpdater(GPSDatum datum)
+	{
+		this.datum = datum;
+	}
+
+	/**
+	 * @see ecologylab.sensor.location.gps.listener.NMEAStringListener#processIncomingNMEAString(java.lang.String)
+	 */
+	public void processIncomingNMEAString(String gpsDataString)
 	{
 		datum.integrateGPSData(gpsDataString);
 	}
 
 	/**
 	 * Convience method to add a listener to the datum contained in this object.
+	 * 
 	 * @param l
 	 */
 	public void addDataUpdatedListener(GPSDataUpdatedListener l)

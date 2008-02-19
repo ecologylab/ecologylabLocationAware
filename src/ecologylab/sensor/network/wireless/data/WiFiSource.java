@@ -1,78 +1,62 @@
 /**
  * 
  */
-package ecologylab.sensor.network.wireless;
+package ecologylab.sensor.network.wireless.data;
 
 import ecologylab.xml.XMLTranslationException;
 import ecologylab.xml.xml_inherit;
 import ecologylab.xml.types.element.Mappable;
 
 /**
- * Represents a moment of wifi status data.
+ * Represents a moment of wifi status data for a potential WiFi connection.
  * 
  * Inherited field, id, contains the ssid for the network in question.
  * 
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  */
-@xml_inherit public class WiFiStatus extends WirelessNetwork implements
+@xml_inherit public class WiFiSource extends WirelessNetwork implements
 		Mappable<String>
 {
-	public static final String								AD_HOC			= "AD_HOC";
+	public static final String			AD_HOC			= "AD_HOC";
 
-	public static final String								ACCESS_POINT	= "ACCESS_POINT";
+	public static final String			ACCESS_POINT	= "ACCESS_POINT";
 
-	public static final String								SECURED			= "SECURED";
+	public static final String			SECURED			= "SECURED";
 
-	public static final String								UNSECURED		= "UNSECURED";
-
-	/** The MAC address of the network. */
-	@xml_attribute @xml_tag("mac") protected String	macAddr;
-
+	public static final String			UNSECURED		= "UNSECURED";
+	
 	/** The operating channel for the network. */
-	@xml_attribute protected int							channel;
+	@xml_attribute protected int		channel;
 
 	/** The type of the network; either AD_HOC or ACCESS_POINT. */
-	@xml_attribute protected String						networkType;
+	@xml_attribute protected String	networkType;
 
 	/** The security for the network; either SECURED or UNSECURED. */
-	@xml_attribute protected String						security;
+	@xml_attribute protected String	security;
 
-	public WiFiStatus()
+	public WiFiSource()
 	{
 	}
 
-	public WiFiStatus(String id)
+	public WiFiSource(String id)
 	{
 		super(id);
 	}
 
-	public WiFiStatus(String id, String macAddr)
+	public WiFiSource(String id, String macAddr)
 	{
 		this(id);
 
 		this.macAddr = macAddr;
 	}
 
-	public String key()
+	public <NS extends WiFiSource> void conformTo(NS that)
 	{
-		return getMacAddr();
-	}
+		super.conformTo(that);
 
-	/**
-	 * @return the macAddr
-	 */
-	public String getMacAddr()
-	{
-		return macAddr;
-	}
-
-	/**
-	 * @param macAddr
-	 *           the macAddr to set
-	 */
-	public void setMacAddr(String macAddr)
-	{
-		this.macAddr = macAddr;
+		this.channel = that.channel;
+		this.networkType = that.networkType;
+		this.security = that.security;
 	}
 
 	/**
@@ -96,8 +80,8 @@ import ecologylab.xml.types.element.Mappable;
 	 */
 	public void updateData(String newData)
 	{
-		String[] data = newData.split("\r\n");
-		
+		String[] data = newData.split("\n");
+
 		this.id = data[0];
 		this.macAddr = data[1];
 		this.signalStrength = Integer.parseInt(data[2]);
@@ -107,20 +91,13 @@ import ecologylab.xml.types.element.Mappable;
 		this.security = data[6];
 	}
 
-	
-	
 	public static void main(String[] args) throws XMLTranslationException
 	{
-		WiFiStatus w = new WiFiStatus();
-		
-		w.updateData("Snakes on a Plane\r\n" + 
-				"00:18:39:d0:4d:43\r\n" + 
-				"-40\r\n" + 
-				"94\r\n" + 
-				"8\r\n" + 
-				"ACCESS_POINT\r\n" + 
-				"SECURED");
-		
+		WiFiSource w = new WiFiSource();
+
+		w.updateData("Snakes on a Plane\r\n" + "00:18:39:d0:4d:43\r\n"
+				+ "-40\r\n" + "94\r\n" + "8\r\n" + "ACCESS_POINT\r\n" + "SECURED");
+
 		System.out.println(w.translateToXML());
 	}
 }
