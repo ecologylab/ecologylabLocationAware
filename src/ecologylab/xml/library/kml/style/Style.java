@@ -16,8 +16,9 @@ public class Style extends StyleSelector
 {
 	@xml_nested @xml_tag("LineStyle") LineStyle lineStyle;
 	@xml_nested @xml_tag("PolyStyle") PolyStyle polyStyle;
+	@xml_nested @xml_tag("IconStyle") IconStyle iconStyle;
 
-	// TODO iconstyle, labelstyle, balloonstyle, liststyle
+	// TODO labelstyle, balloonstyle, liststyle
 	
 	
 	/**
@@ -27,10 +28,12 @@ public class Style extends StyleSelector
 	{
 	}
 
-	public Style(String id, LineStyle lineStyle, PolyStyle polyStyle)
+	public Style(String id, LineStyle lineStyle, PolyStyle polyStyle, IconStyle iconStyle)
 	{
 		super(id);
+		
 		this.lineStyle = lineStyle;
 		this.polyStyle = polyStyle;
+		this.iconStyle = iconStyle;
 	}
 }

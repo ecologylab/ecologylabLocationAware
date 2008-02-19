@@ -60,7 +60,7 @@ public class Coordinates extends ElementState
 	 */
 	public Coordinates(String coords)
 	{
-		this.setCoords(coords);
+		this.appendStringRepresentation(coords);
 	}
 
 	/**

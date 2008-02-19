@@ -1,11 +1,11 @@
 package ecologylab.standalone;
 
 import ecologylab.collections.Scope;
+import ecologylab.composite.kml.sensor.WiFiColoredIcon;
 import ecologylab.net.NetTools;
 import ecologylab.sensor.location.gps.GPS;
-import ecologylab.sensor.location.gps.SimGPS;
-import ecologylab.sensor.location.gps.SimGPS.PlayMode;
-import ecologylab.sensor.location.gps.listener.GPSToKMLTrail;
+import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
+import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
 import ecologylab.services.distributed.server.varieties.KmlServer;
 import ecologylab.services.messages.DefaultServicesTranslations;
 import ecologylab.xml.TranslationSpace;
@@ -13,7 +13,6 @@ import ecologylab.xml.library.kml.Kml;
 import ecologylab.xml.library.kml.feature.Placemark;
 import ecologylab.xml.library.kml.feature.container.Document;
 import ecologylab.xml.library.kml.geometry.Coordinates;
-import ecologylab.xml.library.kml.geometry.LineString;
 import ecologylab.xml.library.kml.geometry.Point;
 import ecologylab.xml.library.kml.style.IconStyle;
 import ecologylab.xml.library.kml.style.LineStyle;
@@ -24,11 +23,12 @@ import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 
 import java.awt.Color;
-import java.io.File;
 import java.io.IOException;
 import java.util.TooManyListenersException;
 
-public class GoogleEarthGPSTrail
+import stec.jenie.NativeException;
+
+public class GoogleEarthServerWithWiFiStatus
 {
 
 	/**
@@ -38,16 +38,35 @@ public class GoogleEarthGPSTrail
 	 * @throws UnsupportedCommOperationException
 	 * @throws PortInUseException
 	 * @throws NoSuchPortException
+	 * @throws NativeException 
 	 */
 	public static void main(String[] args) throws IOException,
 			PortInUseException, UnsupportedCommOperationException,
-			TooManyListenersException, NoSuchPortException
+			TooManyListenersException, NoSuchPortException, NativeException
 	{
-		GPS gps = new SimGPS(new File("sampleLogs/zachToGrocery.txt"),
-				PlayMode.FORWARD_BACKWARD);
+		WiFiColoredIcon wifiVis = WiFiColoredIcon.GREEN_RED_STANDARD;
+		
+		RunnableWiFiAdapter wiFi = new RunnableWiFiAdapter(1000);
+		
+		wiFi.addListener(wifiVis);
+		
+/*		wiFi.addListener(new WiFiStringDataListener() 
+		{
+			public void apListUpdate(String newData)
+			{
+				System.out.println("APs:");
+				System.out.println(newData);
+			}
 
-		// GPS gps = new GPS("COM8", 115200);
-
+			public void macAddressUpdate(String newData)
+			{
+				System.out.println("--------------- current AP: "+newData);
+			}
+			
+		});*/
+		
+		wiFi.connect();
+		
 		Kml kmlData = new Kml();
 
 		Style lineStyle = new Style("yellowLineGreenPoly",
@@ -60,28 +79,14 @@ public class GoogleEarthGPSTrail
 				"ff", 16), Integer.parseInt("00", 16), Integer.parseInt("7f", 16)),
 				"normal", false, false),
 
-		new IconStyle(null,
-				"http://maps.google.com/mapfiles/kml/pal3/icon21.png", 1.1f, 0f,
-				null, new Color(0x00, 0xff, 0x00, 0xff), "random"));
+				wifiVis.getIcon());
 
 		Document doc = new Document("To the grocery store",
 				"This was my trip to the grocery store one day.", lineStyle);
 
-		Placemark trail = new Placemark("To the grocery store",
-				"This was my trip to the grocery store one day.", lineStyle.getId());
-
-		LineString line = new LineString();
-
-		line.setExtrude(true);
-		line.setTessellate(true);
-		line.setAltitudeMode("clampToGround");
-
-		trail.setLineString(line);
-
 		Placemark head = new Placemark("starting point", "this is where the trip starts", lineStyle.getId());
 		head.setPoint(new Point(new Coordinates("-95.6711667,29.960144444,0")));
 		
-		doc.addPlacemark(trail);
 		doc.addPlacemark(head);
 
 		kmlData.setDocument(doc);
@@ -94,20 +99,5 @@ public class GoogleEarthGPSTrail
 				new Scope(), 1000000, 1000000, kmlData);
 
 		s.start();
-
-		gps.addGPSDataListener(new GPSToKMLTrail(line, 2000, 100));
-
-		System.out.println("Attempting to load the entire simulation file...");
-
-		for (int i = 0; i < 33000; i++)
-		{
-			((SimGPS) gps).sendSentence();
-		}
-
-		System.out.println("...done.");
-
-		// System.out.println("Starting simulator.");
-
-		// gps.connect();
 	}
 }

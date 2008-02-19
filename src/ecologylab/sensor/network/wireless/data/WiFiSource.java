@@ -100,4 +100,19 @@ import ecologylab.xml.types.element.Mappable;
 
 		System.out.println(w.translateToXML());
 	}
+
+	public int getChannel()
+	{
+		return channel;
+	}
+
+	public String getNetworkType()
+	{
+		return networkType;
+	}
+
+	public String getSecurity()
+	{
+		return security;
+	}
 }

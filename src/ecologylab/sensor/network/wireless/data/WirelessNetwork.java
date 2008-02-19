@@ -56,4 +56,9 @@ import ecologylab.xml.xml_inherit;
 		this.signalStrength = that.signalStrength;
 		this.signalStrengthPercent = that.signalStrengthPercent;
 	}
+
+	public int getSignalStrengthPercent()
+	{
+		return signalStrengthPercent;
+	}
 }

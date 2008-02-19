@@ -21,6 +21,11 @@ public abstract class Geometry extends KmlObject
 	public Geometry()
 	{
 	}
+	
+	public Geometry(Coordinates coordinates)
+	{
+		this.setCoordinates(coordinates);
+	}
 
 	@Override protected void postTranslationProcessingHook()
 	{

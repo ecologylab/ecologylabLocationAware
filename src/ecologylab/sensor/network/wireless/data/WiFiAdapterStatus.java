@@ -29,6 +29,16 @@ import ecologylab.xml.xml_inherit;
 	{
 	}
 
+	public String getCurrentMacAddr()
+	{
+		return currentMacAddr;
+	}
+
+	public WiFiSourceList getAvailableConnections()
+	{
+		return availableConnections;
+	}
+
 	public void apListUpdate(String newData)
 	{
 		this.availableConnections.apListUpdate(newData);

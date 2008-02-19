@@ -26,14 +26,26 @@ import ecologylab.xml.types.scalar.KMLColor;
 	{
 	}
 
+	public ColorStyle(String id, Color color, String colorMode)
+	{
+		super(id);
+
+		this.setColor(color);
+		this.colorMode = colorMode;
+	}
+	
 	public ColorStyle(Color color, String colorMode)
 	{
-		this.color = new KMLColor(color);
-		this.colorMode = colorMode;
+		this(null, color, colorMode);
 	}
 	
 	public Color getColor()
 	{
 		return color;
+	}
+
+	public void setColor(Color color)
+	{
+		this.color = new KMLColor(color);
 	}
 }

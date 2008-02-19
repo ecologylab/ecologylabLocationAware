@@ -23,4 +23,9 @@ public class Point extends Geometry
 	public Point()
 	{
 	}
+	
+	public Point(Coordinates coordinates)
+	{
+		super(coordinates);
+	}
 }
