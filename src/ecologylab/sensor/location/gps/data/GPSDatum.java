@@ -877,4 +877,12 @@ import ecologylab.xml.types.element.ArrayListState;
 			this.otherUpdatedListeners().add(l);
 		}
 	}
+
+	/**
+	 * @return the trackedSVs
+	 */
+	public SVData[] getTrackedSVs()
+	{
+		return trackedSVs;
+	}
 }

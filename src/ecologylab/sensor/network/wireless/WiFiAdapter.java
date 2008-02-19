@@ -45,7 +45,7 @@ public class WiFiAdapter extends Debug
 		}
 	}
 	
-	protected boolean connected()
+	public boolean connected()
 	{
 		return jWifiDll != null;
 	}

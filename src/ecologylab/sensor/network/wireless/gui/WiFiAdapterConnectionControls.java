@@ -7,10 +7,11 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.util.TooManyListenersException;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -18,20 +19,16 @@ import javax.swing.ListCellRenderer;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
-import ecologylab.sensor.location.gps.GPS;
+import stec.jenie.NativeException;
 import ecologylab.sensor.network.wireless.WiFiAdapter;
 import ecologylab.sensor.network.wireless.gui.strings.WiFiStatusStrings;
 import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.UnsupportedCommOperationException;
 
 /**
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
- * 
  */
 public class WiFiAdapterConnectionControls extends JPanel implements
-		ActionListener, WiFiStatusStrings
+		ActionListener, WiFiStatusStrings, ItemListener
 {
 	class CommPortIdentifierRenderer extends JLabel implements ListCellRenderer
 	{
@@ -174,9 +171,13 @@ public class WiFiAdapterConnectionControls extends JPanel implements
 
 	private final JLabel					connectionStatusLabel;
 
-	private final JLabel					networkStatusLabel;
-
 	private final JButton				connectButton;
+
+	private final Integer[]				updateIntervals	=
+																		{ 100, 500, 1000, 2000,
+			5000, 10000, 30000, 60000							};
+
+	private final JComboBox				updateIntervalPulldown;
 
 	/**
 	 * 
@@ -184,10 +185,12 @@ public class WiFiAdapterConnectionControls extends JPanel implements
 	public WiFiAdapterConnectionControls(WiFiConnectionController connController)
 	{
 		connectionStatusLabel = new JLabel();
-		
-		networkStatusLabel = new JLabel();
-		
+
 		connectButton = new JButton(CONNECT_WIFI);
+
+		updateIntervalPulldown = new JComboBox(updateIntervals);
+		
+		updateIntervalPulldown.addItemListener(this);
 
 		initializeGUI();
 
@@ -201,8 +204,7 @@ public class WiFiAdapterConnectionControls extends JPanel implements
 		}
 		else
 		{
-			this.setStatus(CONNECTED, currentGPS.getPortName(), currentGPS
-					.getBaudRate());
+			this.setStatus(CONNECTED);
 		}
 	}
 
@@ -215,67 +217,25 @@ public class WiFiAdapterConnectionControls extends JPanel implements
 
 		if (command == CONNECT_WIFI)
 		{
-			CommPortIdentifier selectedPort = (CommPortIdentifier) this.portNameSelector
-					.getSelectedItem();
-			Integer selectedBaudRate = (Integer) this.baudRateSelector
-					.getSelectedItem();
-
-			if (selectedPort != null)
+			try
 			{
-				try
+				if (this.connController.connectWiFi())
 				{
-					if (this.connController.connectGPS(new GPS(selectedPort,
-							selectedBaudRate)))
-					{
-						this.setStatus(CONNECTED, selectedPort.getName(),
-								selectedBaudRate);
-					}
-					else
-					{
-						this.setStatus(IO_ERROR, selectedPort.getName(),
-								selectedBaudRate);
-					}
+					this.setStatus(CONNECTED);
 				}
-				catch (PortInUseException e1)
+				else
 				{
-					e1.printStackTrace();
-
-					this.setStatus(PORT_IN_USE, selectedPort.getName(),
-							selectedBaudRate);
+					this.setStatus(DISCONNECTED);
 				}
-				catch (UnsupportedCommOperationException e1)
-				{
-					e1.printStackTrace();
-
-					this.setStatus(UNSUPPORTED_OP, selectedPort.getName(),
-							selectedBaudRate);
-				}
-				catch (IOException e1)
-				{
-					e1.printStackTrace();
-
-					this.setStatus(IO_ERROR, selectedPort.getName(),
-							selectedBaudRate);
-				}
-				catch (TooManyListenersException e1)
-				{
-					e1.printStackTrace();
-
-					this.setStatus(PORT_IN_USE, selectedPort.getName(),
-							selectedBaudRate);
-				}
-				catch (NoSuchPortException e1)
-				{
-					e1.printStackTrace();
-
-					this.setStatus(NO_SUCH_PORT, selectedPort.getName(),
-							selectedBaudRate);
-				}
+			}
+			catch (NativeException e1)
+			{
+				this.setStatus(SOFTWARE_FAILURE);
 			}
 		}
 		else if (command == DISCONNECT_WIFI)
 		{
-			connController.disconnectGPS();
+			connController.disconnectWiFi();
 
 			this.setStatus(DISCONNECTED);
 		}
@@ -286,18 +246,13 @@ public class WiFiAdapterConnectionControls extends JPanel implements
 		// Create and populate the panel.
 		JPanel p = new JPanel(new SpringLayout());
 
-		JLabel l = new JLabel("port: ", JLabel.TRAILING);
+		JLabel l = new JLabel("update rate (ms): ", JLabel.TRAILING);
 		p.add(l);
-		l.setLabelFor(this.portNameSelector);
-		p.add(this.portNameSelector);
-
-		l = new JLabel("baud rate: ", JLabel.TRAILING);
-		p.add(l);
-		l.setLabelFor(this.baudRateSelector);
-		p.add(this.baudRateSelector);
+		l.setLabelFor(this.updateIntervalPulldown);
+		p.add(this.updateIntervalPulldown);
 
 		// Lay out the panel.
-		makeCompactGrid(p, 2, 2, // rows, cols
+		makeCompactGrid(p, 1, 2, // rows, cols
 				6, 6, // initX, initY
 				6, 6); // xPad, yPad
 
@@ -313,8 +268,6 @@ public class WiFiAdapterConnectionControls extends JPanel implements
 	{
 		connectButton.setActionCommand(CONNECT_WIFI);
 
-		portNameSelector.setRenderer(new CommPortIdentifierRenderer());
-
 		this.add(initForm());
 
 		this.add(this.connectButton);
@@ -325,24 +278,15 @@ public class WiFiAdapterConnectionControls extends JPanel implements
 	}
 
 	/**
-	 * @param disconnected
-	 */
-	private void setStatus(String status)
-	{
-		this.setStatus(status, null, -1);
-	}
-
-	/**
 	 * @param connected
 	 * @param portName
 	 * @param baudRateSelector
 	 */
-	private void setStatus(String status, String portName, int baudRate)
+	private void setStatus(String status)
 	{
 		if (status == CONNECTED)
 		{
-			this.connectionStatusLabel.setText(status + " - " + portName + "@"
-					+ baudRate);
+			this.connectionStatusLabel.setText(status);
 
 			this.connectButton.setText(DISCONNECT_WIFI);
 			this.connectButton.setActionCommand(DISCONNECT_WIFI);
@@ -356,10 +300,12 @@ public class WiFiAdapterConnectionControls extends JPanel implements
 		}
 		else
 		{
-			this.connectionStatusLabel.setText(CONNECTION_FAILED
-					+ (portName != null && baudRate != -1 ? " " + portName + "@"
-							+ baudRate : "") + ": " + status);
+			this.connectionStatusLabel.setText(status);
 		}
 	}
 
+	public void itemStateChanged(ItemEvent e)
+	{
+		e.
+	}
 }
