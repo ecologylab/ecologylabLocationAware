@@ -1,10 +1,11 @@
 /**
  * 
  */
-package ecologylab.standalone.visualizer;
+package ecologylab.standalone.wifiGpsControls;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -14,13 +15,14 @@ import java.util.EnumSet;
 import java.util.TooManyListenersException;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import stec.jenie.NativeException;
 import ecologylab.appframework.ApplicationEnvironment;
 import ecologylab.appframework.PropertiesAndDirectories;
-import ecologylab.projection.PlateCarreeProjection;
-import ecologylab.projection.Projection;
-import ecologylab.projection.SameCoordinatesException;
+import ecologylab.collections.Scope;
+import ecologylab.net.NetTools;
 import ecologylab.sensor.location.gps.GPS;
 import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GPSDatum;
@@ -28,9 +30,17 @@ import ecologylab.sensor.location.gps.gui.GPSConnectionControls;
 import ecologylab.sensor.location.gps.gui.GPSController;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
+import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
+import ecologylab.sensor.network.wireless.gui.WiFiAdapterConnectionControls;
+import ecologylab.sensor.network.wireless.gui.WiFiConnectionController;
+import ecologylab.services.distributed.server.varieties.KmlServer;
+import ecologylab.services.logging.Logging;
+import ecologylab.services.logging.WiFiGPSStatusOp;
+import ecologylab.services.messages.DefaultServicesTranslations;
 import ecologylab.xml.TranslationSpace;
 import ecologylab.xml.XMLTranslationException;
 import ecologylab.xml.library.geom.Rectangle2DDoubleState;
+import ecologylab.xml.library.kml.Kml;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
@@ -40,8 +50,9 @@ import gnu.io.UnsupportedCommOperationException;
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
-public class ProjectionVisualizer extends ApplicationEnvironment implements
-		GPSDataUpdatedListener, ActionListener, WindowListener, GPSController
+public class WiFiGPSControls extends ApplicationEnvironment implements
+		GPSDataUpdatedListener, ActionListener, WindowListener, GPSController,
+		WiFiConnectionController
 {
 	JFrame						mainFrame;
 
@@ -51,13 +62,32 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 
 	Timer							t;
 
-	GPS							gps		= new GPS();
+	/**
+	 * The GPS object will come from the GPS controls.
+	 */
+	GPS							gps;
 
-	GPSDataUpdater				updater	= new GPSDataUpdater();
+	GPSDataUpdater				updater		= new GPSDataUpdater();
 
-	int							w			= 400;
+	/**
+	 * The WiFiAdapter, which doesn't require any extra special controls to start
+	 * it up will be instantiated in this class.
+	 */
+	RunnableWiFiAdapter		wifi;
 
-	int							h			= 200;
+	KmlServer					kmlServer;
+
+	Logging						logging;
+
+	Kml							kmlData;
+	
+	GPSDatum datum;
+
+	WiFiGPSStatusOp			currentOp	= new WiFiGPSStatusOp();
+
+	int							w				= 400;
+
+	int							h				= 200;
 
 	/**
 	 * @param applicationName
@@ -65,7 +95,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public ProjectionVisualizer(String applicationName)
+	public WiFiGPSControls(String applicationName)
 			throws XMLTranslationException, NoSuchPortException, IOException
 	{
 		super(applicationName);
@@ -82,7 +112,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public ProjectionVisualizer(String applicationName,
+	public WiFiGPSControls(String applicationName,
 			TranslationSpace translationSpace, String[] args,
 			float prefsAssetVersion) throws XMLTranslationException,
 			NoSuchPortException, IOException
@@ -99,7 +129,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public ProjectionVisualizer(String applicationName, String[] args)
+	public WiFiGPSControls(String applicationName, String[] args)
 			throws XMLTranslationException, NoSuchPortException, IOException
 	{
 		super(applicationName, args);
@@ -115,9 +145,8 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public ProjectionVisualizer(Class baseClass, String applicationName,
-			String[] args) throws XMLTranslationException, NoSuchPortException,
-			IOException
+	public WiFiGPSControls(Class baseClass, String applicationName, String[] args)
+			throws XMLTranslationException, NoSuchPortException, IOException
 	{
 		super(baseClass, applicationName, args);
 
@@ -134,7 +163,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public ProjectionVisualizer(Class baseClass, String applicationName,
+	public WiFiGPSControls(Class baseClass, String applicationName,
 			TranslationSpace translationSpace, String[] args,
 			float prefsAssetVersion) throws XMLTranslationException,
 			NoSuchPortException, IOException
@@ -147,55 +176,85 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 
 	private void configure() throws NoSuchPortException, IOException
 	{
+		debug("setting up GPS");
+		this.gps = new GPS();
+		this.gps.addGPSDataListener(this.currentOp);
+		this.gps.addGPSDataListener(updater);
+
+		debug("setting up datum");
+		GPSDataUpdater d = new GPSDataUpdater();
+		this.gps.addGPSDataListener(d);		
+		datum = d.getDatum();
+
+		debug("setting up WiFi");
+		this.wifi = new RunnableWiFiAdapter(1000);
+		this.wifi.addListener(this.currentOp);
+
+		debug("setting up logging");
+		this.logging = new Logging("GPSWiFiData " + System.currentTimeMillis()
+				+ ".xml", false, 10, Logging.LOG_TO_MEMORY_MAPPED_FILE, null, 0);
+		this.logging.start();
+
+		debug("constructing KML data");
+		kmlData = WiFiGPSKMLDataManager.configureKml(wifi, gps);
+
+		debug("launching KML server");
+		TranslationSpace serverTranslations = DefaultServicesTranslations.get();
+		this.kmlServer = new KmlServer(8080, NetTools
+				.getAllInetAddressesForLocalhost(), serverTranslations,
+				new Scope(), 1000000, 1000000, kmlData);
+		kmlServer.start();
+
 		debug("configuring visualizer");
 		configureFromPrefs();
-		setupVisualization();
-
-		debug("starting repainter");
-		t = new Timer(200, this);
+		setupControls();
+		
+		debug("starting log recording at 1Hz");
+		t = new Timer(1000, this);
 		t.start();
 	}
 
 	/**
 	 * 
 	 */
-	private void setupVisualization()
+	private void setupControls()
 	{
 		this.mainFrame = new JFrame(PropertiesAndDirectories.applicationName());
 
 		this.mainFrame.addWindowListener(this);
 
-		PlateCarreeProjection p;
-		try
-		{
-			p = new PlateCarreeProjection(new GPSDatum(29.9611133702 - .05,
-					-95.6697746507 + .05), new GPSDatum(29.9611133702 + .07,
-					-95.6697746507 - .17), 200.0, 100.0,
-					Projection.RotationConstraintMode.ANCHOR_POINTS);
+		this.updater.addDataUpdatedListener(this);
 
-			ProjectionVisualizerPanel panel = new ProjectionVisualizerPanel(
-					new GPSDatum(29.9611133702, -95.6697746507), p, w, h);
-			this.mainFrame.getContentPane().add(panel);
+		JPanel metersPanel = new JPanel(new GridLayout(3,1));
+		metersPanel.setPreferredSize(new Dimension(200, 200));
+		
+		GPSMeter gpsMeter = new GPSMeter(datum);
+		gpsMeter.setPreferredSize(new Dimension(200, 50));
+		
+		GPSHDOPMeter hdopMeter = new GPSHDOPMeter(datum);
+		hdopMeter.setPreferredSize(new Dimension(200, 50));
+		
+		GPSConnectionControls gpsControls = new GPSConnectionControls(this);
+		gpsControls.setPreferredSize(new Dimension(200, 200));
 
-			this.updater.addDataUpdatedListener(this);
-			this.updater.addDataUpdatedListener(panel);
+		WiFiAdapterConnectionControls wifiControls = new WiFiAdapterConnectionControls(
+				this);
+		wifiControls.setPreferredSize(new Dimension(200, 200));
 
-			GPSConnectionControls v = new GPSConnectionControls(this);
-			v.setPreferredSize(new Dimension(200, 200));
+		this.mainFrame.getContentPane().add(gpsControls);
+		this.mainFrame.getContentPane().add(wifiControls);
+		
+		metersPanel.add(gpsMeter);
+		metersPanel.add(hdopMeter);
+		
+		this.mainFrame.getContentPane().add(metersPanel);
 
-			this.mainFrame.getContentPane().add(v);
+		this.mainFrame.setLayout(new FlowLayout());
 
-			this.mainFrame.setLayout(new FlowLayout());
-
-			this.mainFrame.setVisible(true);
-			this.mainFrame.setSize(w, h + 200);
-			this.mainFrame.pack();
-			this.mainFrame.invalidate();
-		}
-		catch (SameCoordinatesException e)
-		{
-			e.printStackTrace();
-		}
+		this.mainFrame.setVisible(true);
+		this.mainFrame.setSize(w, h + 200);
+		this.mainFrame.pack();
+		this.mainFrame.invalidate();
 	}
 
 	/**
@@ -208,13 +267,28 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	}
 
 	/**
+	 * @throws NoSuchPortException
+	 * @see ecologylab.sensor.location.gps.gui.GPSController#connectGPS(ecologylab.sensor.location.gps.GPS)
+	 */
+	public boolean connectGPS(CommPortIdentifier portId, int baud)
+			throws PortInUseException, UnsupportedCommOperationException,
+			IOException, TooManyListenersException, NoSuchPortException
+	{
+		this.gps.disconnect();
+
+		this.gps.setup(portId, baud);
+
+		this.gps.connect();
+
+		return this.gps.connected();
+	}
+
+	/**
 	 * @see ecologylab.sensor.location.gps.gui.GPSController#disconnectGPS()
 	 */
 	public void disconnectGPS()
 	{
 		this.gps.disconnect();
-
-		this.gps.removeGPSDataListener(updater);
 	}
 
 	/**
@@ -226,7 +300,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	public static void main(String[] args) throws XMLTranslationException,
 			NoSuchPortException, IOException
 	{
-		new ProjectionVisualizer("Projection Visualizer");
+		new WiFiGPSControls("Control Panel");
 	}
 
 	/**
@@ -242,6 +316,8 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
+		this.logging.logAction(this.currentOp);
+
 		mainFrame.repaint();
 	}
 
@@ -265,6 +341,16 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	public void windowClosing(WindowEvent e)
 	{
 		debug("Window closed.");
+
+		if (gps.connected())
+		{
+			gps.disconnect();
+		}
+
+		if (wifi.connected())
+		{
+			wifi.disconnect();
+		}
 
 		t.stop();
 
@@ -322,19 +408,20 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 		return interestSet;
 	}
 
-	@Override public boolean connectGPS(CommPortIdentifier portId, int baud)
-			throws PortInUseException, UnsupportedCommOperationException,
-			IOException, TooManyListenersException, NoSuchPortException
+	@Override public boolean connectWiFi() throws NativeException
 	{
-		this.gps.disconnect();
+		this.wifi.connect();
 
-		this.gps.setup(portId, baud);
+		return wifi.connected();
+	}
 
-		this.gps.connect();
+	@Override public void disconnectWiFi()
+	{
+		this.wifi.disconnect();
+	}
 
-		this.gps.addGPSDataListener(updater);
-		// this.gps.addGPSDataListener(new GPSDataPrinter());
-
-		return this.gps.connected();
+	@Override public RunnableWiFiAdapter getWiFiAdapter()
+	{
+		return wifi;
 	}
 }

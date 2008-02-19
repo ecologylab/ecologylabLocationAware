@@ -705,6 +705,11 @@ import ecologylab.xml.types.element.ArrayListState;
 	{
 		return this.currentLocation.getLat();
 	}
+	
+	public double getAlt()
+	{
+		return this.currentLocation.getAlt();
+	}
 
 	/**
 	 * @return the lon
@@ -884,5 +889,15 @@ import ecologylab.xml.types.element.ArrayListState;
 	public SVData[] getTrackedSVs()
 	{
 		return trackedSVs;
+	}
+
+	public int getNumSats()
+	{
+		return numSats;
+	}
+
+	public float getHdop()
+	{
+		return hdop;
 	}
 }

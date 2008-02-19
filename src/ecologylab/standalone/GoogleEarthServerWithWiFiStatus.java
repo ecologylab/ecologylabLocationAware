@@ -5,6 +5,7 @@ import ecologylab.composite.kml.sensor.WiFiColoredIcon;
 import ecologylab.composite.kml.sensor.WiFiDataComment;
 import ecologylab.net.NetTools;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
+import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
 import ecologylab.services.distributed.server.varieties.KmlServer;
 import ecologylab.services.messages.DefaultServicesTranslations;
 import ecologylab.xml.TranslationSpace;
@@ -51,16 +52,16 @@ public class GoogleEarthServerWithWiFiStatus
 		wiFi.addListener(wifiVis);
 		wiFi.addListener(comments);
 
-		/*
-		 * wiFi.addListener(new WiFiStringDataListener() { public void
-		 * apListUpdate(String newData) { System.out.println("APs:");
-		 * System.out.println(newData); }
-		 * 
-		 * public void macAddressUpdate(String newData) {
-		 * System.out.println("--------------- current AP: "+newData); }
-		 * 
-		 * });
-		 */
+		
+		  wiFi.addListener(new WiFiStringDataListener() { public void
+		  apListUpdate(String newData) { System.out.println("APs:");
+		  System.out.println(newData); }
+		  
+		  public void macAddressUpdate(String newData) {
+		  System.out.println("--------------- current AP: "+newData); }
+		  
+		  });
+		 
 
 		wiFi.connect();
 

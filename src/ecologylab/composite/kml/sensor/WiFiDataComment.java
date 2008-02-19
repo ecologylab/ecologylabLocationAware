@@ -63,7 +63,7 @@ public class WiFiDataComment implements WiFiStringDataListener
 			else
 			{
 				htmlString
-						.append("<h2>Missing data about currently-associated network</h2>");
+						.append("<h3>Missing data about currently-associated network</h3>");
 			}
 		}
 		else

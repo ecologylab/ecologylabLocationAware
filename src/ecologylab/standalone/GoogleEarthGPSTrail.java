@@ -1,11 +1,11 @@
 package ecologylab.standalone;
 
 import ecologylab.collections.Scope;
+import ecologylab.composite.kml.sensor.GPSToKMLTrail;
 import ecologylab.net.NetTools;
 import ecologylab.sensor.location.gps.GPS;
 import ecologylab.sensor.location.gps.SimGPS;
 import ecologylab.sensor.location.gps.SimGPS.PlayMode;
-import ecologylab.sensor.location.gps.listener.GPSToKMLTrail;
 import ecologylab.services.distributed.server.varieties.KmlServer;
 import ecologylab.services.messages.DefaultServicesTranslations;
 import ecologylab.xml.TranslationSpace;
@@ -43,10 +43,10 @@ public class GoogleEarthGPSTrail
 			PortInUseException, UnsupportedCommOperationException,
 			TooManyListenersException, NoSuchPortException
 	{
-		GPS gps = new SimGPS(new File("sampleLogs/zachToGrocery.txt"),
-				PlayMode.FORWARD_BACKWARD);
+		//GPS gps = new SimGPS(new File("sampleLogs/zachToGrocery.txt"),
+			//	PlayMode.FORWARD_BACKWARD);
 
-		// GPS gps = new GPS("COM8", 115200);
+		 GPS gps = new GPS("COM19", 115200);
 
 		Kml kmlData = new Kml();
 
@@ -97,17 +97,17 @@ public class GoogleEarthGPSTrail
 
 		gps.addGPSDataListener(new GPSToKMLTrail(line, 2000, 100));
 
-		System.out.println("Attempting to load the entire simulation file...");
+//		System.out.println("Attempting to load the entire simulation file...");
 
 		for (int i = 0; i < 33000; i++)
 		{
-			((SimGPS) gps).sendSentence();
+			//((SimGPS) gps).sendSentence();
 		}
 
 		System.out.println("...done.");
 
 		// System.out.println("Starting simulator.");
 
-		// gps.connect();
+		 gps.connect();
 	}
 }

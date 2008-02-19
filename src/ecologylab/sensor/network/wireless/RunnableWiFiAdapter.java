@@ -196,4 +196,9 @@ public class RunnableWiFiAdapter extends WiFiAdapter implements
 			}
 		}
 	}
+
+	public void setUpdateInterval(int updateInterval)
+	{
+		this.updateInterval = updateInterval;
+	}
 }

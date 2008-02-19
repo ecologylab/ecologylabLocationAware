@@ -33,24 +33,25 @@ import gnu.io.UnsupportedCommOperationException;
  */
 public class GPS extends Debug implements SerialPortEventListener
 {
-	private CommPortIdentifier				portId;
+	private CommPortIdentifier					portId;
 
-	private SerialPort						port						= null;
+	private SerialPort							port						= null;
 
-	private int									baud;
+	private int										baud;
 
-	private InputStream						portIn					= null;
+	private InputStream							portIn					= null;
 
 	private LinkedList<NMEAStringListener>	listeners				= new LinkedList<NMEAStringListener>();
 
-	private static final CharsetDecoder	ASCII_DECODER			= Charset.forName(
-																						"US-ASCII")
-																						.newDecoder();
+	private static final CharsetDecoder		ASCII_DECODER			= Charset
+																							.forName(
+																									"US-ASCII")
+																							.newDecoder();
 
-	protected StringBuilder					incomingDataBuffer	= new StringBuilder();
+	protected StringBuilder						incomingDataBuffer	= new StringBuilder();
 
-	private ByteBuffer						incomingBytes			= ByteBuffer
-																						.allocate(10000);
+	private ByteBuffer							incomingBytes			= ByteBuffer
+																							.allocate(10000);
 
 	/**
 	 * Instantiate a GPS device on a given port and baud rate.
@@ -72,6 +73,21 @@ public class GPS extends Debug implements SerialPortEventListener
 	public GPS(CommPortIdentifier portId, int baud) throws NoSuchPortException,
 			IOException
 	{
+		setup(portId, baud);
+	}
+
+	public void setup(String portName, int baud) throws IOException, NoSuchPortException
+	{
+		this.setup(CommPortIdentifier.getPortIdentifier(portName), baud);
+	}
+	
+	/**
+	 * @param portId
+	 * @param baud
+	 * @throws IOException
+	 */
+	public void setup(CommPortIdentifier portId, int baud) throws IOException
+	{
 		this.baud = baud;
 
 		this.portId = portId;
@@ -87,8 +103,11 @@ public class GPS extends Debug implements SerialPortEventListener
 	/**
 	 * No-argument, do-nothing constructor for simulator subclass that will not
 	 * use a port.
+	 * 
+	 * Can also be used to have a GPS instance that is not yet configured, but
+	 * will be configured later. This is useful if listeners need to be the same.
 	 */
-	protected GPS()
+	public GPS()
 	{
 
 	}
@@ -206,10 +225,18 @@ public class GPS extends Debug implements SerialPortEventListener
 
 		if (startOfMessage > -1 && endOfMessage > -1)
 		{
+			try
+			{
 			this.fireGPSDataString(incomingDataBuffer.substring(
 					startOfMessage + 1, endOfMessage));
 
 			incomingDataBuffer.delete(startOfMessage, endOfMessage + 2);
+			}
+			catch (Exception e)
+			{
+				// TODO handle disconnect properly
+				e.printStackTrace();
+			}
 		}
 	}
 

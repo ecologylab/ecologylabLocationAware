@@ -13,7 +13,7 @@ import ecologylab.sensor.location.gps.data.GPSDatum;
  */
 public class GPSDataUpdater extends Debug implements NMEAStringListener
 {
-	GPSDatum	datum	= new GPSDatum();
+	protected GPSDatum	datum	= new GPSDatum();
 
 	/**
 	 * 
@@ -54,7 +54,7 @@ public class GPSDataUpdater extends Debug implements NMEAStringListener
 	/**
 	 * @return the datum
 	 */
-	public GPSConstants getDatum()
+	public GPSDatum getDatum()
 	{
 		return datum;
 	}

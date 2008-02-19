@@ -7,67 +7,24 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
 import stec.jenie.NativeException;
 import ecologylab.sensor.network.wireless.WiFiAdapter;
 import ecologylab.sensor.network.wireless.gui.strings.WiFiStatusStrings;
-import gnu.io.CommPortIdentifier;
 
 /**
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  */
 public class WiFiAdapterConnectionControls extends JPanel implements
-		ActionListener, WiFiStatusStrings, ItemListener
+		ActionListener, WiFiStatusStrings
 {
-	class CommPortIdentifierRenderer extends JLabel implements ListCellRenderer
-	{
-		private static final long	serialVersionUID	= 1131516153469419203L;
-
-		public CommPortIdentifierRenderer()
-		{
-			setOpaque(true);
-			setHorizontalAlignment(LEFT);
-			setVerticalAlignment(CENTER);
-		}
-
-		/**
-		 * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList,
-		 *      java.lang.Object, int, boolean, boolean)
-		 */
-		public Component getListCellRendererComponent(JList list, Object value,
-				int index, boolean isSelected, boolean cellHasFocus)
-		{
-			// Get the selected index. (The index param isn't
-			// always valid, so just use the value.)
-			if (isSelected)
-			{
-				setBackground(list.getSelectionBackground());
-				setForeground(list.getSelectionForeground());
-			}
-			else
-			{
-				setBackground(list.getBackground());
-				setForeground(list.getForeground());
-			}
-
-			setText(((CommPortIdentifier) value).getName());
-
-			return this;
-		}
-
-	}
-
 	private static final long		serialVersionUID	= 2352632177790522459L;
 
 	private static final String	CONNECT_WIFI		= "connect";
@@ -189,9 +146,9 @@ public class WiFiAdapterConnectionControls extends JPanel implements
 		connectButton = new JButton(CONNECT_WIFI);
 
 		updateIntervalPulldown = new JComboBox(updateIntervals);
+		updateIntervalPulldown.setSelectedIndex(2); // set to 1 second
+		updateIntervalPulldown.addActionListener(this);
 		
-		updateIntervalPulldown.addItemListener(this);
-
 		initializeGUI();
 
 		this.connController = connController;
@@ -213,31 +170,41 @@ public class WiFiAdapterConnectionControls extends JPanel implements
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		String command = e.getActionCommand();
-
-		if (command == CONNECT_WIFI)
+		if (this.updateIntervalPulldown == e.getSource())
 		{
-			try
-			{
-				if (this.connController.connectWiFi())
-				{
-					this.setStatus(CONNECTED);
-				}
-				else
-				{
-					this.setStatus(DISCONNECTED);
-				}
-			}
-			catch (NativeException e1)
-			{
-				this.setStatus(SOFTWARE_FAILURE);
-			}
+			 Integer interval = (Integer)updateIntervalPulldown.getSelectedItem();
+			 
+			 if (this.connController != null && this.connController.getWiFiAdapter() != null)
+				 this.connController.getWiFiAdapter().setUpdateInterval(interval);
 		}
-		else if (command == DISCONNECT_WIFI)
+		else
 		{
-			connController.disconnectWiFi();
+			String command = e.getActionCommand();
 
-			this.setStatus(DISCONNECTED);
+			if (command == CONNECT_WIFI)
+			{
+				try
+				{
+					if (this.connController.connectWiFi())
+					{
+						this.setStatus(CONNECTED);
+					}
+					else
+					{
+						this.setStatus(DISCONNECTED);
+					}
+				}
+				catch (NativeException e1)
+				{
+					this.setStatus(SOFTWARE_FAILURE);
+				}
+			}
+			else if (command == DISCONNECT_WIFI)
+			{
+				connController.disconnectWiFi();
+
+				this.setStatus(DISCONNECTED);
+			}
 		}
 	}
 
@@ -302,10 +269,5 @@ public class WiFiAdapterConnectionControls extends JPanel implements
 		{
 			this.connectionStatusLabel.setText(status);
 		}
-	}
-
-	public void itemStateChanged(ItemEvent e)
-	{
-		e.
 	}
 }

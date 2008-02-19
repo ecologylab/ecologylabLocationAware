@@ -230,7 +230,7 @@ public class GPSConnectionControls extends JPanel implements ActionListener, GPS
 			{
 				try
 				{
-					if (this.projVis.connectGPS(new GPS(selectedPort, selectedBaudRate)))
+					if (this.projVis.connectGPS(selectedPort, selectedBaudRate))
 					{
 						this.setStatus(CONNECTED, selectedPort.getName(), selectedBaudRate);
 					}

@@ -51,6 +51,11 @@ public class Coordinates extends ElementState
 	public Coordinates()
 	{
 	}
+	
+	public Coordinates(GeoCoordinate coord)
+	{
+		this.coordinateList.add(coord);
+	}
 
 	/**
 	 * Initialize with a string of coordinates, which should be comma-delimited
