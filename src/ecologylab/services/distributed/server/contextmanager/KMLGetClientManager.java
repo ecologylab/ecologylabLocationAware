@@ -54,8 +54,6 @@ public class KMLGetClientManager extends ClientManager
 		((KmlResponse) responseMessage).getKml().translateToXML(
 				outgoingMessageBuf);
 		outgoingMessageBuf.append("\r\n");
-
-		debug("outgoing: " + outgoingMessageBuf.toString());
 	}
 
 	@Override protected RequestMessage translateStringToRequestMessage(

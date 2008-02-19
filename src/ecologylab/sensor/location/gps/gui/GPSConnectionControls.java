@@ -4,7 +4,7 @@
 package ecologylab.sensor.location.gps.gui;
 
 import ecologylab.sensor.location.gps.GPS;
-import ecologylab.sensor.location.gps.data.strings.GPSStatusStrings;
+import ecologylab.sensor.location.gps.gui.strings.GPSStatusStrings;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;

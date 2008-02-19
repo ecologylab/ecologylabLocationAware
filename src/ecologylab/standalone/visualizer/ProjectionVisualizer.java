@@ -44,7 +44,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 {
 	JFrame						mainFrame;
 
-	GPSConstants						currentGPSReportedPos;
+	GPSConstants				currentGPSReportedPos;
 
 	Rectangle2DDoubleState	virtualField;
 

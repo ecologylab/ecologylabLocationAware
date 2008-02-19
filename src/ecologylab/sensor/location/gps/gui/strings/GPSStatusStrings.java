@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ecologylab.sensor.location.gps.data.strings;
+package ecologylab.sensor.location.gps.gui.strings;
 
 /**
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)

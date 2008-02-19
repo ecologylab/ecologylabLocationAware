@@ -54,17 +54,21 @@ public class WiFiDataComment implements WiFiStringDataListener
 
 			if (stat != null)
 			{
-				htmlString.append("<h2>");
+				htmlString.append("<h3>");
 				htmlString.append(stat.getId() + " (" + stat.getMacAddr() + ") - "
 						+ stat.getSignalStrengthPercent() + "% ("
 						+ stat.getSignalStrength() + "dBm)");
-				htmlString.append("</h2>");
+				htmlString.append("</h3>");
 			}
 			else
 			{
 				htmlString
 						.append("<h2>Missing data about currently-associated network</h2>");
 			}
+		}
+		else
+		{
+			htmlString.append("<h3>No network</h3>");
 		}
 
 		for (WiFiSource stat : netStatus.getAvailableConnections().values())
