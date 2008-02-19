@@ -1,16 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://earth.google.com/kml/2.0">
     <NetworkLink>
-      <description>Refresh me</description>
-      <name>Random City</name>
-      <visibility>1</visibility>
-      <open>1</open>
-      <refreshVisibility>1</refreshVisibility>
-      <flyToView>1</flyToView>
-      <Url>
-        <href>http://localhost:8080</href>
-<refreshInterval>10</refreshInterval>
-<refreshMode>onInterval</refreshMode>
-      </Url>
-    </NetworkLink>
+		<Style id="testNetworkStyle">
+			<LineStyle>
+				<width>4</width>
+				<color>7f00ffff</color>
+				<colorMode>normal</colorMode>
+			</LineStyle>
+			<PolyStyle>
+				<color>7f00ff00</color>
+				<colorMode>normal</colorMode>
+			</PolyStyle>
+			<IconStyle>
+				<scale>1.0</scale>
+				<Icon>
+					<href>
+						http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png
+					</href>
+				</Icon>
+				<hotSpot x="0.5" y="0.5" xunits="fraction" yunits="fraction"/>
+				<color>ffffffff</color>
+				<colorMode>normal</colorMode>
+			</IconStyle>
+		</Style>
+		<description>Refresh me</description>
+		<name>Random City</name>
+		<visibility>1</visibility>
+		<open>1</open>
+		<refreshVisibility>1</refreshVisibility>
+		<flyToView>1</flyToView>
+		<Url>
+			<href>http://localhost:8080</href>
+			<refreshInterval>10</refreshInterval>
+			<refreshMode>onInterval</refreshMode>
+		</Url>
+	</NetworkLink>
 </kml>

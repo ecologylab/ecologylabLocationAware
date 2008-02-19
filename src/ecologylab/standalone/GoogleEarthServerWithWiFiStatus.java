@@ -2,10 +2,9 @@ package ecologylab.standalone;
 
 import ecologylab.collections.Scope;
 import ecologylab.composite.kml.sensor.WiFiColoredIcon;
+import ecologylab.composite.kml.sensor.WiFiDataComment;
 import ecologylab.net.NetTools;
-import ecologylab.sensor.location.gps.GPS;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
-import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
 import ecologylab.services.distributed.server.varieties.KmlServer;
 import ecologylab.services.messages.DefaultServicesTranslations;
 import ecologylab.xml.TranslationSpace;
@@ -14,7 +13,6 @@ import ecologylab.xml.library.kml.feature.Placemark;
 import ecologylab.xml.library.kml.feature.container.Document;
 import ecologylab.xml.library.kml.geometry.Coordinates;
 import ecologylab.xml.library.kml.geometry.Point;
-import ecologylab.xml.library.kml.style.IconStyle;
 import ecologylab.xml.library.kml.style.LineStyle;
 import ecologylab.xml.library.kml.style.PolyStyle;
 import ecologylab.xml.library.kml.style.Style;
@@ -38,35 +36,35 @@ public class GoogleEarthServerWithWiFiStatus
 	 * @throws UnsupportedCommOperationException
 	 * @throws PortInUseException
 	 * @throws NoSuchPortException
-	 * @throws NativeException 
+	 * @throws NativeException
 	 */
 	public static void main(String[] args) throws IOException,
 			PortInUseException, UnsupportedCommOperationException,
 			TooManyListenersException, NoSuchPortException, NativeException
 	{
 		WiFiColoredIcon wifiVis = WiFiColoredIcon.GREEN_RED_STANDARD;
-		
-		RunnableWiFiAdapter wiFi = new RunnableWiFiAdapter(1000);
-		
-		wiFi.addListener(wifiVis);
-		
-/*		wiFi.addListener(new WiFiStringDataListener() 
-		{
-			public void apListUpdate(String newData)
-			{
-				System.out.println("APs:");
-				System.out.println(newData);
-			}
 
-			public void macAddressUpdate(String newData)
-			{
-				System.out.println("--------------- current AP: "+newData);
-			}
-			
-		});*/
-		
+		WiFiDataComment comments = new WiFiDataComment();
+
+		RunnableWiFiAdapter wiFi = new RunnableWiFiAdapter(5000);
+
+		wiFi.addListener(wifiVis);
+		wiFi.addListener(comments);
+
+		/*
+		 * wiFi.addListener(new WiFiStringDataListener() { public void
+		 * apListUpdate(String newData) { System.out.println("APs:");
+		 * System.out.println(newData); }
+		 * 
+		 * public void macAddressUpdate(String newData) {
+		 * System.out.println("--------------- current AP: "+newData); }
+		 * 
+		 * });
+		 */
+
 		wiFi.connect();
-		
+
+		// build KML
 		Kml kmlData = new Kml();
 
 		Style lineStyle = new Style("yellowLineGreenPoly",
@@ -79,14 +77,20 @@ public class GoogleEarthServerWithWiFiStatus
 				"ff", 16), Integer.parseInt("00", 16), Integer.parseInt("7f", 16)),
 				"normal", false, false),
 
+		// use the icon from the WiFiColoredIcon object, so it will be
+		// automatically updated to reflect the status of wiFi
 				wifiVis.getIcon());
 
 		Document doc = new Document("To the grocery store",
 				"This was my trip to the grocery store one day.", lineStyle);
 
-		Placemark head = new Placemark("starting point", "this is where the trip starts", lineStyle.getId());
+		Placemark head = new Placemark("point",
+				"", lineStyle.getId());
 		head.setPoint(new Point(new Coordinates("-95.6711667,29.960144444,0")));
 		
+		// register with the comment creator, so the comment matches the current wifi status
+		comments.registerKmlFeature(head);
+
 		doc.addPlacemark(head);
 
 		kmlData.setDocument(doc);

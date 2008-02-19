@@ -21,7 +21,7 @@ import ecologylab.xml.xml_inherit;
 @xml_inherit public class WiFiAdapterStatus extends ElementState implements
 		WiFiStringDataListener
 {
-	@xml_attribute String		currentMacAddr;
+	@xml_attribute String		currentMacAddr = WiFiAdapter.NOT_ASSOCIATED;
 
 	@xml_nested WiFiSourceList	availableConnections	= new WiFiSourceList();
 

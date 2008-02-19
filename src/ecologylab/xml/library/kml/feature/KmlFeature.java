@@ -38,7 +38,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 
 	// TODO Snippet??
 
-	@xml_leaf String									description;
+	@xml_leaf(CDATA) String									description;
 
 	// TODO AbstractView??
 
@@ -97,5 +97,13 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	public void setStyleUrl(String styleUrl)
 	{
 		this.styleUrl = styleUrl;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description)
+	{
+		this.description = description;
 	}
 }
