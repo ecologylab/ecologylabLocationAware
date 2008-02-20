@@ -408,19 +408,19 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 		return interestSet;
 	}
 
-	@Override public boolean connectWiFi() throws NativeException
+	public boolean connectWiFi() throws NativeException
 	{
 		this.wifi.connect();
 
 		return wifi.connected();
 	}
 
-	@Override public void disconnectWiFi()
+	public void disconnectWiFi()
 	{
 		this.wifi.disconnect();
 	}
 
-	@Override public RunnableWiFiAdapter getWiFiAdapter()
+	public RunnableWiFiAdapter getWiFiAdapter()
 	{
 		return wifi;
 	}

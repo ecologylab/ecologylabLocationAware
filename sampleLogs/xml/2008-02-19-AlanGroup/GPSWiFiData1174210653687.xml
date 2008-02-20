@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<logging>
+
+	<prologue date="Sun Mar 18 02:37:33 PDT 2007" ip="10.32.39.243"
+		user_i_d="0" />
+
+	<op_sequence>
+
+		<wi_fi_g_p_s_status_op session_time="4422">
+			<location_status>
+				<loc />
+			</location_status>
+			<net_status current_mac_addr="NOT_ASSOCIATED">
+				<available_connections></available_connections>
+			</net_status>
+		</wi_fi_g_p_s_status_op>
+		<wi_fi_g_p_s_status_op session_time="5422">
+			<location_status>
+				<loc />
+			</location_status>
+			<net_status current_mac_addr="NOT_ASSOCIATED">
+				<available_connections></available_connections>
+			</net_status>
+		</wi_fi_g_p_s_status_op>
+		<wi_fi_g_p_s_status_op session_time="6422">
+			<location_status>
+				<loc />
+			</location_status>
+			<net_status current_mac_addr="NOT_ASSOCIATED">
+				<available_connections></available_connections>
+			</net_status>
+		</wi_fi_g_p_s_status_op>
+		<wi_fi_g_p_s_status_op session_time="7563">
+			<location_status>
+				<loc />
+			</location_status>
+			<net_status current_mac_addr="NOT_ASSOCIATED">
+				<available_connections></available_connections>
+			</net_status>
+		</wi_fi_g_p_s_status_op>
+		<wi_fi_g_p_s_status_op session_time="8422">
+			<location_status>
+				<loc />
+			</location_status>
+			<net_status current_mac_addr="NOT_ASSOCIATED">
+				<available_connections></available_connections>
+			</net_status>
+		</wi_fi_g_p_s_status_op>
+		<wi_fi_g_p_s_status_op session_time="9422">
+			<location_status>
+				<loc />
+			</location_status>
+			<net_status current_mac_addr="NOT_ASSOCIATED">
+				<available_connections></available_connections>
+			</net_status>
+		</wi_fi_g_p_s_status_op>
+		<wi_fi_g_p_s_status_op session_time="10422">
+			<location_status>
+				<loc />
+			</location_status>
+			<net_status current_mac_addr="NOT_ASSOCIATED">
+				<available_connections></available_connections>
+			</net_status>
+		</wi_fi_g_p_s_status_op>
+		<wi_fi_g_p_s_status_op session_time="11422">
+			<location_status>
+				<loc />
+			</location_status>
+			<net_status current_mac_addr="NOT_ASSOCIATED">
+				<available_connections></available_connections>
+			</net_status>
+		</wi_fi_g_p_s_status_op>
+		<wi_fi_g_p_s_status_op session_time="13875">
+			<location_status>
+				<loc />
+			</location_status>
+			<net_status current_mac_addr="NOT_ASSOCIATED">
+				<available_connections></available_connections>
+			</net_status>
+		</wi_fi_g_p_s_status_op>
+		<wi_fi_g_p_s_status_op utc_time="000409" session_time="14422">
+			<location_status num_sats="12" auto_calc_mode="true"
+				calc_mode="1" utc_time="000409">
+				<loc lat="30.618535" lon="-96.39779333333334" />
+			</location_status>
+			<net_status current_mac_addr="NOT_ASSOCIATED">
+				<available_connections></available_connections>
+			</net_status>
+		</wi_fi_g_p_s_status_op>
+		<wi_fi_g_p_s_status_op utc_time="000410" session_time="15422">
+			<location_status num_sats="12" auto_calc_mode="true"
+				calc_mode="1" utc_time="000410">
+				<loc lat="30.618535" lon="-96.39779333333334" />
+			</location_status>
+			<net_status current_mac_addr="NOT_ASSOCIATED">
+				<available_connections></available_connections>
+			</net_status>
+		</wi_fi_g_p_s_status_op>
+		<wi_fi_g_p_s_status_op utc_time="000410" session_time="16422">
+			<location_status num_sats="12" auto_calc_mode="true"
+				calc_mode="1" utc_time="000410">
+				<loc lat="30.618535" lon="-96.39779333333334" />
+			</location_status>
+			<net_status current_mac_addr="NOT_ASSOCIATED">
+				<available_connections></available_connections>
+			</net_status>
+		</wi_fi_g_p_s_status_op>
+	</op_sequence>
+</logging>

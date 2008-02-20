@@ -28,7 +28,7 @@ public class GPSToKMLPoint implements NMEAStringListener
 		this.controlledPoint = pointToControl;
 	}
 
-	@Override public void processIncomingNMEAString(String gpsDataString)
+	public void processIncomingNMEAString(String gpsDataString)
 	{
 		this.data.processIncomingNMEAString(gpsDataString);
 

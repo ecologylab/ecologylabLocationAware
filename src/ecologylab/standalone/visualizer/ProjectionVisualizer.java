@@ -322,7 +322,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 		return interestSet;
 	}
 
-	@Override public boolean connectGPS(CommPortIdentifier portId, int baud)
+	public boolean connectGPS(CommPortIdentifier portId, int baud)
 			throws PortInUseException, UnsupportedCommOperationException,
 			IOException, TooManyListenersException, NoSuchPortException
 	{
