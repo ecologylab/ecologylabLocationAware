@@ -137,4 +137,36 @@ import gnu.io.UnsupportedCommOperationException;
 		
 		l.stop();
 	}
+
+	/**
+	 * @return the locationStatus
+	 */
+	public GPSDatum getLocationStatus()
+	{
+		return locationStatus;
+	}
+
+	/**
+	 * @return the netStatus
+	 */
+	public WiFiAdapterStatus getNetStatus()
+	{
+		return netStatus;
+	}
+
+	/**
+	 * @return the utcTime
+	 */
+	public String getUtcTime()
+	{
+		return utcTime;
+	}
+
+	/**
+	 * @return the utcDate
+	 */
+	public String getUtcDate()
+	{
+		return utcDate;
+	}
 }

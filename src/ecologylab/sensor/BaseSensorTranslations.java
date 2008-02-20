@@ -25,7 +25,8 @@ public class BaseSensorTranslations
 	public static final String	PACKAGE_NAME	= "ecologylab.xml.library.kml";
 
 	public static final Class	TRANSLATIONS[]	=
-															{ WiFiGPSStatusOp.class,
+															{ 
+		WiFiGPSStatusOp.class,
 
 															NetworkList.class, WiFiSourceList.class,
 
