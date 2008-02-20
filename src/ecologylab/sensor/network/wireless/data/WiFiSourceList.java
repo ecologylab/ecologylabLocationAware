@@ -31,9 +31,17 @@ import ecologylab.xml.xml_inherit;
 		super();
 	}
 
+	/**
+	 * Clears the contents of this list, and adds all of the WiFiSource data from
+	 * the given String.
+	 * 
+	 * @see ecologylab.sensor.network.NetworkList#updateFromDataString(java.lang.String)
+	 */
 	@Override public void updateFromDataString(String newData)
 	{
 		String[] aps = newData.split("\\*\n");
+
+		this.clear();
 
 		for (String s : aps)
 		{
@@ -41,13 +49,8 @@ import ecologylab.xml.xml_inherit;
 			{
 				String[] apData = s.split("\n");
 
-				WiFiSource wfs = this.get(apData[1]);
-
-				if (wfs == null)
-				{
-					wfs = new WiFiSource();
-					this.put(apData[1], wfs);
-				}
+				WiFiSource wfs = new WiFiSource();
+				this.put(apData[1], wfs);
 
 				wfs.updateData(s);
 			}

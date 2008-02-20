@@ -185,7 +185,6 @@ public class GPS extends Debug implements SerialPortEventListener
 		case (SerialPortEvent.DATA_AVAILABLE):
 			// when data is available, we read it, parse it as ASCII
 			// strings, and pass it to a data listener
-
 			try
 			{
 				incomingBytes.clear();
@@ -195,8 +194,7 @@ public class GPS extends Debug implements SerialPortEventListener
 				if (bytesRead > 0)
 				{
 					// have to set the limit on the bytebuffer, because we just
-					// changed the
-					// backing array
+					// changed the backing array
 					incomingBytes.limit(bytesRead);
 
 					incomingDataBuffer.append(ASCII_DECODER.decode(incomingBytes));

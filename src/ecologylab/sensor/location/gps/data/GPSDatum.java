@@ -145,7 +145,7 @@ import ecologylab.xml.types.element.ArrayListState;
 	{
 		if (tempDataStore == null)
 		{
-			tempDataStore = new char[79];
+			tempDataStore = new char[80];
 		}
 
 		return tempDataStore;
@@ -295,6 +295,8 @@ import ecologylab.xml.types.element.ArrayListState;
 						 */
 						while (i < dataLength && !finishedField)
 						{
+							try
+							{ // XXX this should be removed once the bug is fixed
 							tempData[i] = gpsData.charAt(i);
 
 							if (tempData[i] == ',')
@@ -308,6 +310,16 @@ import ecologylab.xml.types.element.ArrayListState;
 							}
 
 							i++;
+							}
+							catch (Exception e)
+							{
+								error("Exception occurred!");
+								error("i                = "+i);
+								error("gpsData.length() = "+gpsData.length());
+								error("tempData.length  = "+tempData.length);
+								
+								e.printStackTrace();
+							}
 						}
 					}
 				}
