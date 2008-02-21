@@ -11,8 +11,8 @@ import ecologylab.sensor.network.wireless.WiFiAdapter;
 import ecologylab.sensor.network.wireless.data.WiFiAdapterStatus;
 import ecologylab.sensor.network.wireless.data.WiFiSource;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
+import ecologylab.xml.library.kml.style.Icon;
 import ecologylab.xml.library.kml.style.IconStyle;
-import ecologylab.xml.library.kml.style.icon.HotSpot;
 
 /**
  * Provides an IconStyle for use in KML, whose color is based on the current
@@ -70,7 +70,7 @@ public class WiFiColoredIcon extends Debug implements WiFiStringDataListener,
 				onlineStrongConnectionColor, 100);
 
 		this.icon = new IconStyle(null, offlineIconURL, 1.0f, 0f,
-				HotSpot.CENTERED_HOTSPOT, offlineColor, "normal");
+				Icon.CENTERED_HOTSPOT, offlineColor, "normal");
 	}
 
 	protected void configureIconOffline()

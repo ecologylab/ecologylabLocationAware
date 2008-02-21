@@ -1,9 +1,10 @@
 /**
  * 
  */
-package ecologylab.xml.library.kml.style.icon;
+package ecologylab.xml.library.kml.style;
 
 import ecologylab.xml.ElementState;
+import ecologylab.xml.library.kml.overlay.Vec2;
 
 /**
  * Created according to
@@ -19,6 +20,9 @@ import ecologylab.xml.ElementState;
  */
 public class Icon extends ElementState
 {
+	public static final Vec2	CENTERED_HOTSPOT	= new Vec2(.5f, 1.0f,
+			Vec2.FRACTION, Vec2.FRACTION);
+	
 	/** An HTTP address or a local file specification used to load an icon. */
 	@xml_leaf private String										href;
 

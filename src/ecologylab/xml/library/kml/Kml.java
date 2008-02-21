@@ -7,6 +7,9 @@ import ecologylab.xml.ElementState;
 import ecologylab.xml.library.kml.feature.Placemark;
 import ecologylab.xml.library.kml.feature.container.Document;
 import ecologylab.xml.library.kml.feature.container.Folder;
+import ecologylab.xml.library.kml.overlay.GroundOverlay;
+import ecologylab.xml.library.kml.overlay.PhotoOverlay;
+import ecologylab.xml.library.kml.overlay.ScreenOverlay;
 
 /**
  * From http://code.google.com/apis/kml/documentation/kml_tags_beta1.html#kml
@@ -28,15 +31,21 @@ import ecologylab.xml.library.kml.feature.container.Folder;
  */
 public class Kml extends ElementState
 {
-	@xml_nested @xml_tag("Placemark") Placemark	placemark	= null;
+	@xml_nested @xml_tag("Placemark") Placemark				placemark		= null;
 
-	@xml_nested @xml_tag("Document") Document		document		= null;
+	@xml_nested @xml_tag("Document") Document					document			= null;
 
-	@xml_nested @xml_tag("Folder") Folder			folder		= null;
+	@xml_nested @xml_tag("Folder") Folder						folder			= null;
 
-	// TODO Folder, NetworkLink, PhotoOverlay, ScreenOverlay, GroundOverlay
+	@xml_nested @xml_tag("GroundOverlay") GroundOverlay	groundOverlay	= null;
 
-	@xml_attribute String								xmlns			= "http://earth.google.com/kml/2.2";
+	@xml_nested @xml_tag("PhotoOverlay") PhotoOverlay		photoOverlay	= null;
+
+	@xml_nested @xml_tag("ScreenOverlay") ScreenOverlay	screenOverlay	= null;
+
+	// TODO NetworkLink
+
+	@xml_attribute String											xmlns				= "http://earth.google.com/kml/2.2";
 
 	/**
 	 * No-argument constructor for automatic translation to/from KML.
@@ -56,6 +65,9 @@ public class Kml extends ElementState
 
 		this.document = null;
 		this.folder = null;
+		this.photoOverlay = null;
+		this.groundOverlay = null;
+		this.screenOverlay = null;
 	}
 
 	public Document getDocument()
@@ -69,6 +81,9 @@ public class Kml extends ElementState
 
 		this.placemark = null;
 		this.folder = null;
+		this.photoOverlay = null;
+		this.groundOverlay = null;
+		this.screenOverlay = null;
 	}
 
 	public Folder getFolder()
@@ -82,5 +97,76 @@ public class Kml extends ElementState
 
 		this.document = null;
 		this.placemark = null;
+		this.photoOverlay = null;
+		this.groundOverlay = null;
+		this.screenOverlay = null;
+	}
+
+	/**
+	 * @return the groundOverlay
+	 */
+	public GroundOverlay getGroundOverlay()
+	{
+		return groundOverlay;
+	}
+
+	/**
+	 * @param groundOverlay
+	 *           the groundOverlay to set
+	 */
+	public void setGroundOverlay(GroundOverlay groundOverlay)
+	{
+		this.groundOverlay = groundOverlay;
+
+		this.document = null;
+		this.placemark = null;
+		this.folder = null;
+		this.photoOverlay = null;
+		this.screenOverlay = null;
+	}
+
+	/**
+	 * @return the photoOverlay
+	 */
+	public PhotoOverlay getPhotoOverlay()
+	{
+		return photoOverlay;
+	}
+
+	/**
+	 * @param photoOverlay
+	 *           the photoOverlay to set
+	 */
+	public void setPhotoOverlay(PhotoOverlay photoOverlay)
+	{
+		this.photoOverlay = photoOverlay;
+
+		this.document = null;
+		this.placemark = null;
+		this.folder = null;
+		this.groundOverlay = null;
+		this.screenOverlay = null;
+	}
+
+	/**
+	 * @return the screenOverlay
+	 */
+	public ScreenOverlay getScreenOverlay()
+	{
+		return screenOverlay;
+	}
+
+	/**
+	 * @param screenOverlay the screenOverlay to set
+	 */
+	public void setScreenOverlay(ScreenOverlay screenOverlay)
+	{
+		this.screenOverlay = screenOverlay;
+
+		this.document = null;
+		this.placemark = null;
+		this.folder = null;
+		this.groundOverlay = null;
+		this.photoOverlay = null;
 	}
 }

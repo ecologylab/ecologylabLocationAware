@@ -354,6 +354,8 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 
 		t.stop();
 
+		this.logging.stop();
+		
 		System.exit(1);
 	}
 

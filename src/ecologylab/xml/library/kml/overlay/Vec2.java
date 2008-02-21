@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ecologylab.xml.library.kml.style.icon;
+package ecologylab.xml.library.kml.overlay;
 
 import ecologylab.xml.ElementState;
 
@@ -19,7 +19,7 @@ import ecologylab.xml.ElementState;
  * 
  * @author Zachary O. Toups (toupsz@cs.tamu.edu) (Java classes only)
  */
-public class HotSpot extends ElementState
+public class Vec2 extends ElementState
 {
 	public static final String		FRACTION				= "fraction";
 
@@ -27,20 +27,17 @@ public class HotSpot extends ElementState
 
 	public static final String		INSET_PIXELS		= "insetPixels";
 
-	public static final HotSpot	CENTERED_HOTSPOT	= new HotSpot(.5f, .5f,
-			FRACTION, FRACTION);
-	
 	/**
 	 * Either the number of pixels, a fractional component of the icon, or a
 	 * pixel inset indicating the x component of a point on the icon.
 	 */
-	@xml_attribute private float	x;
+	@xml_attribute public float	x;
 
 	/**
 	 * Either the number of pixels, a fractional component of the icon, or a
 	 * pixel inset indicating the y component of a point on the icon.
 	 */
-	@xml_attribute private float	y;
+	@xml_attribute public float	y;
 
 	/**
 	 * xunits - Units in which the x value is specified. A value of fraction
@@ -48,7 +45,7 @@ public class HotSpot extends ElementState
 	 * indicates the x value in pixels. A value of insetPixels indicates the
 	 * indent from the right edge of the icon.
 	 */
-	@xml_attribute private String	xunits;
+	@xml_attribute public String	xunits;
 
 	/**
 	 * yunits - Units in which the y value is specified. A value of fraction
@@ -56,16 +53,16 @@ public class HotSpot extends ElementState
 	 * indicates the y value in pixels. A value of insetPixels indicates the
 	 * indent from the top edge of the icon.
 	 */
-	@xml_attribute private String	yunits;
+	@xml_attribute public String	yunits;
 
 	/**
 	 * 
 	 */
-	public HotSpot()
+	public Vec2()
 	{
 	}
 
-	public HotSpot(float x, float y, String xunits, String yunits)
+	public Vec2(float x, float y, String xunits, String yunits)
 	{
 		this.x = x;
 		this.y = y;

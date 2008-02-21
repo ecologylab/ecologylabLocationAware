@@ -7,8 +7,7 @@ import java.awt.Color;
 
 import ecologylab.xml.XMLTranslationException;
 import ecologylab.xml.xml_inherit;
-import ecologylab.xml.library.kml.style.icon.HotSpot;
-import ecologylab.xml.library.kml.style.icon.Icon;
+import ecologylab.xml.library.kml.overlay.Vec2;
 
 /**
  * Created according to
@@ -46,7 +45,7 @@ import ecologylab.xml.library.kml.style.icon.Icon;
 	 * be a fraction. The origin of the coordinate system is in the lower left
 	 * corner of the icon.
 	 */
-	@xml_nested @xml_tag("hotSpot") private HotSpot	hotSpot;
+	@xml_nested @xml_tag("hotSpot") private Vec2	hotSpot;
 
 	/**
 	 * 
@@ -68,12 +67,12 @@ import ecologylab.xml.library.kml.style.icon.Icon;
 	 */
 	public IconStyle(String id, String iconURL)
 	{
-		this(id, iconURL, 1.0f, 0f, HotSpot.CENTERED_HOTSPOT, Color.WHITE,
+		this(id, iconURL, 1.0f, 0f, Icon.CENTERED_HOTSPOT, Color.WHITE,
 				"normal");
 	}
 
 	public IconStyle(String id, String iconURL, float scale, float heading,
-			HotSpot hotSpot, Color color, String colorMode)
+			Vec2 hotSpot, Color color, String colorMode)
 	{
 		super(id, color, colorMode);
 

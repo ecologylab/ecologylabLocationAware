@@ -43,10 +43,10 @@ public class GoogleEarthGPSTrail
 			PortInUseException, UnsupportedCommOperationException,
 			TooManyListenersException, NoSuchPortException
 	{
-		//GPS gps = new SimGPS(new File("sampleLogs/zachToGrocery.txt"),
-			//	PlayMode.FORWARD_BACKWARD);
+		GPS gps = new SimGPS(new File("sampleLogs/zachToGrocery.nmea"),
+				PlayMode.FORWARD_BACKWARD);
 
-		 GPS gps = new GPS("COM19", 115200);
+//		 GPS gps = new GPS("COM19", 115200);
 
 		Kml kmlData = new Kml();
 
