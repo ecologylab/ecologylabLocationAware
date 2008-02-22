@@ -21,7 +21,6 @@ import ecologylab.sensor.location.gps.data.dataset.RMC;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener.GPSUpdateInterest;
 import ecologylab.xml.xml_inherit;
-import ecologylab.xml.types.element.ArrayListState;
 
 /**
  * Represents an instant of GPS data computed from a series of NMEA strings.
@@ -34,6 +33,11 @@ import ecologylab.xml.types.element.ArrayListState;
 @xml_inherit public class GPSDatum extends LocationStatus implements
 		GPSConstants
 {
+	public enum DopType
+	{
+		PDOP, VDOP, HDOP, NOT_AVAILABLE
+	}
+
 	/**
 	 * Quality of GPS data; values will be either GPS_QUAL_NO, GPS_QUAL_GPS,
 	 * GPS_QUAL_DGPS.
@@ -297,27 +301,27 @@ import ecologylab.xml.types.element.ArrayListState;
 						{
 							try
 							{ // XXX this should be removed once the bug is fixed
-							tempData[i] = gpsData.charAt(i);
+								tempData[i] = gpsData.charAt(i);
 
-							if (tempData[i] == ',')
-							{
-								if (i - dataStart > 0)
+								if (tempData[i] == ',')
 								{
-									field.update(new String(tempData, dataStart,
-											(i - dataStart)), this);
+									if (i - dataStart > 0)
+									{
+										field.update(new String(tempData, dataStart,
+												(i - dataStart)), this);
+									}
+									finishedField = true;
 								}
-								finishedField = true;
-							}
 
-							i++;
+								i++;
 							}
 							catch (Exception e)
 							{
 								error("Exception occurred!");
-								error("i                = "+i);
-								error("gpsData.length() = "+gpsData.length());
-								error("tempData.length  = "+tempData.length);
-								
+								error("i                = " + i);
+								error("gpsData.length() = " + gpsData.length());
+								error("tempData.length  = " + tempData.length);
+
 								e.printStackTrace();
 							}
 						}
@@ -717,7 +721,7 @@ import ecologylab.xml.types.element.ArrayListState;
 	{
 		return this.currentLocation.getLat();
 	}
-	
+
 	public double getAlt()
 	{
 		return this.currentLocation.getAlt();
@@ -911,5 +915,61 @@ import ecologylab.xml.types.element.ArrayListState;
 	public float getHdop()
 	{
 		return hdop;
+	}
+
+	/**
+	 * @return the pdop
+	 */
+	public float getPdop()
+	{
+		return pdop;
+	}
+
+	/**
+	 * @return the vdop
+	 */
+	public float getVdop()
+	{
+		return vdop;
+	}
+
+	/**
+	 * Examines the current data on DOP, and indicates the best type of DOP
+	 * available. Note that if there is stale data, this will use it.
+	 * 
+	 * Types are:
+	 * 
+	 * PDOP - position dillution of precision (3D)
+	 * 
+	 * HDOP - horizontal dillution of precision (2D, surface)
+	 * 
+	 * VDOP - vertical dillution of precision (1D, vertical only)
+	 * 
+	 * @return
+	 */
+	public DopType getDopType()
+	{
+		if (this.pdop > 0)
+		{
+			return DopType.PDOP;
+		}
+		else if (this.hdop > 0)
+		{
+			return DopType.HDOP;
+		}
+		else if (this.vdop > 0)
+		{
+			return DopType.VDOP;
+		}
+
+		return DopType.NOT_AVAILABLE;
+	}
+
+	/**
+	 * @return the gpsQual
+	 */
+	public int getGpsQual()
+	{
+		return gpsQual;
 	}
 }

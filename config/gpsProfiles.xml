@@ -1,0 +1,8 @@
+<array_list>
+	<g_p_s_device_profile make="Transystem Inc." model="i-Blue737 5Hz"
+		max_baud="115200" dgps_accuracy="2.5" dgps_precision="100.0"
+		gps_accuracy="3.0" gps_precision="100.0" channels="51" />
+	<g_p_s_device_profile make="Garmin" model="GPS 10" max_baud="115200"
+		dgps_accuracy="3.0" dgps_precision="95.0" gps_accuracy="15.0"
+		gps_precision="95.0" channels="12" />
+</array_list>

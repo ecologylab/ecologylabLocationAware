@@ -2,6 +2,7 @@ package ecologylab.sensor;
 
 import ecologylab.sensor.location.Location;
 import ecologylab.sensor.location.LocationStatus;
+import ecologylab.sensor.location.gps.GPSDeviceProfile;
 import ecologylab.sensor.location.gps.data.AngularCoord;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
@@ -33,6 +34,8 @@ public class BaseSensorTranslations
 															WiFiAdapterStatus.class,
 			WirelessNetwork.class, NetworkStatus.class,
 
+			GPSDeviceProfile.class,
+			
 			Location.class, LocationStatus.class, SVData.class, GPSDatum.class,
 			GeoCoordinate.class, AngularCoord.class };
 

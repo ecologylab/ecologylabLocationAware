@@ -6,5 +6,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/ecologylabSerial"/>
 	<classpathentry kind="lib" path="/ecologylabSerial/lib/RXTXcomm.jar"/>
 	<classpathentry kind="lib" path="lib/jenie.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ecologylabGraphics"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
