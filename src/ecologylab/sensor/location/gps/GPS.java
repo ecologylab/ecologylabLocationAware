@@ -34,6 +34,8 @@ import gnu.io.UnsupportedCommOperationException;
 public class GPS extends Debug implements SerialPortEventListener
 {
 	private CommPortIdentifier					portId;
+	
+	private boolean decodingNow = false;
 
 	private SerialPort							port						= null;
 
@@ -180,6 +182,7 @@ public class GPS extends Debug implements SerialPortEventListener
 
 	public void serialEvent(SerialPortEvent event)
 	{
+		//int bytesRead = 0;
 		switch (event.getEventType())
 		{
 		case (SerialPortEvent.DATA_AVAILABLE):
@@ -196,16 +199,26 @@ public class GPS extends Debug implements SerialPortEventListener
 					// have to set the limit on the bytebuffer, because we just
 					// changed the backing array
 					incomingBytes.limit(bytesRead);
+					//for(int i=0; i<bytesRead; i++)
+					//	System.out.print((char) incomingBytes.get(i));
+					
 
+					//if(!decodingNow){
+					//	decodingNow = true;
+					//for(int i=0; i<bytesRead; i++)
+					//	incomingDataBuffer.append((char) incomingBytes.get(i));
+						
 					incomingDataBuffer.append(ASCII_DECODER.decode(incomingBytes));
-
 					handleIncomingChars();
+					//	decodingNow = false;
+					//}
 				}
 			}
 			catch (IOException ioe)
 			{
 				System.out.println("I/O Exception!");
 				ioe.printStackTrace();
+				//incomingDataBuffer.delete(0, 1000);
 			}
 
 			break;
@@ -218,10 +231,11 @@ public class GPS extends Debug implements SerialPortEventListener
 	 */
 	protected void handleIncomingChars()
 	{
+		
 		int endOfMessage = incomingDataBuffer.indexOf("\r\n");
 		int startOfMessage = incomingDataBuffer.indexOf("$");
 
-		if (startOfMessage > -1 && endOfMessage > -1)
+		if (startOfMessage > -1 && endOfMessage > -1 && startOfMessage < endOfMessage)
 		{
 			try
 			{
