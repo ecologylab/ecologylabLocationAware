@@ -42,13 +42,13 @@ import ecologylab.xml.xml_inherit;
 	 * Quality of GPS data; values will be either GPS_QUAL_NO, GPS_QUAL_GPS,
 	 * GPS_QUAL_DGPS.
 	 */
-	@xml_attribute protected int			gpsQual;
+	@xml_attribute public int			gpsQual;
 
 	/**
 	 * The number of satellites the GPS receiver is using to compute the
 	 * solution.
 	 */
-	@xml_attribute protected int			numSats;
+	@xml_attribute public int			numSats;
 
 	/**
 	 * Horizontal Dilution of Precision - approximation of the size of the area
@@ -59,13 +59,13 @@ import ecologylab.xml.xml_inherit;
 	 * See http://www.codepedia.com/1/Geometric+Dilution+of+Precision+(DOP) for
 	 * more information.
 	 */
-	@xml_attribute protected float		hdop;
+	@xml_attribute public float		hdop;
 
 	/** Position Dillution of Precision */
-	@xml_attribute protected float		pdop;
+	@xml_attribute public float		pdop;
 
 	/** Vertical Dillution of Precision */
-	@xml_attribute protected float		vdop;
+	@xml_attribute public float		vdop;
 
 	/**
 	 * The altitude of the antenna of the GPS (location where the signals are

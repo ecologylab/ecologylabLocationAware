@@ -6,7 +6,7 @@ package ecologylab.composite.kml.sensor;
 import java.awt.Color;
 
 import ecologylab.generic.Debug;
-import ecologylab.rendering.ColorTweener;
+import ecologylab.rendering.tweener.ColorTweener;
 import ecologylab.sensor.network.wireless.WiFiAdapter;
 import ecologylab.sensor.network.wireless.data.WiFiAdapterStatus;
 import ecologylab.sensor.network.wireless.data.WiFiSource;

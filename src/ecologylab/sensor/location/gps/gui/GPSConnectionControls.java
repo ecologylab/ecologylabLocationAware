@@ -181,7 +181,7 @@ public class GPSConnectionControls extends JPanel implements ActionListener, GPS
 	/**
 	 * 
 	 */
-	public GPSConnectionControls(GPSController projVis)
+	@SuppressWarnings("unchecked") public GPSConnectionControls(GPSController projVis)
 	{
 		statusLabel = new JLabel();
 		connectButton = new JButton(CONNECT_GPS);
