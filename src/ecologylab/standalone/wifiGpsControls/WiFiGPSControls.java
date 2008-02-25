@@ -5,7 +5,6 @@ package ecologylab.standalone.wifiGpsControls;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -14,6 +13,7 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.TooManyListenersException;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -28,6 +28,7 @@ import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.sensor.location.gps.gui.GPSConnectionControls;
 import ecologylab.sensor.location.gps.gui.GPSController;
+import ecologylab.sensor.location.gps.gui.meter.GPSArcConstellationMeter;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
@@ -80,8 +81,8 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 	Logging						logging;
 
 	Kml							kmlData;
-	
-	GPSDatum datum;
+
+	GPSDatum						datum;
 
 	WiFiGPSStatusOp			currentOp	= new WiFiGPSStatusOp();
 
@@ -183,7 +184,7 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 
 		debug("setting up datum");
 		GPSDataUpdater d = new GPSDataUpdater();
-		this.gps.addGPSDataListener(d);		
+		this.gps.addGPSDataListener(d);
 		datum = d.getDatum();
 
 		debug("setting up WiFi");
@@ -208,7 +209,7 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 		debug("configuring visualizer");
 		configureFromPrefs();
 		setupControls();
-		
+
 		debug("starting log recording at 1Hz");
 		t = new Timer(1000, this);
 		t.start();
@@ -219,21 +220,22 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 	 */
 	private void setupControls()
 	{
+		JPanel gpsParts = new JPanel();
+		JPanel wiFiParts = new JPanel();
+		
+		gpsParts.setLayout(new BoxLayout(gpsParts, BoxLayout.PAGE_AXIS));
+		wiFiParts.setLayout(new BoxLayout(wiFiParts, BoxLayout.PAGE_AXIS));
+		
 		this.mainFrame = new JFrame(PropertiesAndDirectories.applicationName());
 
 		this.mainFrame.addWindowListener(this);
 
 		this.updater.addDataUpdatedListener(this);
 
-		JPanel metersPanel = new JPanel(new GridLayout(3,1));
-		metersPanel.setPreferredSize(new Dimension(200, 200));
-		
-		GPSMeter gpsMeter = new GPSMeter(datum);
-		gpsMeter.setPreferredSize(new Dimension(200, 50));
-		
-		GPSHDOPMeter hdopMeter = new GPSHDOPMeter(datum);
-		hdopMeter.setPreferredSize(new Dimension(200, 50));
-		
+		GPSArcConstellationMeter gpsMeter = new GPSArcConstellationMeter(datum);
+
+		gpsMeter.setPreferredSize(new Dimension(220, 140));
+
 		GPSConnectionControls gpsControls = new GPSConnectionControls(this);
 		gpsControls.setPreferredSize(new Dimension(200, 200));
 
@@ -241,13 +243,13 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 				this);
 		wifiControls.setPreferredSize(new Dimension(200, 200));
 
-		this.mainFrame.getContentPane().add(gpsControls);
-		this.mainFrame.getContentPane().add(wifiControls);
+		gpsParts.add(gpsControls);
+		gpsParts.add(gpsMeter);
 		
-		metersPanel.add(gpsMeter);
-		metersPanel.add(hdopMeter);
+		wiFiParts.add(wifiControls);
 		
-		this.mainFrame.getContentPane().add(metersPanel);
+		this.mainFrame.getContentPane().add(gpsParts);
+		this.mainFrame.getContentPane().add(wiFiParts);
 
 		this.mainFrame.setLayout(new FlowLayout());
 
@@ -355,7 +357,7 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 		t.stop();
 
 		this.logging.stop();
-		
+
 		System.exit(1);
 	}
 

@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 
@@ -42,7 +43,7 @@ public class GPSArcConstellationMeter extends GraphicsTransformPanel implements
 																				-1, -1, 2, 2,
 																				// size 20 for the
 																				// largest
-																				-10, -10, 20, 20);
+																				-7, -7, 14, 14);
 
 	private Ellipse2D.Double			satellite			= new Ellipse2D.Double(
 																				-1, -1, 2, 2);
@@ -89,6 +90,9 @@ public class GPSArcConstellationMeter extends GraphicsTransformPanel implements
 
 	@Override protected void paintComponentImpl(Graphics2D g2)
 	{
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		
 		// we are working in a space 14 clicks high, and 22 wide
 		double width = 22;
 		double height = 14;
@@ -110,7 +114,6 @@ public class GPSArcConstellationMeter extends GraphicsTransformPanel implements
 
 		if (gpsQual == GPS_QUAL_NO)
 		{ // no GPS, no display!
-
 			return;
 		}
 
@@ -192,11 +195,13 @@ public class GPSArcConstellationMeter extends GraphicsTransformPanel implements
 		// draw the current error text
 		g2.setTransform(this.peekTransform());
 		
-		String errorText = Double.toString(currentError)+units;
-		
+		String errorText = Double.toString(currentError);
+		// rounding
+		errorText = (errorText.length() > 3 ? errorText.substring(0, 3) : errorText) +units;
+
 		g2.setFont(new Font("Arial", Font.PLAIN, 2));
 		double errorTextWidth = g2.getFontMetrics().stringWidth(errorText);
-		
+				
 		g2.setColor(Color.BLUE);
 		g2.drawString(errorText, (int)-(errorTextWidth/2.0), 0);
 	}
