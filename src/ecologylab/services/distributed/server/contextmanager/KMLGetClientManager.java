@@ -8,7 +8,7 @@ import java.nio.channels.SelectionKey;
 
 import ecologylab.collections.Scope;
 import ecologylab.services.distributed.impl.NIOServerIOThread;
-import ecologylab.services.distributed.server.NIOServerFrontend;
+import ecologylab.services.distributed.server.NIOServerProcessor;
 import ecologylab.services.distributed.server.clientmanager.ClientManager;
 import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
@@ -35,7 +35,7 @@ public class KMLGetClientManager extends ClientManager
 	 * @param registry
 	 */
 	public KMLGetClientManager(Object token, int maxPacketSize,
-			NIOServerIOThread server, NIOServerFrontend frontend,
+			NIOServerIOThread server, NIOServerProcessor frontend,
 			SelectionKey socketKey, TranslationSpace translationSpace,
 			Scope<?> registry)
 	{
