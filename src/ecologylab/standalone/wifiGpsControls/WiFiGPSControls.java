@@ -38,7 +38,7 @@ import ecologylab.services.distributed.server.varieties.KmlServer;
 import ecologylab.services.logging.Logging;
 import ecologylab.services.logging.WiFiGPSStatusOp;
 import ecologylab.services.messages.DefaultServicesTranslations;
-import ecologylab.xml.TranslationSpace;
+import ecologylab.xml.TranslationScope;
 import ecologylab.xml.XMLTranslationException;
 import ecologylab.xml.library.geom.Rectangle2DDoubleState;
 import ecologylab.xml.library.kml.Kml;
@@ -114,7 +114,7 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 	 * @throws NoSuchPortException
 	 */
 	public WiFiGPSControls(String applicationName,
-			TranslationSpace translationSpace, String[] args,
+			TranslationScope translationSpace, String[] args,
 			float prefsAssetVersion) throws XMLTranslationException,
 			NoSuchPortException, IOException
 	{
@@ -165,7 +165,7 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 	 * @throws NoSuchPortException
 	 */
 	public WiFiGPSControls(Class baseClass, String applicationName,
-			TranslationSpace translationSpace, String[] args,
+			TranslationScope translationSpace, String[] args,
 			float prefsAssetVersion) throws XMLTranslationException,
 			NoSuchPortException, IOException
 	{
@@ -200,7 +200,7 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 		kmlData = WiFiGPSKMLDataManager.configureKml(wifi, gps);
 
 		debug("launching KML server");
-		TranslationSpace serverTranslations = DefaultServicesTranslations.get();
+		TranslationScope serverTranslations = DefaultServicesTranslations.get();
 		this.kmlServer = new KmlServer(8080, NetTools
 				.getAllInetAddressesForLocalhost(), serverTranslations,
 				new Scope(), 1000000, 1000000, kmlData);

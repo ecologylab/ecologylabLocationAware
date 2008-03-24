@@ -17,7 +17,7 @@ import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
 import ecologylab.standalone.TestKML;
 import ecologylab.xml.ElementState;
-import ecologylab.xml.TranslationSpace;
+import ecologylab.xml.TranslationScope;
 import ecologylab.xml.XMLTranslationException;
 import ecologylab.xml.library.kml.KMLTranslations;
 import ecologylab.xml.library.kml.Kml;
@@ -48,11 +48,11 @@ public class KmlServer extends HttpGetServer
 	 * @throws BindException
 	 */
 	public KmlServer(int portNumber, InetAddress[] inetAddresses,
-			TranslationSpace requestTranslationSpace,
+			TranslationScope requestTranslationSpace,
 			Scope objectRegistry, int idleConnectionTimeout,
 			int maxPacketSize, Kml kmlData) throws IOException, BindException
 	{
-		super(portNumber, inetAddresses, TranslationSpace.get(
+		super(portNumber, inetAddresses, TranslationScope.get(
 				"double_threaded_logging " + inetAddresses[0].toString() + ":"
 						+ portNumber, KML_MESSAGE_CLASSES, requestTranslationSpace,
 				KMLTranslations.get()), objectRegistry, idleConnectionTimeout,
@@ -72,7 +72,7 @@ public class KmlServer extends HttpGetServer
 	 * @throws BindException
 	 */
 	public KmlServer(int portNumber, InetAddress inetAddress,
-			TranslationSpace requestTranslationSpace,
+			TranslationScope requestTranslationSpace,
 			Scope objectRegistry, int idleConnectionTimeout,
 			int maxPacketSize, Kml kmlData) throws IOException, BindException
 	{
@@ -89,7 +89,7 @@ public class KmlServer extends HttpGetServer
 	 */
 	public static void main(String[] args) throws BindException, IOException, XMLTranslationException
 	{
-		TranslationSpace serverTranslations = DefaultServicesTranslations.get();
+		TranslationScope serverTranslations = DefaultServicesTranslations.get();
 
 		Kml kmlData = (Kml) ElementState.translateFromXMLCharSequence(TestKML.someKml, KMLTranslations.get());
 		
@@ -101,7 +101,7 @@ public class KmlServer extends HttpGetServer
 	}
 
 	@Override protected AbstractClientManager generateContextManager(
-			Object token, SelectionKey sk, TranslationSpace translationSpaceIn,
+			Object token, SelectionKey sk, TranslationScope translationSpaceIn,
 			Scope registryIn)
 	{
 		return new KMLGetClientManager(token, maxPacketSize, this.getBackend(),

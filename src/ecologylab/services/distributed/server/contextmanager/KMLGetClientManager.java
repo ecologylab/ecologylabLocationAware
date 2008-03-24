@@ -14,7 +14,7 @@ import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
 import ecologylab.services.messages.RequestMessage;
 import ecologylab.services.messages.ResponseMessage;
-import ecologylab.xml.TranslationSpace;
+import ecologylab.xml.TranslationScope;
 import ecologylab.xml.XMLTranslationException;
 
 /**
@@ -36,7 +36,7 @@ public class KMLGetClientManager extends ClientManager
 	 */
 	public KMLGetClientManager(Object token, int maxPacketSize,
 			NIOServerIOThread server, NIOServerProcessor frontend,
-			SelectionKey socketKey, TranslationSpace translationSpace,
+			SelectionKey socketKey, TranslationScope translationSpace,
 			Scope<?> registry)
 	{
 		super(token, maxPacketSize, server, frontend, socketKey,

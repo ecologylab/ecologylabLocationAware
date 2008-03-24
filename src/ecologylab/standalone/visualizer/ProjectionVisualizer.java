@@ -28,7 +28,7 @@ import ecologylab.sensor.location.gps.gui.GPSConnectionControls;
 import ecologylab.sensor.location.gps.gui.GPSController;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
-import ecologylab.xml.TranslationSpace;
+import ecologylab.xml.TranslationScope;
 import ecologylab.xml.XMLTranslationException;
 import ecologylab.xml.library.geom.Rectangle2DDoubleState;
 import gnu.io.CommPortIdentifier;
@@ -83,7 +83,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	 * @throws NoSuchPortException
 	 */
 	public ProjectionVisualizer(String applicationName,
-			TranslationSpace translationSpace, String[] args,
+			TranslationScope translationSpace, String[] args,
 			float prefsAssetVersion) throws XMLTranslationException,
 			NoSuchPortException, IOException
 	{
@@ -135,7 +135,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	 * @throws NoSuchPortException
 	 */
 	public ProjectionVisualizer(Class baseClass, String applicationName,
-			TranslationSpace translationSpace, String[] args,
+			TranslationScope translationSpace, String[] args,
 			float prefsAssetVersion) throws XMLTranslationException,
 			NoSuchPortException, IOException
 	{

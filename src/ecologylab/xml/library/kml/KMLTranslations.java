@@ -1,6 +1,6 @@
 package ecologylab.xml.library.kml;
 
-import ecologylab.xml.TranslationSpace;
+import ecologylab.xml.TranslationScope;
 import ecologylab.xml.library.kml.feature.KmlFeature;
 import ecologylab.xml.library.kml.feature.Placemark;
 import ecologylab.xml.library.kml.feature.container.Container;
@@ -36,9 +36,9 @@ public class KMLTranslations
 	 * 
 	 * @return TranslationSpace for basic ecologylab.services
 	 */
-	public static TranslationSpace get()
+	public static TranslationScope get()
 	{
-		return TranslationSpace.get(PACKAGE_NAME, TRANSLATIONS,
+		return TranslationScope.get(PACKAGE_NAME, TRANSLATIONS,
 				ElementTypeTranslations.get());
 	}
 }

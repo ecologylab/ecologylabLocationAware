@@ -10,7 +10,7 @@ import ecologylab.services.logging.Logging;
 import ecologylab.services.logging.LoggingTranslations;
 import ecologylab.services.logging.WiFiGPSStatusOp;
 import ecologylab.xml.ElementState;
-import ecologylab.xml.TranslationSpace;
+import ecologylab.xml.TranslationScope;
 import ecologylab.xml.XMLTranslationException;
 import ecologylab.xml.types.element.ArrayListState;
 
@@ -33,9 +33,9 @@ public class DemoLogUse
 
 		// compose the necessary translation spaces
 		// in this case, we need generic logging, and the sensor space
-		TranslationSpace[] spacesToCompose =
+		TranslationScope[] spacesToCompose =
 		{ BaseSensorTranslations.get(), LoggingTranslations.get() };
-		TranslationSpace translations = TranslationSpace.get(
+		TranslationScope translations = TranslationScope.get(
 				"gps wifi log translations", spacesToCompose);
 
 		// translate the file from XML into a Logging of type WiFiGPSStatusOp

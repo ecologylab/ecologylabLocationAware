@@ -8,7 +8,7 @@ import ecologylab.sensor.location.gps.SimGPS;
 import ecologylab.sensor.location.gps.SimGPS.PlayMode;
 import ecologylab.services.distributed.server.varieties.KmlServer;
 import ecologylab.services.messages.DefaultServicesTranslations;
-import ecologylab.xml.TranslationSpace;
+import ecologylab.xml.TranslationScope;
 import ecologylab.xml.library.kml.Kml;
 import ecologylab.xml.library.kml.feature.Placemark;
 import ecologylab.xml.library.kml.feature.container.Document;
@@ -87,7 +87,7 @@ public class GoogleEarthGPSTrail
 		kmlData.setDocument(doc);
 
 		// setup server
-		TranslationSpace serverTranslations = DefaultServicesTranslations.get();
+		TranslationScope serverTranslations = DefaultServicesTranslations.get();
 
 		KmlServer s = new KmlServer(8080, NetTools
 				.getAllInetAddressesForLocalhost(), serverTranslations,
