@@ -58,7 +58,7 @@ public class KmlServer extends HttpGetServer
 				KMLTranslations.get()), objectRegistry, idleConnectionTimeout,
 				maxPacketSize);
 
-		this.globalScope.put(KmlRequest.KML_DATA, kmlData);
+		this.applicationObjectScope.put(KmlRequest.KML_DATA, kmlData);
 	}
 
 	/**

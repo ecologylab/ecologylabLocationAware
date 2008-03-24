@@ -95,4 +95,9 @@ public class KMLColorType extends ScalarType<KMLColor>
 				+ (r < 16 ? "0" : "") + Integer.toHexString(r);
 		return result;
 	}
+
+	@Override public KMLColor getInstance(String value, String[] formatStrings)
+	{
+		return this.getInstance(value);
+	}
 }

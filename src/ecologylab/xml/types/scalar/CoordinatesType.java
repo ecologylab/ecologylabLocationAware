@@ -29,4 +29,9 @@ public class CoordinatesType extends ReferenceType<Coordinates>
 	{
 		return new Coordinates(value);
 	}
+
+	@Override public Coordinates getInstance(String value, String[] formatStrings)
+	{
+		return this.getInstance(value);
+	}
 }
