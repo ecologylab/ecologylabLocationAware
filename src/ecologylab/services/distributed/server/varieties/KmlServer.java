@@ -10,8 +10,8 @@ import java.nio.channels.SelectionKey;
 
 import ecologylab.collections.Scope;
 import ecologylab.net.NetTools;
-import ecologylab.services.distributed.server.clientmanager.AbstractClientManager;
-import ecologylab.services.distributed.server.contextmanager.KMLGetClientManager;
+import ecologylab.services.distributed.server.clientsessionmanager.AbstractClientSessionManager;
+import ecologylab.services.distributed.server.contextmanager.KMLGetClientSessionManager;
 import ecologylab.services.messages.DefaultServicesTranslations;
 import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
@@ -100,11 +100,11 @@ public class KmlServer extends HttpGetServer
 		s.start();
 	}
 
-	@Override protected AbstractClientManager generateContextManager(
+	@Override protected AbstractClientSessionManager generateContextManager(
 			Object token, SelectionKey sk, TranslationScope translationSpaceIn,
 			Scope registryIn)
 	{
-		return new KMLGetClientManager(token, maxPacketSize, this.getBackend(),
+		return new KMLGetClientSessionManager(token, maxPacketSize, this.getBackend(),
 				this, sk, translationSpaceIn, registryIn);
 	}
 }

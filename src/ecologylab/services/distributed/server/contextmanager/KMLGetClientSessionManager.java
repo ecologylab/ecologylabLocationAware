@@ -9,7 +9,7 @@ import java.nio.channels.SelectionKey;
 import ecologylab.collections.Scope;
 import ecologylab.services.distributed.impl.NIOServerIOThread;
 import ecologylab.services.distributed.server.NIOServerProcessor;
-import ecologylab.services.distributed.server.clientmanager.ClientManager;
+import ecologylab.services.distributed.server.clientsessionmanager.ClientSessionManager;
 import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
 import ecologylab.services.messages.RequestMessage;
@@ -23,7 +23,7 @@ import ecologylab.xml.XMLTranslationException;
  * 
  * @author Zach
  */
-public class KMLGetClientManager extends ClientManager
+public class KMLGetClientSessionManager extends ClientSessionManager
 {
 	/**
 	 * @param token
@@ -34,7 +34,7 @@ public class KMLGetClientManager extends ClientManager
 	 * @param translationSpace
 	 * @param registry
 	 */
-	public KMLGetClientManager(Object token, int maxPacketSize,
+	public KMLGetClientSessionManager(Object token, int maxPacketSize,
 			NIOServerIOThread server, NIOServerProcessor frontend,
 			SelectionKey socketKey, TranslationScope translationSpace,
 			Scope<?> registry)
