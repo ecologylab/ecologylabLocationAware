@@ -89,7 +89,9 @@ public class Coordinates extends ElementState
 
 		GeoCoordinate g;
 
-		Matcher m = PATTERN.matcher(coords);
+		if(coords != null)
+		{
+			Matcher m = PATTERN.matcher(coords);
 
 		while (m.find())
 		{
@@ -123,6 +125,7 @@ public class Coordinates extends ElementState
 			// added NO coordinates to the coordinate list. We add them now.
 			g = new GeoCoordinate(lat, lon, 0);
 			this.coordinateList.add(g);
+		}
 		}
 	}
 
