@@ -10,6 +10,10 @@ import ecologylab.xml.library.kml.geometry.Coordinates;
 import ecologylab.xml.library.kml.geometry.Geometry;
 import ecologylab.xml.library.kml.geometry.LineString;
 import ecologylab.xml.library.kml.geometry.Point;
+import ecologylab.xml.library.kml.geometry.InnerBoundaryIs;
+import ecologylab.xml.library.kml.geometry.OuterBoundaryIs;
+import ecologylab.xml.library.kml.geometry.LinearRing;
+import ecologylab.xml.library.kml.geometry.Polygon;
 import ecologylab.xml.library.kml.view.AbstractView;
 import ecologylab.xml.library.kml.view.Camera;
 import ecologylab.xml.library.kml.view.LookAt;
@@ -29,7 +33,8 @@ public class KMLTranslations
 			Coordinates.class, Document.class, Geometry.class, Kml.class,
 			KmlFeature.class, KmlObject.class, Placemark.class, Point.class,
 			LineString.class, Folder.class, AbstractView.class, Camera.class,
-			LookAt.class								};
+			LookAt.class, InnerBoundaryIs.class, OuterBoundaryIs.class,
+			LinearRing.class, Polygon.class};
 
 	/**
 	 * This accessor will work from anywhere, in any order, and stay efficient.
