@@ -15,7 +15,6 @@ import ecologylab.services.distributed.server.contextmanager.KMLGetClientSession
 import ecologylab.services.messages.DefaultServicesTranslations;
 import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
-import ecologylab.standalone.TestKML;
 import ecologylab.xml.ElementState;
 import ecologylab.xml.TranslationScope;
 import ecologylab.xml.XMLTranslationException;
@@ -31,6 +30,21 @@ public class KmlServer extends HttpGetServer
 	public static final Class	KML_MESSAGE_CLASSES[]	=
 																		{ KmlRequest.class,
 			KmlResponse.class									};
+	
+	public static String someKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + 
+	"<kml xmlns=\"http://earth.google.com/kml/2.2\">\r\n" + 
+	"<Document>\r\n" + 
+	"  <name>BalloonStyle.kml</name>\r\n" + 
+	"  <open>1</open>\r\n" + 
+	"  <Placemark>\r\n" + 
+	"    <name>BalloonStyle</name>\r\n" + 
+	"    <description>An example of BalloonStyle</description>\r\n" + 
+	"    <Point>\r\n" + 
+	"      <coordinates>-122.370533,37.823842,0</coordinates>\r\n" + 
+	"    </Point>\r\n" + 
+	"  </Placemark>\r\n" + 
+	"</Document>\r\n" + 
+	"</kml>";
 
 	/**
 	 * @param portNumber
@@ -91,7 +105,7 @@ public class KmlServer extends HttpGetServer
 	{
 		TranslationScope serverTranslations = DefaultServicesTranslations.get();
 
-		Kml kmlData = (Kml) ElementState.translateFromXMLCharSequence(TestKML.someKml, KMLTranslations.get());
+		Kml kmlData = (Kml) ElementState.translateFromXMLCharSequence(someKml, KMLTranslations.get());
 		
 		KmlServer s = new KmlServer(8080, NetTools
 				.getAllInetAddressesForLocalhost(), serverTranslations,
