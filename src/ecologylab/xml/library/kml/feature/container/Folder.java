@@ -23,5 +23,6 @@ import ecologylab.xml.ElementState.xml_tag;
 	 */
 	public Folder()
 	{
+		super();
 	}
 }

@@ -7,6 +7,7 @@ import ecologylab.xml.xml_inherit;
 import ecologylab.xml.ElementState.xml_tag;
 import ecologylab.xml.library.kml.geometry.LineString;
 import ecologylab.xml.library.kml.geometry.Point;
+import ecologylab.xml.library.kml.geometry.Polygon;
 
 /**
  * @author Zach
@@ -17,8 +18,10 @@ import ecologylab.xml.library.kml.geometry.Point;
 	@xml_nested @xml_tag("Point") Point					point			= null;
 
 	@xml_nested @xml_tag("LineString") LineString	lineString	= null;
+	
+	@xml_nested @xml_tag("Polygon") Polygon			polygon		=	null;
 
-	// TODO LineString, LinearRing, Polygon, MultiGeometry, Model
+	// TODO LinearRing, Polygon, MultiGeometry, Model
 
 	/**
 	 * 
@@ -42,6 +45,7 @@ import ecologylab.xml.library.kml.geometry.Point;
 		this.point = point;
 
 		this.lineString = null;
+		this.polygon = null;
 	}
 
 	public LineString getLineString()
@@ -54,5 +58,19 @@ import ecologylab.xml.library.kml.geometry.Point;
 		this.lineString = lineString;
 
 		this.point = null;
+		this.polygon = null;
+	}
+	
+	public Polygon getPolygon()
+	{
+		return polygon;
+	}
+	
+	public void setPolygon(Polygon polygon)
+	{
+		this.polygon = polygon;
+		
+		this.point = null;
+		this.lineString = null;
 	}
 }

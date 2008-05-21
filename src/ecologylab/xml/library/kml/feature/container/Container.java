@@ -39,4 +39,21 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	{
 		this.placemarks.add(newPlacemark);
 	}
+	
+	/**
+	 * Don't modify the placemarks you get from this function. Or do.
+	 * Whatever.
+	 */
+	public ArrayList<Placemark> getPlacemarks() 
+	{
+		return placemarks;
+	}
+	public ArrayList<Document> getDocuments() 
+	{
+		return documents;
+	}
+	public ArrayList<Folder> getFolders() 
+	{
+		return folder;
+	}
 }
