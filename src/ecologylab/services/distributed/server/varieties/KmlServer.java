@@ -118,7 +118,7 @@ public class KmlServer extends HttpGetServer
 			Object token, SelectionKey sk, TranslationScope translationSpaceIn,
 			Scope registryIn)
 	{
-		return new KMLGetClientSessionManager(token, maxPacketSize, this.getBackend(),
+		return new KMLGetClientSessionManager(token, this.maxMessageSize, this.getBackend(),
 				this, sk, translationSpaceIn, registryIn);
 	}
 }

@@ -6,6 +6,10 @@ package ecologylab.standalone;
 import java.io.File;
 import java.util.ArrayList;
 
+import rogue.map.EnhancedGameTerrain;
+import rogue.map.GPSField;
+import rogue.map.WiFiField;
+import ecologylab.generic.Debug;
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.xml.ElementState;
 import ecologylab.xml.XMLTranslationException;
@@ -13,14 +17,13 @@ import ecologylab.xml.library.geom.Ellipse2DDoubleState;
 import ecologylab.xml.library.geom.Point2DDoubleState;
 import ecologylab.xml.library.geom.PolygonState;
 import ecologylab.xml.library.geom.Rectangle2DDoubleState;
-import ecologylab.xml.library.kml.*;
-import ecologylab.xml.library.kml.feature.container.*;
+import ecologylab.xml.library.geom.RectangularShape;
 import ecologylab.xml.library.kml.KMLTranslations;
+import ecologylab.xml.library.kml.Kml;
 import ecologylab.xml.library.kml.feature.Placemark;
-import ecologylab.xml.library.kml.geometry.*;
+import ecologylab.xml.library.kml.feature.container.Container;
+import ecologylab.xml.library.kml.feature.container.Folder;
 import ecologylab.xml.types.element.ArrayListState;
-import rogue.map.*;
-import ecologylab.generic.Debug;
 
 /**
  * @author Alan Blevins
@@ -39,7 +42,7 @@ public class KMLtoTTeCLoG
 		//k.translateToXML(System.out);
 		ArrayListState<Point2DDoubleState>	   seekerSpawns = new ArrayListState<Point2DDoubleState>();
 		ArrayListState<PolygonState> 		   walls      = new ArrayListState<PolygonState>();
-		ArrayListState<Ellipse2DDoubleState>   bases      = new ArrayListState<Ellipse2DDoubleState>();
+		ArrayListState<RectangularShape>   bases      = new ArrayListState<RectangularShape>();
 		ArrayListState<Ellipse2DDoubleState>   gps  	  = new ArrayListState<Ellipse2DDoubleState>();
 		ArrayListState<Ellipse2DDoubleState>   wiFi 	  = new ArrayListState<Ellipse2DDoubleState>();
 		ArrayListState<GPSField>   gpsFields  = new ArrayListState<GPSField>();
@@ -165,7 +168,7 @@ public class KMLtoTTeCLoG
 			}
 			pgst.definePolygon(pntlist);
 		}
-		for(Ellipse2DDoubleState e2dd : bases)
+		for(RectangularShape e2dd : bases)
 		{
 			e2dd.setFrame(Math.floor((e2dd.getX()-NW.x())*WEsplit),Math.floor((NW.y()-e2dd.getY())*NSsplit), e2dd.getWidth(), e2dd.getHeight());
 		}
