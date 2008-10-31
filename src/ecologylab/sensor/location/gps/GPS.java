@@ -23,37 +23,31 @@ import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 
 /**
- * Buffers data from a GPS device for use in a Java application. Can produce
- * instances of GPSData, which encapsulate the sensor data at some time. Uses
- * GPSDeviceProfiles to handle multiple different types of GPS equipment, based
- * on the type of data it produces.
+ * Buffers data from a GPS device for use in a Java application. Can produce instances of GPSData,
+ * which encapsulate the sensor data at some time. Uses GPSDeviceProfiles to handle multiple
+ * different types of GPS equipment, based on the type of data it produces.
  * 
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
 public class GPS extends Debug implements SerialPortEventListener
 {
-	private CommPortIdentifier					portId;
-	
-	private boolean decodingNow = false;
+	private CommPortIdentifier							portId;
 
-	private SerialPort							port						= null;
+	private SerialPort											port								= null;
 
-	private int										baud;
+	private int															baud;
 
-	private InputStream							portIn					= null;
+	private InputStream											portIn							= null;
 
-	private LinkedList<NMEAStringListener>	listeners				= new LinkedList<NMEAStringListener>();
+	private LinkedList<NMEAStringListener>	listeners						= new LinkedList<NMEAStringListener>();
 
-	private static final CharsetDecoder		ASCII_DECODER			= Charset
-																							.forName(
-																									"US-ASCII")
-																							.newDecoder();
+	private static final CharsetDecoder			ASCII_DECODER				= Charset.forName("US-ASCII")
+																																	.newDecoder();
 
-	protected StringBuilder						incomingDataBuffer	= new StringBuilder();
+	protected StringBuilder									incomingDataBuffer	= new StringBuilder();
 
-	private ByteBuffer							incomingBytes			= ByteBuffer
-																							.allocate(10000);
+	private ByteBuffer											incomingBytes				= ByteBuffer.allocate(10000);
 
 	/**
 	 * Instantiate a GPS device on a given port and baud rate.
@@ -62,18 +56,16 @@ public class GPS extends Debug implements SerialPortEventListener
 	 * @param portName
 	 * @param baud
 	 * @throws NoSuchPortException
-	 *            the port does not exist on this system.
+	 *           the port does not exist on this system.
 	 * @throws IOException
-	 *            the specified port is a parallel port.
+	 *           the specified port is a parallel port.
 	 */
-	public GPS(String portName, int baud) throws NoSuchPortException,
-			IOException
+	public GPS(String portName, int baud) throws NoSuchPortException, IOException
 	{
 		this(CommPortIdentifier.getPortIdentifier(portName), baud);
 	}
 
-	public GPS(CommPortIdentifier portId, int baud) throws NoSuchPortException,
-			IOException
+	public GPS(CommPortIdentifier portId, int baud) throws IOException
 	{
 		setup(portId, baud);
 	}
@@ -82,7 +74,7 @@ public class GPS extends Debug implements SerialPortEventListener
 	{
 		this.setup(CommPortIdentifier.getPortIdentifier(portName), baud);
 	}
-	
+
 	/**
 	 * @param portId
 	 * @param baud
@@ -103,11 +95,10 @@ public class GPS extends Debug implements SerialPortEventListener
 	}
 
 	/**
-	 * No-argument, do-nothing constructor for simulator subclass that will not
-	 * use a port.
+	 * No-argument, do-nothing constructor for simulator subclass that will not use a port.
 	 * 
-	 * Can also be used to have a GPS instance that is not yet configured, but
-	 * will be configured later. This is useful if listeners need to be the same.
+	 * Can also be used to have a GPS instance that is not yet configured, but will be configured
+	 * later. This is useful if listeners need to be the same.
 	 */
 	public GPS()
 	{
@@ -115,8 +106,8 @@ public class GPS extends Debug implements SerialPortEventListener
 	}
 
 	/**
-	 * Connects to the GPS device based on the portName, baud, and device profile
-	 * and activates the connection.
+	 * Connects to the GPS device based on the portName, baud, and device profile and activates the
+	 * connection.
 	 * 
 	 * @return true if connection was successful, false otherwise.
 	 * @throws PortInUseException
@@ -124,9 +115,8 @@ public class GPS extends Debug implements SerialPortEventListener
 	 * @throws UnsupportedCommOperationException
 	 * @throws TooManyListenersException
 	 */
-	public boolean connect() throws PortInUseException,
-			UnsupportedCommOperationException, IOException,
-			TooManyListenersException
+	public boolean connect() throws PortInUseException, UnsupportedCommOperationException,
+			IOException, TooManyListenersException
 	{
 		debug("Connecting to GPS...");
 
@@ -135,8 +125,8 @@ public class GPS extends Debug implements SerialPortEventListener
 			port = (SerialPort) portId.open("GPS Port", 5000);
 		}
 
-		port.setSerialPortParams(baud, SerialPort.DATABITS_8,
-				SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+		port.setSerialPortParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
+				SerialPort.PARITY_NONE);
 		port.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 		// port.setDTR(true);
 		port.setRTS(true);
@@ -182,7 +172,7 @@ public class GPS extends Debug implements SerialPortEventListener
 
 	public void serialEvent(SerialPortEvent event)
 	{
-		//int bytesRead = 0;
+		// int bytesRead = 0;
 		switch (event.getEventType())
 		{
 		case (SerialPortEvent.DATA_AVAILABLE):
@@ -199,26 +189,16 @@ public class GPS extends Debug implements SerialPortEventListener
 					// have to set the limit on the bytebuffer, because we just
 					// changed the backing array
 					incomingBytes.limit(bytesRead);
-					//for(int i=0; i<bytesRead; i++)
-					//	System.out.print((char) incomingBytes.get(i));
-					
 
-					//if(!decodingNow){
-					//	decodingNow = true;
-					//for(int i=0; i<bytesRead; i++)
-					//	incomingDataBuffer.append((char) incomingBytes.get(i));
-						
 					incomingDataBuffer.append(ASCII_DECODER.decode(incomingBytes));
 					handleIncomingChars();
-					//	decodingNow = false;
-					//}
 				}
 			}
 			catch (IOException ioe)
 			{
 				System.out.println("I/O Exception!");
 				ioe.printStackTrace();
-				//incomingDataBuffer.delete(0, 1000);
+				// incomingDataBuffer.delete(0, 1000);
 			}
 
 			break;
@@ -231,7 +211,7 @@ public class GPS extends Debug implements SerialPortEventListener
 	 */
 	protected void handleIncomingChars()
 	{
-		
+
 		int endOfMessage = incomingDataBuffer.indexOf("\r\n");
 		int startOfMessage = incomingDataBuffer.indexOf("$");
 
@@ -239,10 +219,9 @@ public class GPS extends Debug implements SerialPortEventListener
 		{
 			try
 			{
-			this.fireGPSDataString(incomingDataBuffer.substring(
-					startOfMessage + 1, endOfMessage));
+				this.fireGPSDataString(incomingDataBuffer.substring(startOfMessage + 1, endOfMessage));
 
-			incomingDataBuffer.delete(startOfMessage, endOfMessage + 2);
+				incomingDataBuffer.delete(startOfMessage, endOfMessage + 2);
 			}
 			catch (Exception e)
 			{
@@ -273,11 +252,9 @@ public class GPS extends Debug implements SerialPortEventListener
 	}
 
 	/**
-	 * Gets the baud rate of the port. If the port is not specified (not
-	 * connected), then returns -1.
+	 * Gets the baud rate of the port. If the port is not specified (not connected), then returns -1.
 	 * 
-	 * @return an integer representing the baud rate of the current port or -1 if
-	 *         not connected.
+	 * @return an integer representing the baud rate of the current port or -1 if not connected.
 	 */
 	public int getBaudRate()
 	{
@@ -291,6 +268,8 @@ public class GPS extends Debug implements SerialPortEventListener
 
 	private void fireGPSDataString(String gpsDataString)
 	{
+		debug("firing for: "+gpsDataString);
+		
 		for (NMEAStringListener l : listeners)
 		{
 			l.processIncomingNMEAString(gpsDataString);

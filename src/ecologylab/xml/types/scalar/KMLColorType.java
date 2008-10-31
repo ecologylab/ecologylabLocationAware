@@ -6,6 +6,8 @@ package ecologylab.xml.types.scalar;
 import java.awt.Color;
 import java.lang.reflect.Field;
 
+import ecologylab.xml.ScalarUnmarshallingContext;
+
 /**
  * Type system entry for java.awt.Color. Uses a hex string as initialization.
  * 
@@ -15,8 +17,8 @@ public class KMLColorType extends ScalarType<KMLColor>
 {
 
 	/**
-	 * This constructor should only be called once per session, through a static
-	 * initializer, typically in TypeRegistry.
+	 * This constructor should only be called once per session, through a static initializer,
+	 * typically in TypeRegistry.
 	 * <p>
 	 * To get the instance of this type object for use in translations, call
 	 * <code>TypeRegistry.get("java.awt.Color")</code>.
@@ -29,13 +31,13 @@ public class KMLColorType extends ScalarType<KMLColor>
 
 	/**
 	 * @param value
-	 *           is interpreted as hex-encoded RGB value, in the same style as
-	 *           HTML & CSS. A # character at the start is unneccesary, but
-	 *           acceptable.
+	 *          is interpreted as hex-encoded RGB value, in the same style as HTML & CSS. A #
+	 *          character at the start is unneccesary, but acceptable.
 	 * 
 	 * @see ecologylab.xml.types.scalar.ScalarType#getInstance(java.lang.String)
 	 */
-	@Override public KMLColor getInstance(String value)
+	@Override
+	public KMLColor getInstance(String value)
 	{
 		if (value.indexOf('#') == 0)
 			value = value.substring(1);
@@ -56,7 +58,8 @@ public class KMLColorType extends ScalarType<KMLColor>
 	/**
 	 * The string representation for a Field of this type
 	 */
-	@Override public String toString(Field field, Object context)
+	@Override
+	public String toString(Field field, Object context)
 	{
 		String result = "COULDN'T CONVERT!";
 		try
@@ -74,13 +77,14 @@ public class KMLColorType extends ScalarType<KMLColor>
 	}
 
 	/**
-	 * Get a String representation of the instance, using this. The default just
-	 * calls the toString() method on the instance.
+	 * Get a String representation of the instance, using this. The default just calls the toString()
+	 * method on the instance.
 	 * 
 	 * @param color
 	 * @return
 	 */
-	@Override public String marshall(KMLColor color)
+	@Override
+	public String marshall(KMLColor color)
 	{
 		String result;
 
@@ -89,14 +93,15 @@ public class KMLColorType extends ScalarType<KMLColor>
 		int g = color.getGreen();
 		int b = color.getBlue();
 
-		result = (a < 16 ? "0" : "") + Integer.toHexString(a)
-				+ (b < 16 ? "0" : "") + Integer.toHexString(b)
-				+ (g < 16 ? "0" : "") + Integer.toHexString(g)
+		result = (a < 16 ? "0" : "") + Integer.toHexString(a) + (b < 16 ? "0" : "")
+				+ Integer.toHexString(b) + (g < 16 ? "0" : "") + Integer.toHexString(g)
 				+ (r < 16 ? "0" : "") + Integer.toHexString(r);
 		return result;
 	}
 
-	@Override public KMLColor getInstance(String value, String[] formatStrings)
+	@Override
+	public KMLColor getInstance(String value, String[] formatStrings,
+			ScalarUnmarshallingContext scalarUnmarshallingContext)
 	{
 		return this.getInstance(value);
 	}

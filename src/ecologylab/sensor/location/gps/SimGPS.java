@@ -18,12 +18,10 @@ import java.util.TooManyListenersException;
 import javax.swing.Timer;
 
 /**
- * A simulated GPS that uses a text file containing NMEA sentences to drive a
- * GPS-based application.
+ * A simulated GPS that uses a text file containing NMEA sentences to drive a GPS-based application.
  * 
- * Usage: Instantiate with a text file containing NMEA sentences. Like normal
- * NMEA setences, each line should end with \r\n. Register one or more
- * GPSDataListeners to listen to it.
+ * Usage: Instantiate with a text file containing NMEA sentences. Like normal NMEA setences, each
+ * line should end with \r\n. Register one or more GPSDataListeners to listen to it.
  * 
  * Call either start w/ the number of milliseconds between sends.
  * 
@@ -43,13 +41,13 @@ public class SimGPS extends GPS implements ActionListener
 
 	ArrayList<String>	nmeaStrings			= new ArrayList<String>();
 
-	Timer					t;
+	Timer							t;
 
-	boolean				goingForward		= true;
+	boolean						goingForward		= true;
 
-	PlayMode				mode;
+	PlayMode					mode;
 
-	int					currentSentence	= 0;
+	int								currentSentence	= 0;
 
 	/**
 	 * 
@@ -59,8 +57,7 @@ public class SimGPS extends GPS implements ActionListener
 	 */
 	public SimGPS(File nmeaSentenceTextFile, PlayMode mode) throws IOException
 	{
-		BufferedReader in = new BufferedReader(new FileReader(
-				nmeaSentenceTextFile));
+		BufferedReader in = new BufferedReader(new FileReader(nmeaSentenceTextFile));
 
 		String input;
 
@@ -112,7 +109,7 @@ public class SimGPS extends GPS implements ActionListener
 	 */
 	public void sendSentence()
 	{
-		this.incomingDataBuffer.append(this.nmeaStrings.get(currentSentence)+"\r\n");
+		this.incomingDataBuffer.append(this.nmeaStrings.get(currentSentence) + "\r\n");
 
 		this.handleIncomingChars();
 
@@ -157,16 +154,17 @@ public class SimGPS extends GPS implements ActionListener
 	/**
 	 * Calls start with a 250ms delay.
 	 */
-	@Override public boolean connect() throws PortInUseException,
-			UnsupportedCommOperationException, IOException,
-			TooManyListenersException
+	@Override
+	public boolean connect() throws PortInUseException, UnsupportedCommOperationException,
+			IOException, TooManyListenersException
 	{
 		this.start(50);
 
 		return this.connected();
 	}
 
-	@Override public boolean connected()
+	@Override
+	public boolean connected()
 	{
 		return true;
 	}
@@ -174,7 +172,8 @@ public class SimGPS extends GPS implements ActionListener
 	/**
 	 * Calls stop();
 	 */
-	@Override public void disconnect()
+	@Override
+	public void disconnect()
 	{
 		this.stop();
 	}

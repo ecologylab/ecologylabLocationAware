@@ -9,7 +9,7 @@ import ecologylab.xml.XMLTranslationException;
 import ecologylab.xml.types.element.ArrayListState;
 
 /**
- * Ecapsulates information about a GPS device, including its specifications.
+ * Encapsulates information about a GPS device, including its specifications.
  * 
  * This information is not generally needed for working with a GPS, but may be
  * helpful in some data analysis and display.

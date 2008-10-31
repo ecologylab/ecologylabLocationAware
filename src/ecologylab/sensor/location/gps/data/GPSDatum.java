@@ -23,15 +23,15 @@ import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener.GPSUpdateI
 import ecologylab.xml.xml_inherit;
 
 /**
- * Represents an instant of GPS data computed from a series of NMEA strings.
- * Each component of the datum is as up-to-date as possible as of the time
- * stamp. Whenever no new data is provided, the old data is retained.
+ * Represents an instant of GPS data computed from a series of NMEA strings. Each component of the
+ * datum is as up-to-date as possible as of the time stamp. Whenever no new data is provided, the
+ * old data is retained.
  * 
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
-@xml_inherit public class GPSDatum extends LocationStatus implements
-		GPSConstants
+@xml_inherit
+public class GPSDatum extends LocationStatus implements GPSConstants
 {
 	public enum DopType
 	{
@@ -39,76 +39,80 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * Quality of GPS data; values will be either GPS_QUAL_NO, GPS_QUAL_GPS,
-	 * GPS_QUAL_DGPS.
+	 * Quality of GPS data; values will be either GPS_QUAL_NO, GPS_QUAL_GPS, GPS_QUAL_DGPS.
 	 */
-	@xml_attribute public int			gpsQual;
+	@xml_attribute
+	public int													gpsQual;
 
 	/**
-	 * The number of satellites the GPS receiver is using to compute the
-	 * solution.
+	 * The number of satellites the GPS receiver is using to compute the solution.
 	 */
-	@xml_attribute public int			numSats;
+	@xml_attribute
+	public int													numSats;
 
 	/**
-	 * Horizontal Dilution of Precision - approximation of the size of the area
-	 * in which the actual location of the GPS is horizontally based on the
-	 * spread of the fixed satellites; higher numbers are worse, smaller mean
-	 * better precision; this value may range between 1-50.
+	 * Horizontal Dilution of Precision - approximation of the size of the area in which the actual
+	 * location of the GPS is horizontally based on the spread of the fixed satellites; higher numbers
+	 * are worse, smaller mean better precision; this value may range between 1-50.
 	 * 
-	 * See http://www.codepedia.com/1/Geometric+Dilution+of+Precision+(DOP) for
-	 * more information.
+	 * See http://www.codepedia.com/1/Geometric+Dilution+of+Precision+(DOP) for more information.
 	 */
-	@xml_attribute public float		hdop;
+	@xml_attribute
+	public float												hdop;
 
 	/** Position Dillution of Precision */
-	@xml_attribute public float		pdop;
+	@xml_attribute
+	public float												pdop;
 
 	/** Vertical Dillution of Precision */
-	@xml_attribute public float		vdop;
+	@xml_attribute
+	public float												vdop;
 
 	/**
-	 * The altitude of the antenna of the GPS (location where the signals are
-	 * recieved). In meters.
+	 * The altitude of the antenna of the GPS (location where the signals are recieved). In meters.
 	 */
-	@xml_attribute protected float		geoidHeight;
+	@xml_attribute
+	protected float											geoidHeight;
 
 	/** The differential between the elipsoid and the geoid. In meters. */
-	@xml_attribute protected float		heightDiff;
+	@xml_attribute
+	protected float											heightDiff;
 
-	@xml_attribute protected float		dgpsAge;
+	@xml_attribute
+	protected float											dgpsAge;
 
-	@xml_attribute protected int			dgpsRefStation;
+	@xml_attribute
+	protected int												dgpsRefStation;
 
 	/** Indicates whether or not the current GPS data is valid. */
-	@xml_attribute protected boolean		dataValid;
+	@xml_attribute
+	protected boolean										dataValid;
 
 	/**
-	 * Indicates whether or not the calculation mode (2D/3D) is automatically
-	 * selected.
+	 * Indicates whether or not the calculation mode (2D/3D) is automatically selected.
 	 */
-	@xml_attribute protected boolean		autoCalcMode;
+	@xml_attribute
+	protected boolean										autoCalcMode;
 
 	/**
-	 * Calculating mode (2D/3D); valid values are CALC_MODE_NONE, CALC_MODE_2D,
-	 * or CALC_MODE_3D.
+	 * Calculating mode (2D/3D); valid values are CALC_MODE_NONE, CALC_MODE_2D, or CALC_MODE_3D.
 	 */
-	@xml_attribute protected int			calcMode;
+	@xml_attribute
+	protected int												calcMode;
 
 	/**
-	 * Used during the processing of a GSV (GNSS Satellites in View) sentence.
-	 * Specifies which SV's data is being updated. Because specific SV data comes
-	 * over several pieces of a message, and these pieces are processed
-	 * independently using enums, the GSPDatum object must track the current SV,
-	 * to ensure that it is updated correctly.
+	 * Used during the processing of a GSV (GNSS Satellites in View) sentence. Specifies which SV's
+	 * data is being updated. Because specific SV data comes over several pieces of a message, and
+	 * these pieces are processed independently using enums, the GSPDatum object must track the
+	 * current SV, to ensure that it is updated correctly.
 	 */
-	private SVData								currentSV;
+	private SVData											currentSV;
 
 	/**
-	 * References to data about the currently-tracked satellites (space vehicles,
-	 * SVs).
+	 * References to data about the currently-tracked satellites (space vehicles, SVs).
 	 */
-	@xml_nested private SVData[]			trackedSVs;
+	@xml_nested
+	private SVData[]										trackedSVs;
 
 	/**
 	 * All up-to-date data on SVs that have been reported on by the GPS hardware.
@@ -116,7 +120,7 @@ import ecologylab.xml.xml_inherit;
 	protected HashMap<Integer, SVData>	allSVs;
 
 	/** Used for moving data around when processing NMEA sentences. */
-	private char[]								tempDataStore;
+	private char[]											tempDataStore;
 
 	public GPSDatum()
 	{
@@ -127,10 +131,8 @@ import ecologylab.xml.xml_inherit;
 	{
 		this();
 
-		this.currentLocation
-				.setLat(AngularCoord.fromDegMinSec(latDeg, latMin, 0));
-		this.currentLocation
-				.setLon(AngularCoord.fromDegMinSec(lonDeg, lonMin, 0));
+		this.currentLocation.setLat(AngularCoord.fromDegMinSec(latDeg, latMin, 0));
+		this.currentLocation.setLon(AngularCoord.fromDegMinSec(lonDeg, lonMin, 0));
 	}
 
 	public GPSDatum(double latDeg, double lonDeg)
@@ -139,9 +141,9 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * Ensure that tempDataStore is instantiated and clean, then return it. Used
-	 * for lazy instantiation; no need to instantiate it if this is a serialized
-	 * set of data from somewhere else (for example).
+	 * Ensure that tempDataStore is instantiated and clean, then return it. Used for lazy
+	 * instantiation; no need to instantiate it if this is a serialized set of data from somewhere
+	 * else (for example).
 	 * 
 	 * @return
 	 */
@@ -157,8 +159,8 @@ import ecologylab.xml.xml_inherit;
 
 	/**
 	 * @param that
-	 * @return positive if this is farther north than that, negative if that is
-	 *         more north; 0 if they lie on exactly the same parallel.
+	 * @return positive if this is farther north than that, negative if that is more north; 0 if they
+	 *         lie on exactly the same parallel.
 	 */
 	public double compareNS(GPSDatum that)
 	{
@@ -167,10 +169,9 @@ import ecologylab.xml.xml_inherit;
 
 	/**
 	 * @param that
-	 * @return compares two GPSDatum's based on the acute angle between their
-	 *         longitudes. Returns 1 if this is farther east than that, -1 if
-	 *         this is farther west, 0 if the two points lie on the same arc,
-	 *         180/-180 if they are opposite.
+	 * @return compares two GPSDatum's based on the acute angle between their longitudes. Returns 1 if
+	 *         this is farther east than that, -1 if this is farther west, 0 if the two points lie on
+	 *         the same arc, 180/-180 if they are opposite.
 	 */
 	public double compareEW(GPSDatum that)
 	{
@@ -194,15 +195,14 @@ import ecologylab.xml.xml_inherit;
 	{
 		GPSDatum d = new GPSDatum();
 
-		d
-				.integrateGPSData("GPRMC,223832.804,V,3037.3725,N,09620.2286,W,0.00,0.00,120208,,,N*6C");
+		d.integrateGPSData("GPRMC,223832.804,V,3037.3725,N,09620.2286,W,0.00,0.00,120208,,,N*6C");
 	}
 
 	/**
 	 * Splits and stores data from an NMEA GPS data set.
 	 * 
 	 * @param gpsData
-	 *           a GPS data set, minus $ header and <CR><LF> trailer.
+	 *          a GPS data set, minus $ header and <CR><LF> trailer.
 	 */
 	public synchronized void integrateGPSData(String gpsData)
 	{
@@ -223,8 +223,7 @@ import ecologylab.xml.xml_inherit;
 		String computedCheckSum = Integer.toHexString((checkSum & 0xF0) >>> 4)
 				+ Integer.toHexString(checkSum & 0x0F);
 
-		if (computedCheckSum.toUpperCase().equals(
-				gpsData.substring(checkSumSplit + 1)))
+		if (computedCheckSum.toUpperCase().equals(gpsData.substring(checkSumSplit + 1)))
 		{
 
 			int dataLength = gpsData.length();
@@ -293,9 +292,8 @@ import ecologylab.xml.xml_inherit;
 						dataStart = i;
 
 						/*
-						 * now we will read each data field in, one at at time, since
-						 * we know the order of the data set. we will break out of
-						 * each for loop when finished.
+						 * now we will read each data field in, one at at time, since we know the order of the
+						 * data set. we will break out of each for loop when finished.
 						 */
 						while (i < dataLength && !finishedField)
 						{
@@ -307,8 +305,7 @@ import ecologylab.xml.xml_inherit;
 								{
 									if (i - dataStart > 0)
 									{
-										field.update(new String(tempData, dataStart,
-												(i - dataStart)), this);
+										field.update(new String(tempData, dataStart, (i - dataStart)), this);
 									}
 									finishedField = true;
 								}
@@ -351,7 +348,8 @@ import ecologylab.xml.xml_inherit;
 		}
 	}
 
-	@Override public String toString()
+	@Override
+	public String toString()
 	{
 		return new String("GPSDatum: " + this.currentLocation.getLat() + ", "
 				+ this.currentLocation.getLon());
@@ -364,8 +362,8 @@ import ecologylab.xml.xml_inherit;
 	 */
 	public void updateLonHemisphere(String src)
 	{
-		this.currentLocation.setLon(AngularCoord.signForHemisphere(src.charAt(0),
-				currentLocation.getLon()));
+		this.currentLocation.setLon(AngularCoord.signForHemisphere(src.charAt(0), currentLocation
+				.getLon()));
 
 		this.pointDirty = true;
 	}
@@ -379,17 +377,14 @@ import ecologylab.xml.xml_inherit;
 	{
 		double oldLon = this.currentLocation.getLon();
 
-		this.currentLocation.setLon(AngularCoord.fromDegMinSec(Integer
-				.parseInt(src.substring(0, 3)), Double
-				.parseDouble(src.substring(3)), 0));
+		this.currentLocation.setLon(AngularCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 3)),
+				Double.parseDouble(src.substring(3)), 0));
 
 		this.pointDirty = true;
 
-		if (oldLon != this.currentLocation.getLon()
-				&& this.latLonUpdatedListeners != null)
+		if (oldLon != this.currentLocation.getLon() && this.latLonUpdatedListeners != null)
 		{
-			this.gpsDataUpdatedListenersToUpdate
-					.addAll(this.latLonUpdatedListeners);
+			this.gpsDataUpdatedListenersToUpdate.addAll(this.latLonUpdatedListeners);
 		}
 	}
 
@@ -400,8 +395,8 @@ import ecologylab.xml.xml_inherit;
 	 */
 	public void updateLatHemisphere(String src)
 	{
-		this.currentLocation.setLat(AngularCoord.signForHemisphere(src.charAt(0),
-				currentLocation.getLat()));
+		this.currentLocation.setLat(AngularCoord.signForHemisphere(src.charAt(0), currentLocation
+				.getLat()));
 
 		this.pointDirty = true;
 	}
@@ -415,23 +410,19 @@ import ecologylab.xml.xml_inherit;
 	{
 		double oldLat = this.currentLocation.getLat();
 
-		this.currentLocation.setLat(AngularCoord.fromDegMinSec(Integer
-				.parseInt(src.substring(0, 2)), Double
-				.parseDouble(src.substring(2)), 0));
+		this.currentLocation.setLat(AngularCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 2)),
+				Double.parseDouble(src.substring(2)), 0));
 
 		this.pointDirty = true;
 
-		if (oldLat != this.currentLocation.getLat()
-				&& this.latLonUpdatedListeners != null)
+		if (oldLat != this.currentLocation.getLat() && this.latLonUpdatedListeners != null)
 		{
-			this.gpsDataUpdatedListenersToUpdate
-					.addAll(this.latLonUpdatedListeners);
+			this.gpsDataUpdatedListenersToUpdate.addAll(this.latLonUpdatedListeners);
 		}
 	}
 
 	/**
-	 * Stores the UTC time according to the way it is represented in the NMEA
-	 * sentence: HHMMSS.S
+	 * Stores the UTC time according to the way it is represented in the NMEA sentence: HHMMSS.S
 	 * 
 	 * @param utcString
 	 */
@@ -441,11 +432,10 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * Update the number of satellites the GPS receiver is using to produce a
-	 * solution.
+	 * Update the number of satellites the GPS receiver is using to produce a solution.
 	 * 
-	 * @param src -
-	 *           part of the NMEA string carrying the relevant data.
+	 * @param src
+	 *          - part of the NMEA string carrying the relevant data.
 	 */
 	public void updateNumSats(String src)
 	{
@@ -453,11 +443,10 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * Update the quality rating for the GPS receiver: none (0), GPS (1), or DGPS
-	 * (2).
+	 * Update the quality rating for the GPS receiver: none (0), GPS (1), or DGPS (2).
 	 * 
-	 * @param src -
-	 *           part of the NMEA string carrying the relevant data.
+	 * @param src
+	 *          - part of the NMEA string carrying the relevant data.
 	 */
 	public void updateGPSQual(String src)
 	{
@@ -467,8 +456,8 @@ import ecologylab.xml.xml_inherit;
 	/**
 	 * Update the differential GPS reference station.
 	 * 
-	 * @param src -
-	 *           part of the NMEA string carrying the relevant data.
+	 * @param src
+	 *          - part of the NMEA string carrying the relevant data.
 	 */
 	public void updateDGPSRef(String src)
 	{
@@ -476,14 +465,13 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * Checks the unit mode for height; this should be meters, and thus should be
-	 * "M".
+	 * Checks the unit mode for height; this should be meters, and thus should be "M".
 	 * 
-	 * TODO handle other units, instead of printing an error? I haven't seen any
-	 * documentation describing the use of other units - Zach
+	 * TODO handle other units, instead of printing an error? I haven't seen any documentation
+	 * describing the use of other units - Zach
 	 * 
-	 * @param src -
-	 *           part of the NMEA string carrying the relevant data.
+	 * @param src
+	 *          - part of the NMEA string carrying the relevant data.
 	 */
 	public void updateDiffHeightUnit(String src)
 	{
@@ -496,8 +484,8 @@ import ecologylab.xml.xml_inherit;
 	/**
 	 * Updates the age of the differential GPS reading, per the GPS.
 	 * 
-	 * @param src -
-	 *           part of the NMEA string carrying the relevant data.
+	 * @param src
+	 *          - part of the NMEA string carrying the relevant data.
 	 */
 	public void updateDGPSAge(String src)
 	{
@@ -505,8 +493,8 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * @param src -
-	 *           part of the NMEA string carrying the relevant data.
+	 * @param src
+	 *          - part of the NMEA string carrying the relevant data.
 	 */
 	public void updateHeightUnit(String src)
 	{
@@ -519,8 +507,8 @@ import ecologylab.xml.xml_inherit;
 	/**
 	 * Updates the height of the geoid, indicated at this location.
 	 * 
-	 * @param src -
-	 *           part of the NMEA string carrying the relevant data.
+	 * @param src
+	 *          - part of the NMEA string carrying the relevant data.
 	 */
 	public void updateGeoidHeight(String src)
 	{
@@ -528,11 +516,10 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * Updates the validity rating for the data. Data can be valid ("A") or
-	 * invalid ("V").
+	 * Updates the validity rating for the data. Data can be valid ("A") or invalid ("V").
 	 * 
-	 * @param src -
-	 *           part of the NMEA string carrying the relevant data.
+	 * @param src
+	 *          - part of the NMEA string carrying the relevant data.
 	 */
 	public void updateDataValid(String src)
 	{
@@ -550,11 +537,10 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * Updates the auto calculation mode setting. Can be automatic ("A") or
-	 * manual ("M").
+	 * Updates the auto calculation mode setting. Can be automatic ("A") or manual ("M").
 	 * 
-	 * @param src -
-	 *           part of the NMEA string carrying the relevant data.
+	 * @param src
+	 *          - part of the NMEA string carrying the relevant data.
 	 */
 	public void updateAutoCalcMode(String src)
 	{
@@ -581,15 +567,13 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * Specifies the SV number to be added to the list of tracked SVs. Because
-	 * NMEA sentences report data on up to 12 tracked SVs, each SV has an index
-	 * (in addition to its ID).
+	 * Specifies the SV number to be added to the list of tracked SVs. Because NMEA sentences report
+	 * data on up to 12 tracked SVs, each SV has an index (in addition to its ID).
 	 * 
 	 * @param sVIDString
-	 *           the data String containing the ID of the tracked SV.
+	 *          the data String containing the ID of the tracked SV.
 	 * @param i
-	 *           the index of the tracked SV (will overwrite whichever was stored
-	 *           previously).
+	 *          the index of the tracked SV (will overwrite whichever was stored previously).
 	 */
 	public void addSVToTrackedList(String sVIDString, int i)
 	{
@@ -612,11 +596,11 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * Specifies which SV is going to be updated by the following calls to
-	 * setCurrentSVElev(...), setCurrentSVAzi(...), setCurrentSVSNR(...).
+	 * Specifies which SV is going to be updated by the following calls to setCurrentSVElev(...),
+	 * setCurrentSVAzi(...), setCurrentSVSNR(...).
 	 * 
 	 * @param sVIDString
-	 *           the ID of the SV to set.
+	 *          the ID of the SV to set.
 	 */
 	public void setCurrentSV(String sVIDString)
 	{
@@ -635,9 +619,8 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * Sets the elevation on the current SV. THIS METHOD ASSUMES THAT
-	 * setCurrentSV(...) has been called in advance; if it has not, your program
-	 * will crash.
+	 * Sets the elevation on the current SV. THIS METHOD ASSUMES THAT setCurrentSV(...) has been
+	 * called in advance; if it has not, your program will crash.
 	 * 
 	 * @param currentSVElevationString
 	 */
@@ -649,9 +632,8 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * Sets the azimuth on the current SV. THIS METHOD ASSUMES THAT
-	 * setCurrentSV(...) has been called in advance; if it has not, your program
-	 * will crash.
+	 * Sets the azimuth on the current SV. THIS METHOD ASSUMES THAT setCurrentSV(...) has been called
+	 * in advance; if it has not, your program will crash.
 	 * 
 	 * @param currentSVElevationString
 	 */
@@ -663,9 +645,8 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * Sets the signal-to-noise ratio on the current SV. THIS METHOD ASSUMES THAT
-	 * setCurrentSV(...) has been called in advance; if it has not, your program
-	 * will crash.
+	 * Sets the signal-to-noise ratio on the current SV. THIS METHOD ASSUMES THAT setCurrentSV(...)
+	 * has been called in advance; if it has not, your program will crash.
 	 * 
 	 * @param currentSVElevationString
 	 */
@@ -737,7 +718,7 @@ import ecologylab.xml.xml_inherit;
 
 	/**
 	 * @param lat
-	 *           the lat to set
+	 *          the lat to set
 	 */
 	public void setLat(double lat)
 	{
@@ -748,7 +729,7 @@ import ecologylab.xml.xml_inherit;
 
 	/**
 	 * @param lon
-	 *           the lon to set
+	 *          the lon to set
 	 */
 	public void setLon(double lon)
 	{
@@ -778,8 +759,7 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * List of listeners who want to be notified of latitude or longitude
-	 * updates.
+	 * List of listeners who want to be notified of latitude or longitude updates.
 	 */
 	private List<GPSDataUpdatedListener>	latLonUpdatedListeners;
 
@@ -787,28 +767,26 @@ import ecologylab.xml.xml_inherit;
 	private List<GPSDataUpdatedListener>	altUpdatedListeners;
 
 	/**
-	 * List of listeners who want to be notified of any updates not covered
-	 * above.
+	 * List of listeners who want to be notified of any updates not covered above.
 	 */
 	private List<GPSDataUpdatedListener>	otherUpdatedListeners;
 
 	/** Semaphore for instantiating the above lists lazilly. */
-	private Object									listenerLock							= new Object();
+	private Object												listenerLock										= new Object();
 
 	/** Set of listeners to notify for this update, as determined by interest. */
 	private Set<GPSDataUpdatedListener>		gpsDataUpdatedListenersToUpdate	= new HashSet<GPSDataUpdatedListener>();
 
 	/**
-	 * A Point2D.Double representation of this's latitude and longitude,
-	 * instantiated and filled through lazy evaluation, when needed.
+	 * A Point2D.Double representation of this's latitude and longitude, instantiated and filled
+	 * through lazy evaluation, when needed.
 	 */
-	private Point2D.Double						pointRepresentation					= null;
+	private Point2D.Double								pointRepresentation							= null;
 
 	/**
-	 * Indicates that pointRepresentation is out of synch with the state of this
-	 * object.
+	 * Indicates that pointRepresentation is out of synch with the state of this object.
 	 */
-	private boolean								pointDirty								= true;
+	private boolean												pointDirty											= true;
 
 	private List<GPSDataUpdatedListener> latLonUpdatedListeners()
 	{
@@ -859,8 +837,8 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * Gets the latitude and longitude of this datum as a Point2D, where x =
-	 * longitude and y = latitude.
+	 * Gets the latitude and longitude of this datum as a Point2D, where x = longitude and y =
+	 * latitude.
 	 * 
 	 * @return the pointRepresentation
 	 */
@@ -873,8 +851,8 @@ import ecologylab.xml.xml_inherit;
 
 		if (this.pointDirty)
 		{
-			this.pointRepresentation.setLocation(this.currentLocation.getLon(),
-					this.currentLocation.getLat());
+			this.pointRepresentation.setLocation(this.currentLocation.getLon(), this.currentLocation
+					.getLat());
 			this.pointDirty = false;
 		}
 
@@ -934,8 +912,8 @@ import ecologylab.xml.xml_inherit;
 	}
 
 	/**
-	 * Examines the current data on DOP, and indicates the best type of DOP
-	 * available. Note that if there is stale data, this will use it.
+	 * Examines the current data on DOP, and indicates the best type of DOP available. Note that if
+	 * there is stale data, this will use it.
 	 * 
 	 * Types are:
 	 * 

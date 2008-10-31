@@ -51,44 +51,43 @@ import gnu.io.UnsupportedCommOperationException;
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
-public class WiFiGPSControls extends ApplicationEnvironment implements
-		GPSDataUpdatedListener, ActionListener, WindowListener, GPSController,
-		WiFiConnectionController
+public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUpdatedListener,
+		ActionListener, WindowListener, GPSController, WiFiConnectionController
 {
-	JFrame						mainFrame;
+	JFrame									mainFrame;
 
-	GPSConstants				currentGPSReportedPos;
+	GPSConstants						currentGPSReportedPos;
 
 	Rectangle2DDoubleState	virtualField;
 
-	Timer							t;
+	Timer										t;
 
 	/**
 	 * The GPS object will come from the GPS controls.
 	 */
-	GPS							gps;
+	GPS											gps;
 
-	GPSDataUpdater				updater		= new GPSDataUpdater();
+	GPSDataUpdater					updater		= new GPSDataUpdater();
 
 	/**
-	 * The WiFiAdapter, which doesn't require any extra special controls to start
-	 * it up will be instantiated in this class.
+	 * The WiFiAdapter, which doesn't require any extra special controls to start it up will be
+	 * instantiated in this class.
 	 */
-	RunnableWiFiAdapter		wifi;
+	RunnableWiFiAdapter			wifi;
 
-	KmlServer					kmlServer;
+	KmlServer								kmlServer;
 
-	Logging						logging;
+	Logging									logging;
 
-	Kml							kmlData;
+	Kml											kmlData;
 
-	GPSDatum						datum;
+	GPSDatum								datum;
 
-	WiFiGPSStatusOp			currentOp	= new WiFiGPSStatusOp();
+	WiFiGPSStatusOp					currentOp	= new WiFiGPSStatusOp();
 
-	int							w				= 400;
+	int											w					= 400;
 
-	int							h				= 200;
+	int											h					= 200;
 
 	/**
 	 * @param applicationName
@@ -96,8 +95,8 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public WiFiGPSControls(String applicationName)
-			throws XMLTranslationException, NoSuchPortException, IOException
+	public WiFiGPSControls(String applicationName) throws XMLTranslationException,
+			NoSuchPortException, IOException
 	{
 		super(applicationName);
 
@@ -113,10 +112,8 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public WiFiGPSControls(String applicationName,
-			TranslationScope translationSpace, String[] args,
-			float prefsAssetVersion) throws XMLTranslationException,
-			NoSuchPortException, IOException
+	public WiFiGPSControls(String applicationName, TranslationScope translationSpace, String[] args,
+			float prefsAssetVersion) throws XMLTranslationException, NoSuchPortException, IOException
 	{
 		super(applicationName, translationSpace, args, prefsAssetVersion);
 
@@ -130,8 +127,8 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public WiFiGPSControls(String applicationName, String[] args)
-			throws XMLTranslationException, NoSuchPortException, IOException
+	public WiFiGPSControls(String applicationName, String[] args) throws XMLTranslationException,
+			NoSuchPortException, IOException
 	{
 		super(applicationName, args);
 
@@ -165,12 +162,10 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 	 * @throws NoSuchPortException
 	 */
 	public WiFiGPSControls(Class baseClass, String applicationName,
-			TranslationScope translationSpace, String[] args,
-			float prefsAssetVersion) throws XMLTranslationException,
-			NoSuchPortException, IOException
+			TranslationScope translationSpace, String[] args, float prefsAssetVersion)
+			throws XMLTranslationException, NoSuchPortException, IOException
 	{
-		super(baseClass, applicationName, translationSpace, args,
-				prefsAssetVersion);
+		super(baseClass, applicationName, translationSpace, args, prefsAssetVersion);
 
 		configure();
 	}
@@ -192,8 +187,8 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 		this.wifi.addListener(this.currentOp);
 
 		debug("setting up logging");
-		this.logging = new Logging("GPSWiFiData " + System.currentTimeMillis()
-				+ ".xml", false, 10, Logging.LOG_TO_MEMORY_MAPPED_FILE, null, 0);
+		this.logging = new Logging("GPSWiFiData " + System.currentTimeMillis() + ".xml", false, 10,
+				Logging.LOG_TO_MEMORY_MAPPED_FILE, null, 0);
 		this.logging.start();
 
 		debug("constructing KML data");
@@ -201,9 +196,8 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 
 		debug("launching KML server");
 		TranslationScope serverTranslations = DefaultServicesTranslations.get();
-		this.kmlServer = new KmlServer(8080, NetTools
-				.getAllInetAddressesForLocalhost(), serverTranslations,
-				new Scope(), 1000000, 1000000, kmlData);
+		this.kmlServer = new KmlServer(8080, NetTools.getAllInetAddressesForLocalhost(),
+				serverTranslations, new Scope(), 1000000, 1000000, kmlData);
 		kmlServer.start();
 
 		debug("configuring visualizer");
@@ -222,32 +216,31 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 	{
 		JPanel gpsParts = new JPanel();
 		JPanel wiFiParts = new JPanel();
-		
+
 		gpsParts.setLayout(new BoxLayout(gpsParts, BoxLayout.PAGE_AXIS));
 		wiFiParts.setLayout(new BoxLayout(wiFiParts, BoxLayout.PAGE_AXIS));
-		
+
 		this.mainFrame = new JFrame(PropertiesAndDirectories.applicationName());
 
 		this.mainFrame.addWindowListener(this);
 
 		this.updater.addDataUpdatedListener(this);
 
-		GPSArcConstellationMeter gpsMeter = new GPSArcConstellationMeter(datum);
+		gpsMeter = new GPSArcConstellationMeter(datum);
 
-		gpsMeter.setPreferredSize(new Dimension(220, 140));
+		gpsMeter.setPreferredSize(new Dimension(350, 140));
 
 		GPSConnectionControls gpsControls = new GPSConnectionControls(this);
-		gpsControls.setPreferredSize(new Dimension(200, 200));
+		gpsControls.setPreferredSize(new Dimension(350, 200));
 
-		WiFiAdapterConnectionControls wifiControls = new WiFiAdapterConnectionControls(
-				this);
-		wifiControls.setPreferredSize(new Dimension(200, 200));
+		WiFiAdapterConnectionControls wifiControls = new WiFiAdapterConnectionControls(this);
+		wifiControls.setPreferredSize(new Dimension(350, 200));
 
 		gpsParts.add(gpsControls);
 		gpsParts.add(gpsMeter);
-		
+
 		wiFiParts.add(wifiControls);
-		
+
 		this.mainFrame.getContentPane().add(gpsParts);
 		this.mainFrame.getContentPane().add(wiFiParts);
 
@@ -272,9 +265,9 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 	 * @throws NoSuchPortException
 	 * @see ecologylab.sensor.location.gps.gui.GPSController#connectGPS(ecologylab.sensor.location.gps.GPS)
 	 */
-	public boolean connectGPS(CommPortIdentifier portId, int baud)
-			throws PortInUseException, UnsupportedCommOperationException,
-			IOException, TooManyListenersException, NoSuchPortException
+	public boolean connectGPS(CommPortIdentifier portId, int baud) throws PortInUseException,
+			UnsupportedCommOperationException, IOException, TooManyListenersException,
+			NoSuchPortException
 	{
 		this.gps.disconnect();
 
@@ -299,8 +292,8 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public static void main(String[] args) throws XMLTranslationException,
-			NoSuchPortException, IOException
+	public static void main(String[] args) throws XMLTranslationException, NoSuchPortException,
+			IOException
 	{
 		new WiFiGPSControls("Control Panel");
 	}
@@ -398,14 +391,13 @@ public class WiFiGPSControls extends ApplicationEnvironment implements
 	}
 
 	/**
-	 * Indicates which GPS update operations this is interested in; in this case,
-	 * all of them.
+	 * Indicates which GPS update operations this is interested in; in this case, all of them.
 	 */
-	private static EnumSet<GPSUpdateInterest>	interestSet	= EnumSet
-																					.of(
-																							GPSUpdateInterest.LAT_LON,
-																							GPSUpdateInterest.ALT,
-																							GPSUpdateInterest.OTHERS);
+	private static EnumSet<GPSUpdateInterest>	interestSet	= EnumSet.of(GPSUpdateInterest.LAT_LON,
+																														GPSUpdateInterest.ALT,
+																														GPSUpdateInterest.OTHERS);
+
+	private GPSArcConstellationMeter					gpsMeter;
 
 	public EnumSet<GPSUpdateInterest> getInterestSet()
 	{

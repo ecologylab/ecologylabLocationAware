@@ -1,24 +1,32 @@
 package ecologylab.standalone;
 
-import stec.jenie.INT32;
-import stec.jenie.UCHARArray;
-import stec.jenie.BOOL;
-import stec.jenie.Pointer;
-import stec.jenie.Dll;
-import stec.jenie.NativeParameter;
-import stec.jenie.NativeException;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.*;
+
+import javax.swing.JApplet;
+import javax.swing.JFrame;
+
+import stec.jenie.BOOL;
+import stec.jenie.Dll;
+import stec.jenie.INT32;
+import stec.jenie.NativeException;
+import stec.jenie.NativeParameter;
+import stec.jenie.Pointer;
+import stec.jenie.UCHARArray;
 
 public class DisplaySignalStrength extends JApplet
 {
 
-	final static Color			bg			= Color.white;
+	final static Color				bg			= Color.white;
 
-	final static Color			fg			= Color.black;
+	final static Color				fg			= Color.black;
 
 	final static BasicStroke	stroke	= new BasicStroke(2.0f);
 
@@ -42,8 +50,8 @@ public class DisplaySignalStrength extends JApplet
 		f.setVisible(true);
 
 		/*
-		 * for(int i=0; i<15; i++) { System.out.println(getSignalStrength() + "
-		 * dBm"); Thread.sleep(1000); }
+		 * for(int i=0; i<15; i++) { System.out.println(getSignalStrength() + " dBm");
+		 * Thread.sleep(1000); }
 		 */
 	}
 
@@ -58,8 +66,7 @@ public class DisplaySignalStrength extends JApplet
 	{
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setPaintMode();
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		g2.setPaint(bg);
 		g2.fillRect(0, 0, 300, 100);
@@ -143,19 +150,26 @@ public class DisplaySignalStrength extends JApplet
 
 	public static int getSignalStrength() throws NativeException
 	{
-		Dll myDll = new Dll("Jwifi");
-		INT32 returnValue = new INT32();
-
 		try
 		{
-			myDll.getFunction("getSS").call((NativeParameter[]) null, returnValue);
-		}
-		finally
-		{
-			myDll.release();
-		}
+			Dll myDll = new Dll("Jwifi");
+			INT32 returnValue = new INT32();
 
-		return returnValue.getValue();
+			try
+			{
+				myDll.getFunction("getSS").call((NativeParameter[]) null, returnValue);
+			}
+			finally
+			{
+				myDll.release();
+			}
+
+			return returnValue.getValue();
+		}
+		catch (UnsatisfiedLinkError e)
+		{
+			return -1;
+		}
 	}
 
 	public static String getAPData() throws NativeException
@@ -225,8 +239,7 @@ public class DisplaySignalStrength extends JApplet
 
 /*
  * 
- * Snakes on a Plane 00:18:39:d0:4d:43 -38dBm = 98 percent Ch: 8 Access Point
- * Secured
+ * Snakes on a Plane 00:18:39:d0:4d:43 -38dBm = 98 percent Ch: 8 Access Point Secured
  * 
  * masterblaster a6:d5:32:6a:35:6f -48dBm = 79 percent Ch: 11 Adhoc Secured
  */

@@ -280,4 +280,12 @@ public class GPSArcConstellationMeter extends GraphicsTransformPanel implements
 		
 		c.repaint();
 	}
+
+	/**
+	 * @param datum the datum to set
+	 */
+	public void setDatum(GPSDatum datum)
+	{
+		this.datum = datum;
+	}
 }

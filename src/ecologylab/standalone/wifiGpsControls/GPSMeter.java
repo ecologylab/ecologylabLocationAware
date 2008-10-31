@@ -19,9 +19,9 @@ public class GPSMeter extends JPanel
 
 	private AffineTransform		saveXForm;
 
-	private Color					color					= new Color(150, 150, 150);	
-	
-	private GPSDatum datum;
+	private Color							color							= new Color(150, 150, 150);
+
+	private GPSDatum					datum;
 
 	public GPSMeter(GPSDatum datum)
 	{
@@ -31,12 +31,12 @@ public class GPSMeter extends JPanel
 	/**
 	 * 
 	 */
+	@Override
 	public void paintComponent(Graphics g)
 	{
 		Graphics2D g2 = (Graphics2D) g;
 
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		saveXForm = g2.getTransform();
 
@@ -63,8 +63,8 @@ public class GPSMeter extends JPanel
 
 		int numIcons = datum.getNumSats();
 
-		System.out.println("num sats: "+datum.getNumSats());
-		
+		System.out.println("num sats: " + datum.getNumSats());
+
 		for (int i = 0; i < numIcons; i++)
 		{
 			if (i != 0 && i % 4 == 0)
