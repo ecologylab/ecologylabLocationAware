@@ -41,7 +41,7 @@ public class GPSDataUpdater extends Debug implements NMEAStringListener
 	}
 
 	/**
-	 * Convience method to add a listener to the datum contained in this object.
+	 * Convenience method to add a listener to the datum contained in this object.
 	 * 
 	 * @param l
 	 */
