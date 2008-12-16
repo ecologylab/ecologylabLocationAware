@@ -13,16 +13,17 @@ import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 
 /**
- * A plate carree projection directly maps X coordinates to longitude and Y coordinates to latitude. This projection is
- * fast, but will only generally be effective for small spaces and/or near the equator. Otherwise, the distortion
- * created by this mapping may be problematic.
+ * A plate carree projection directly maps X coordinates to longitude and Y coordinates to latitude.
+ * This projection is fast, but will only generally be effective for small spaces and/or near the
+ * equator. Otherwise, the distortion created by this mapping may be problematic.
  * 
- * Essentially, any north-south movement will take place directly along a great circle, any east-west movement will run
- * along a parallel. Distortion will come into play in that as a person moves further north, EW movement in the virtual
- * world will be accelerated: one step east or west will cover more "ground" at high and low latitudes.
+ * Essentially, any north-south movement will take place directly along a great circle, any
+ * east-west movement will run along a parallel. Distortion will come into play in that as a person
+ * moves further north, EW movement in the virtual world will be accelerated: one step east or west
+ * will cover more "ground" at high and low latitudes.
  * 
- * Note that, although it is somewhat confusing, this projection will map north to negative Y (because in Java, negative
- * Y is UP) and east to positive X.
+ * Note that, although it is somewhat confusing, this projection will map north to negative Y
+ * (because in Java, negative Y is UP) and east to positive X.
  * 
  * PlateCarreeProjection sets scale in terms of virtual world points : degrees latitude/longitude.
  * 
@@ -32,22 +33,23 @@ import ecologylab.sensor.location.gps.data.GPSDatum;
 public class PlateCarreeProjection extends Projection
 {
 	/**
-	 * The matrix that performs the transformation from real-world coordinates to virtual world coordinates.
+	 * The matrix that performs the transformation from real-world coordinates to virtual world
+	 * coordinates.
 	 */
 	protected AffineTransform	transformMatrix;
 
 	protected AffineTransform	inverseTransformMatrix;
 
-	private double					scaleFactor;
+	private double						scaleFactor;
 
-	private double					rotation;
+	private double						rotation;
 
-	double							translateToOriginX;
+	double										translateToOriginX;
 
-	double							translateToOriginY;
+	double										translateToOriginY;
 
-	public PlateCarreeProjection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2, double scaleFactor,
-			RotationConstraintMode rotConstMode) throws SameCoordinatesException
+	public PlateCarreeProjection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2,
+			double scaleFactor, RotationConstraintMode rotConstMode) throws SameCoordinatesException
 	{
 		super(physicalWorldPoint1, physicalWorldPoint2, scaleFactor, rotConstMode);
 
@@ -56,31 +58,39 @@ public class PlateCarreeProjection extends Projection
 
 	/**
 	 * @param physicalWorldPoint1
+	 *          the northmost and westmost corner of the physical world that will be mapped to the
+	 *          virtual space.
 	 * @param physicalWorldPoint2
-	 * @param virtualWorldPointUpperRight -
-	 *           the upper right of this coordinate system; normally, this will be the point with the greatest X and
-	 *           least Y.
-	 * @param virtualWorldPointLowerLeft -
-	 *           the lower left of the target coordinate system; normally, this will be the point with the least X and
-	 *           the greatest Y.
+	 *          the southmost and eastmost corner of the physical world that will be mapped to the
+	 *          virtual space.
+	 * @param virtualWorldWidth
+	 *          the width of the virtual space, which will map between the west coordinate of
+	 *          physicalWorldPoint1 and the east coordinate of physicalWorldPoint2.
+	 * @param virtualWorldHeight
+	 *          the height of the virtual space, which will map between the north coordinate of
+	 *          physicalWorldPoint1 and the south coordinate of physicalWorldPoint2.
 	 * @param rotConstMode
 	 * @throws SameCoordinatesException
+	 *           if physicalWorldPoint1 and physicalWorldPoint2 are the same.
 	 */
-	public PlateCarreeProjection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2, double virtualWorldWidth,
-			double virtualWorldHeight, RotationConstraintMode rotConstMode) throws SameCoordinatesException
+	public PlateCarreeProjection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2,
+			double virtualWorldWidth, double virtualWorldHeight, RotationConstraintMode rotConstMode)
+			throws SameCoordinatesException
 	{
-		super(physicalWorldPoint1, physicalWorldPoint2, virtualWorldWidth, virtualWorldHeight, rotConstMode);
+		super(physicalWorldPoint1, physicalWorldPoint2, virtualWorldWidth, virtualWorldHeight,
+				rotConstMode);
 
 		debug("Using plate carree projection.");
 	}
 
 	public static void main(String[] args) throws SameCoordinatesException
 	{
-		PlateCarreeProjection p = new PlateCarreeProjection(new GPSDatum(0, -100), new GPSDatum(30, -70), 400, 200,
-				Projection.RotationConstraintMode.CARDINAL_DIRECTIONS);
+		PlateCarreeProjection p = new PlateCarreeProjection(new GPSDatum(0, -100),
+				new GPSDatum(30, -70), 400, 200, Projection.RotationConstraintMode.CARDINAL_DIRECTIONS);
 
 		GPSDatum[] ds =
-		{ new GPSDatum(15, -85), new GPSDatum(0, -100), new GPSDatum(30, -70), new GPSDatum(29.95, -95.67) };
+		{ new GPSDatum(15, -85), new GPSDatum(0, -100), new GPSDatum(30, -70),
+				new GPSDatum(29.95, -95.67) };
 
 		for (GPSDatum d : ds)
 		{
@@ -96,16 +106,18 @@ public class PlateCarreeProjection extends Projection
 	/**
 	 * @see ecologylab.projection.Projection#getScale()
 	 */
-	@Override public double getScale()
+	@Override
+	public double getScale()
 	{
 		return this.scaleFactor;
 	}
 
 	/**
-	 * Adjusts internal variables to match the modes, based on the current parameters. This method should be called
-	 * whenever any states are changed.
+	 * Adjusts internal variables to match the modes, based on the current parameters. This method
+	 * should be called whenever any states are changed.
 	 */
-	@Override protected void configure()
+	@Override
+	protected void configure()
 	{
 		double centerRealX = this.physicalWorldPointNE.getLon() - (this.realWorldWidth / 2.0);
 		double centerRealY = this.physicalWorldPointNE.getLat() - (this.realWorldHeight / 2.0);
@@ -116,7 +128,8 @@ public class PlateCarreeProjection extends Projection
 		switch (this.rotConstMode)
 		{
 		case CARDINAL_DIRECTIONS:
-			// we need to redfine NE and SW so that they correspond to a rectangle with the same aspect ratio as the two
+			// we need to redfine NE and SW so that they correspond to a rectangle with the same aspect
+			// ratio as the two
 			// virtual world coordinates
 
 			// we need to maintain a constant size and aspect ratio for the virtual world
@@ -124,7 +137,8 @@ public class PlateCarreeProjection extends Projection
 			// first determine the scaling factor
 			// need the longest dimension of the virtual world
 			if (this.virtualWorldHeight > this.virtualWorldWidth)
-			{ // then our "bounding box" specified by the real world coordinates is constraining us on height more than
+			{ // then our "bounding box" specified by the real world coordinates is constraining us on
+				// height more than
 				// width
 				this.scaleFactor = this.virtualWorldHeight / this.realWorldHeight;
 			}
@@ -173,9 +187,11 @@ public class PlateCarreeProjection extends Projection
 	}
 
 	/**
-	 * Projects the given GPSDatum's coordinates into the virtual space, using some type of projection.
+	 * Projects the given GPSDatum's coordinates into the virtual space, using some type of
+	 * projection.
 	 * 
-	 * This version takes an instantiated Point2D, so as not to expend resources instantating a new one.
+	 * This version takes an instantiated Point2D, so as not to expend resources instantating a new
+	 * one.
 	 * 
 	 * Subclasses may override this method, if they are not making affine transformations.
 	 * 
@@ -183,12 +199,14 @@ public class PlateCarreeProjection extends Projection
 	 * @param destPoint
 	 * @return destPoint containing the virtual space point for origPoint.
 	 */
-	@Override protected Point2D.Double projectIntoVirtualImpl(GPSDatum origPoint, Point2D.Double destPoint)
+	@Override
+	protected Point2D.Double projectIntoVirtualImpl(GPSDatum origPoint, Point2D.Double destPoint)
 	{
 		return (Double) this.transformMatrix.transform(origPoint.getPointRepresentation(), destPoint);
 	}
 
-	@Override protected GPSConstants projectIntoRealImpl(Point2D.Double origPoint, GPSDatum destDatum)
+	@Override
+	protected GPSConstants projectIntoRealImpl(Point2D.Double origPoint, GPSDatum destDatum)
 	{
 		Point2D.Double inversePoint = (Double) this.inverseTransformMatrix.transform(origPoint, null);
 		destDatum.setLon(inversePoint.getX());
