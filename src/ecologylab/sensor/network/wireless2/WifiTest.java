@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.*;
 import java.util.Enumeration;
 
-public class WifiTest extends WifiListener
+public class WifiTest implements WifiListener
 {
 	public static void main(String[] args) throws IOException
 	{
@@ -36,6 +36,6 @@ public class WifiTest extends WifiListener
 	@Override
 	public void onUpdate()
 	{
-		System.out.println(getStatusString());
+		System.out.println(WifiUtils.getStatusString());
 	}
 }

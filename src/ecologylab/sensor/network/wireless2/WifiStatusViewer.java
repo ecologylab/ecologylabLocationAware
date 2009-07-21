@@ -8,47 +8,47 @@ import javax.swing.*;
 
 public class WifiStatusViewer extends JFrame
 {
-	private class WifiUpdater extends WifiListener
+	private class WifiUpdater implements WifiListener
 	{
 
 		@Override
 		public void onConnect()
 		{
 			setTitle("Connected");
-			ssidLabel.setText("ssid: " + getSSID());
-			bssidLabel.setText("bssid: " + getBSSID());
-			ipaddrLabel.setText("ip-addr: " + getAddress());
-			signalQualityBar.setValue(getQuality());
-			signalQualityBar.setString(getQuality() + "%");
-			signalStrengthBar.setValue(getRSSIPercentage());
-			signalStrengthBar.setString(getRSSI() +" dBm");
+			ssidLabel.setText("ssid: " + WifiUtils.getSSID());
+			bssidLabel.setText("bssid: " + WifiUtils.getBSSID());
+			ipaddrLabel.setText("ip-addr: " + WifiUtils.getAddress());
+			signalQualityBar.setValue(WifiUtils.getQuality());
+			signalQualityBar.setString(WifiUtils.getQuality() + "%");
+			signalStrengthBar.setValue(WifiUtils.getRSSIPercentage());
+			signalStrengthBar.setString(WifiUtils.getRSSI() +" dBm");
 		}
 
 		@Override
 		public void onDisconnect()
 		{
 			setTitle("Disconnected");
-			ssidLabel.setText("ssid: " + getSSID());
-			bssidLabel.setText("bssid: " + getBSSID());
-			ipaddrLabel.setText("ip-addr: " + getAddress());
-			signalQualityBar.setValue(getQuality());
-			signalQualityBar.setString(getQuality() + "%");
-			signalStrengthBar.setValue(getRSSIPercentage());
-			signalStrengthBar.setString(getRSSI() +" dBm");
+			ssidLabel.setText("ssid: " + WifiUtils.getSSID());
+			bssidLabel.setText("bssid: " + WifiUtils.getBSSID());
+			ipaddrLabel.setText("ip-addr: " + WifiUtils.getAddress());
+			signalQualityBar.setValue(WifiUtils.getQuality());
+			signalQualityBar.setString(WifiUtils.getQuality() + "%");
+			signalStrengthBar.setValue(WifiUtils.getRSSIPercentage());
+			signalStrengthBar.setString(WifiUtils.getRSSI() +" dBm");
 			
 		}
 
 		@Override
 		public void onUpdate()
 		{
-			setTitle(isConnected()?"Connected":"Disconnected");
-			ssidLabel.setText("ssid: " + getSSID());
-			bssidLabel.setText("bssid: " + getBSSID());
-			ipaddrLabel.setText("ip-addr: " + getAddress());
-			signalQualityBar.setValue(getQuality());
-			signalQualityBar.setString(getQuality() + "%");
-			signalStrengthBar.setValue(getRSSIPercentage());
-			signalStrengthBar.setString(getRSSI() +" dBm");
+			setTitle(WifiUtils.isConnected()?"Connected":"Disconnected");
+			ssidLabel.setText("ssid: " + WifiUtils.getSSID());
+			bssidLabel.setText("bssid: " + WifiUtils.getBSSID());
+			ipaddrLabel.setText("ip-addr: " + WifiUtils.getAddress());
+			signalQualityBar.setValue(WifiUtils.getQuality());
+			signalQualityBar.setString(WifiUtils.getQuality() + "%");
+			signalStrengthBar.setValue(WifiUtils.getRSSIPercentage());
+			signalStrengthBar.setString(WifiUtils.getRSSI() +" dBm");
 			
 			//System.out.println(getStatusString());
 		}
