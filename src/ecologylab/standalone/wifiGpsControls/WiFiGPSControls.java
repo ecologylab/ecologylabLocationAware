@@ -23,7 +23,7 @@ import ecologylab.appframework.ApplicationEnvironment;
 import ecologylab.appframework.PropertiesAndDirectories;
 import ecologylab.collections.Scope;
 import ecologylab.net.NetTools;
-import ecologylab.sensor.location.gps.GPS;
+import ecologylab.sensor.location.NMEAReader;
 import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.sensor.location.gps.gui.GPSConnectionControls;
@@ -65,7 +65,7 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 	/**
 	 * The GPS object will come from the GPS controls.
 	 */
-	GPS											gps;
+	NMEAReader											gps;
 
 	GPSDataUpdater					updater		= new GPSDataUpdater();
 
@@ -173,7 +173,7 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 	private void configure() throws NoSuchPortException, IOException
 	{
 		debug("setting up GPS");
-		this.gps = new GPS();
+		this.gps = new NMEAReader();
 		this.gps.addGPSDataListener(this.currentOp);
 		this.gps.addGPSDataListener(updater);
 
@@ -263,7 +263,7 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 
 	/**
 	 * @throws NoSuchPortException
-	 * @see ecologylab.sensor.location.gps.gui.GPSController#connectGPS(ecologylab.sensor.location.gps.GPS)
+	 * @see ecologylab.sensor.location.gps.gui.GPSController#connectGPS(ecologylab.sensor.location.NMEAReader)
 	 */
 	public boolean connectGPS(CommPortIdentifier portId, int baud) throws PortInUseException,
 			UnsupportedCommOperationException, IOException, TooManyListenersException,
@@ -385,7 +385,7 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 	/**
 	 * @see ecologylab.sensor.location.gps.gui.GPSController#getGps()
 	 */
-	public GPS getGps()
+	public NMEAReader getGps()
 	{
 		return gps;
 	}

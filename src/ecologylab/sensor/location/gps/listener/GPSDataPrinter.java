@@ -3,6 +3,8 @@
  */
 package ecologylab.sensor.location.gps.listener;
 
+import ecologylab.sensor.location.NMEAStringListener;
+
 /**
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  *

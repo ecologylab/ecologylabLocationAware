@@ -3,6 +3,7 @@
  */
 package ecologylab.sensor.location.gps;
 
+import ecologylab.sensor.location.NMEAReader;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 
@@ -32,7 +33,7 @@ import javax.swing.Timer;
  * @author Zach
  * 
  */
-public class SimGPS extends GPS implements ActionListener
+public class SimGPS extends NMEAReader implements ActionListener
 {
 	public enum PlayMode
 	{

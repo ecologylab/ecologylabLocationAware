@@ -7,10 +7,13 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import ecologylab.projection.Projection.RotationConstraintMode;
 import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GPSDatum;
+import ecologylab.sensor.location.gps.data.GeoCoordinate;
 
 /**
  * A plate carree projection directly maps X coordinates to longitude and Y coordinates to latitude.
@@ -48,7 +51,7 @@ public class PlateCarreeProjection extends Projection
 
 	double										translateToOriginY;
 
-	public PlateCarreeProjection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2,
+	public PlateCarreeProjection(GeoCoordinate physicalWorldPoint1, GeoCoordinate physicalWorldPoint2,
 			double scaleFactor, RotationConstraintMode rotConstMode) throws SameCoordinatesException
 	{
 		super(physicalWorldPoint1, physicalWorldPoint2, scaleFactor, rotConstMode);
@@ -73,7 +76,7 @@ public class PlateCarreeProjection extends Projection
 	 * @throws SameCoordinatesException
 	 *           if physicalWorldPoint1 and physicalWorldPoint2 are the same.
 	 */
-	public PlateCarreeProjection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2,
+	public PlateCarreeProjection(GeoCoordinate physicalWorldPoint1, GeoCoordinate physicalWorldPoint2,
 			double virtualWorldWidth, double virtualWorldHeight, RotationConstraintMode rotConstMode)
 			throws SameCoordinatesException
 	{
@@ -85,14 +88,20 @@ public class PlateCarreeProjection extends Projection
 
 	public static void main(String[] args) throws SameCoordinatesException
 	{
-		PlateCarreeProjection p = new PlateCarreeProjection(new GPSDatum(0, -100),
-				new GPSDatum(30, -70), 400, 200, Projection.RotationConstraintMode.CARDINAL_DIRECTIONS);
+		PlateCarreeProjection p = new PlateCarreeProjection(new GeoCoordinate( -96.3476861111111, 30.62242222222222, 0),
+				new GeoCoordinate( -96.33219166666666, 30.60736666666667, 0), 1483.91, 1667.10, Projection.RotationConstraintMode.ANCHOR_POINTS);
 
-		GPSDatum[] ds =
-		{ new GPSDatum(15, -85), new GPSDatum(0, -100), new GPSDatum(30, -70),
-				new GPSDatum(29.95, -95.67) };
+		Scanner scan = new Scanner(System.in);
+		
+		ArrayList<GeoCoordinate> coords = new ArrayList<GeoCoordinate>();
+		
+		while(scan.hasNextDouble())
+		{
+			GeoCoordinate temp = new GeoCoordinate(scan.nextDouble(), scan.nextDouble(), 0);
+			coords.add(temp);
+		}
 
-		for (GPSDatum d : ds)
+		for (GeoCoordinate d : coords)
 		{
 			Point2D.Double transformedPoint = p.projectIntoVirtual(d);
 
@@ -119,11 +128,11 @@ public class PlateCarreeProjection extends Projection
 	@Override
 	protected void configure()
 	{
-		double centerRealX = this.physicalWorldPointNE.getLon() - (this.realWorldWidth / 2.0);
-		double centerRealY = this.physicalWorldPointNE.getLat() - (this.realWorldHeight / 2.0);
+		double eastMostLon = this.physicalWorldPointNE.getLon();
+		double northMostLat = this.physicalWorldPointNE.getLat();
 
-		translateToOriginX = Point2D.distance(centerRealX, 0, 0, 0) * (centerRealX > 0 ? -1.0 : 1.0);
-		translateToOriginY = Point2D.distance(0, centerRealY, 0, 0) * (centerRealY > 0 ? -1.0 : 1.0);
+		translateToOriginX = Point2D.distance(eastMostLon, 0, 0, 0) * (eastMostLon > 0 ? -1.0 : 1.0);
+		translateToOriginY = Point2D.distance(0, northMostLat, 0, 0) * (northMostLat > 0 ? -1.0 : 1.0);
 
 		switch (this.rotConstMode)
 		{
@@ -200,13 +209,13 @@ public class PlateCarreeProjection extends Projection
 	 * @return destPoint containing the virtual space point for origPoint.
 	 */
 	@Override
-	protected Point2D.Double projectIntoVirtualImpl(GPSDatum origPoint, Point2D.Double destPoint)
+	protected Point2D.Double projectIntoVirtualImpl(GeoCoordinate origPoint, Point2D.Double destPoint)
 	{
 		return (Double) this.transformMatrix.transform(origPoint.getPointRepresentation(), destPoint);
 	}
 
 	@Override
-	protected GPSConstants projectIntoRealImpl(Point2D.Double origPoint, GPSDatum destDatum)
+	protected GeoCoordinate projectIntoRealImpl(Point2D.Double origPoint, GeoCoordinate destDatum)
 	{
 		Point2D.Double inversePoint = (Double) this.inverseTransformMatrix.transform(origPoint, null);
 		destDatum.setLon(inversePoint.getX());

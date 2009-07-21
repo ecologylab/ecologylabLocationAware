@@ -1,6 +1,6 @@
 package ecologylab.standalone;
 
-import ecologylab.sensor.location.gps.GPS;
+import ecologylab.sensor.location.NMEAReader;
 import ecologylab.sensor.location.gps.listener.GPSDataLogger;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
@@ -15,7 +15,7 @@ public class TestGPS
 {
     public static void main(String[] args) throws PortInUseException, UnsupportedCommOperationException, IOException, TooManyListenersException, NoSuchPortException
     {
-        GPS g = new GPS("COM4", 9600);
+        NMEAReader g = new NMEAReader("COM4", 9600);
         
         File fileToWriteTo = new File("C:\\gpsLog"+new Date().toString());
         

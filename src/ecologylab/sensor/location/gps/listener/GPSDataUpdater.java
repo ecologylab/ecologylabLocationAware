@@ -4,6 +4,7 @@
 package ecologylab.sensor.location.gps.listener;
 
 import ecologylab.generic.Debug;
+import ecologylab.sensor.location.NMEAStringListener;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 
 /**
@@ -33,7 +34,7 @@ public class GPSDataUpdater extends Debug implements NMEAStringListener
 	}
 
 	/**
-	 * @see ecologylab.sensor.location.gps.listener.NMEAStringListener#processIncomingNMEAString(java.lang.String)
+	 * @see ecologylab.sensor.location.NMEAStringListener#processIncomingNMEAString(java.lang.String)
 	 */
 	public void processIncomingNMEAString(String gpsDataString)
 	{

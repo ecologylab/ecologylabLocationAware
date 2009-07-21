@@ -9,7 +9,7 @@ import ecologylab.composite.kml.sensor.GPSToKMLPoint;
 import ecologylab.composite.kml.sensor.GPSToKMLTrail;
 import ecologylab.composite.kml.sensor.WiFiColoredIcon;
 import ecologylab.composite.kml.sensor.WiFiDataComment;
-import ecologylab.sensor.location.gps.GPS;
+import ecologylab.sensor.location.NMEAReader;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
 import ecologylab.xml.library.kml.Kml;
 import ecologylab.xml.library.kml.feature.Placemark;
@@ -39,7 +39,7 @@ public class WiFiGPSKMLDataManager
 	/**
 	 * 
 	 */
-	public static Kml configureKml(RunnableWiFiAdapter wiFi, GPS gps)
+	public static Kml configureKml(RunnableWiFiAdapter wiFi, NMEAReader gps)
 	{
 		setupWiFiVis(wiFi);
 		setupGPSVis(gps);
@@ -84,7 +84,7 @@ public class WiFiGPSKMLDataManager
 		return data;
 	}
 
-	protected static void setupGPSVis(GPS gps)
+	protected static void setupGPSVis(NMEAReader gps)
 	{
 		line = new LineString();
 		point = new Point();

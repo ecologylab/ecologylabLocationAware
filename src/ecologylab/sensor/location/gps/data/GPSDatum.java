@@ -39,6 +39,12 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	}
 
 	/**
+	 * The ground speed recorded by the gps in meters per second.
+	 */
+	@xml_attribute
+	public double grndSpd = 0.0;
+	
+	/**
 	 * Quality of GPS data; values will be either GPS_QUAL_NO, GPS_QUAL_GPS, GPS_QUAL_DGPS.
 	 */
 	@xml_attribute
@@ -124,15 +130,14 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 
 	public GPSDatum()
 	{
-		this.currentLocation = new GeoCoordinate();
 	}
 
 	public GPSDatum(double latDeg, double latMin, double lonDeg, double lonMin)
 	{
 		this();
 
-		this.currentLocation.setLat(AngularCoord.fromDegMinSec(latDeg, latMin, 0));
-		this.currentLocation.setLon(AngularCoord.fromDegMinSec(lonDeg, lonMin, 0));
+		setLat(AngularCoord.fromDegMinSec(latDeg, latMin, 0));
+		setLon(AngularCoord.fromDegMinSec(lonDeg, lonMin, 0));
 	}
 
 	public GPSDatum(double latDeg, double lonDeg)
@@ -155,40 +160,6 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 		}
 
 		return tempDataStore;
-	}
-
-	/**
-	 * @param that
-	 * @return positive if this is farther north than that, negative if that is more north; 0 if they
-	 *         lie on exactly the same parallel.
-	 */
-	public double compareNS(GPSDatum that)
-	{
-		return this.getLat() - that.getLat();
-	}
-
-	/**
-	 * @param that
-	 * @return compares two GPSDatum's based on the acute angle between their longitudes. Returns 1 if
-	 *         this is farther east than that, -1 if this is farther west, 0 if the two points lie on
-	 *         the same arc, 180/-180 if they are opposite.
-	 */
-	public double compareEW(GPSDatum that)
-	{
-		double diff = this.currentLocation.getLon() - that.getLon();
-
-		if (diff > 180)
-		{
-			return diff - 360;
-		}
-		else if (diff < -180)
-		{
-			return diff + 360;
-		}
-		else
-		{
-			return diff;
-		}
 	}
 
 	public static void main(String[] args)
@@ -351,8 +322,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	@Override
 	public String toString()
 	{
-		return new String("GPSDatum: " + this.currentLocation.getLat() + ", "
-				+ this.currentLocation.getLon());
+		return new String("GPSDatum: " + getLat() + ", " + getLon());
 	}
 
 	/**
@@ -362,8 +332,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateLonHemisphere(String src)
 	{
-		this.currentLocation.setLon(AngularCoord.signForHemisphere(src.charAt(0), currentLocation
-				.getLon()));
+		setLon(AngularCoord.signForHemisphere(src.charAt(0), getLon()));
 
 		this.pointDirty = true;
 	}
@@ -375,14 +344,14 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateLon(String src)
 	{
-		double oldLon = this.currentLocation.getLon();
+		double oldLon = getLon();
 
-		this.currentLocation.setLon(AngularCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 3)),
+		setLon(AngularCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 3)),
 				Double.parseDouble(src.substring(3)), 0));
 
 		this.pointDirty = true;
 
-		if (oldLon != this.currentLocation.getLon() && this.latLonUpdatedListeners != null)
+		if (oldLon != getLon() && this.latLonUpdatedListeners != null)
 		{
 			this.gpsDataUpdatedListenersToUpdate.addAll(this.latLonUpdatedListeners);
 		}
@@ -395,8 +364,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateLatHemisphere(String src)
 	{
-		this.currentLocation.setLat(AngularCoord.signForHemisphere(src.charAt(0), currentLocation
-				.getLat()));
+		setLat(AngularCoord.signForHemisphere(src.charAt(0), getLat()));
 
 		this.pointDirty = true;
 	}
@@ -408,14 +376,14 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateLat(String src)
 	{
-		double oldLat = this.currentLocation.getLat();
+		double oldLat = getLat();
 
-		this.currentLocation.setLat(AngularCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 2)),
+		setLat(AngularCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 2)),
 				Double.parseDouble(src.substring(2)), 0));
 
 		this.pointDirty = true;
 
-		if (oldLat != this.currentLocation.getLat() && this.latLonUpdatedListeners != null)
+		if (oldLat != getLat() && this.latLonUpdatedListeners != null)
 		{
 			this.gpsDataUpdatedListenersToUpdate.addAll(this.latLonUpdatedListeners);
 		}
@@ -696,33 +664,12 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	}
 
 	/**
-	 * @return the lat
-	 */
-	public double getLat()
-	{
-		return this.currentLocation.getLat();
-	}
-
-	public double getAlt()
-	{
-		return this.currentLocation.getAlt();
-	}
-
-	/**
-	 * @return the lon
-	 */
-	public double getLon()
-	{
-		return this.currentLocation.getLon();
-	}
-
-	/**
 	 * @param lat
 	 *          the lat to set
 	 */
 	public void setLat(double lat)
 	{
-		this.currentLocation.setLat(lat);
+		super.setLat(lat);
 
 		this.pointDirty = true;
 	}
@@ -733,7 +680,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void setLon(double lon)
 	{
-		this.currentLocation.setLon(lon);
+		super.setLon(lon);
 
 		this.pointDirty = true;
 	}
@@ -765,23 +712,23 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 
 	/** List of listeners who want to be notified of altitude updates. */
 	private List<GPSDataUpdatedListener>	altUpdatedListeners;
+	
+	/**
+	 * List of listeners who want to be notified of any updates not covered above.
+	 */
+	private List<GPSDataUpdatedListener>	speedUpdatedListeners;
 
 	/**
 	 * List of listeners who want to be notified of any updates not covered above.
 	 */
 	private List<GPSDataUpdatedListener>	otherUpdatedListeners;
+	
 
 	/** Semaphore for instantiating the above lists lazilly. */
 	private Object												listenerLock										= new Object();
 
 	/** Set of listeners to notify for this update, as determined by interest. */
 	private Set<GPSDataUpdatedListener>		gpsDataUpdatedListenersToUpdate	= new HashSet<GPSDataUpdatedListener>();
-
-	/**
-	 * A Point2D.Double representation of this's latitude and longitude, instantiated and filled
-	 * through lazy evaluation, when needed.
-	 */
-	private Point2D.Double								pointRepresentation							= null;
 
 	/**
 	 * Indicates that pointRepresentation is out of synch with the state of this object.
@@ -820,6 +767,22 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 		return this.altUpdatedListeners;
 	}
 
+	private List<GPSDataUpdatedListener> speedUpdatedListeners()
+	{
+		if (this.speedUpdatedListeners == null)
+		{
+			synchronized (this.listenerLock)
+			{
+				if (this.speedUpdatedListeners == null)
+				{
+					this.speedUpdatedListeners = new LinkedList<GPSDataUpdatedListener>();
+				}
+			}
+		}
+
+		return this.speedUpdatedListeners;
+	}
+	
 	private List<GPSDataUpdatedListener> otherUpdatedListeners()
 	{
 		if (this.otherUpdatedListeners == null)
@@ -851,8 +814,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 
 		if (this.pointDirty)
 		{
-			this.pointRepresentation.setLocation(this.currentLocation.getLon(), this.currentLocation
-					.getLat());
+			this.pointRepresentation.setLocation(getLon(), getLat());
 			this.pointDirty = false;
 		}
 
@@ -874,6 +836,10 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 		if (interestSet.contains(GPSUpdateInterest.OTHERS))
 		{
 			this.otherUpdatedListeners().add(l);
+		}
+		if (interestSet.contains(GPSUpdateInterest.SPEED))
+		{
+			this.speedUpdatedListeners().add(l);
 		}
 	}
 
@@ -949,5 +915,16 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	public int getGpsQual()
 	{
 		return gpsQual;
+	}
+
+	public void updateGroundSpeed(String src)
+	{
+		//convert from kph to meters per sec
+		this.grndSpd = Float.parseFloat(src)*1000.0/60.0/60.0;
+	}
+	
+	public double getSpeed()
+	{
+		return grndSpd;
 	}
 }

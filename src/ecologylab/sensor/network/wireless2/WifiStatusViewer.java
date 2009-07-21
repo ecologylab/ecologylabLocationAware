@@ -1,0 +1,130 @@
+package ecologylab.sensor.network.wireless2;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+
+import javax.swing.*;
+
+public class WifiStatusViewer extends JFrame
+{
+	private class WifiUpdater extends WifiListener
+	{
+
+		@Override
+		public void onConnect()
+		{
+			setTitle("Connected");
+			ssidLabel.setText("ssid: " + getSSID());
+			bssidLabel.setText("bssid: " + getBSSID());
+			ipaddrLabel.setText("ip-addr: " + getAddress());
+			signalQualityBar.setValue(getQuality());
+			signalQualityBar.setString(getQuality() + "%");
+			signalStrengthBar.setValue(getRSSIPercentage());
+			signalStrengthBar.setString(getRSSI() +" dBm");
+		}
+
+		@Override
+		public void onDisconnect()
+		{
+			setTitle("Disconnected");
+			ssidLabel.setText("ssid: " + getSSID());
+			bssidLabel.setText("bssid: " + getBSSID());
+			ipaddrLabel.setText("ip-addr: " + getAddress());
+			signalQualityBar.setValue(getQuality());
+			signalQualityBar.setString(getQuality() + "%");
+			signalStrengthBar.setValue(getRSSIPercentage());
+			signalStrengthBar.setString(getRSSI() +" dBm");
+			
+		}
+
+		@Override
+		public void onUpdate()
+		{
+			setTitle(isConnected()?"Connected":"Disconnected");
+			ssidLabel.setText("ssid: " + getSSID());
+			bssidLabel.setText("bssid: " + getBSSID());
+			ipaddrLabel.setText("ip-addr: " + getAddress());
+			signalQualityBar.setValue(getQuality());
+			signalQualityBar.setString(getQuality() + "%");
+			signalStrengthBar.setValue(getRSSIPercentage());
+			signalStrengthBar.setString(getRSSI() +" dBm");
+			
+			//System.out.println(getStatusString());
+		}
+		
+	}
+	
+	private JProgressBar signalQualityBar, signalStrengthBar;
+	private JLabel ssidLabel;
+	private JLabel bssidLabel;
+	private JLabel ipaddrLabel;
+	private WifiUpdater wifiUpdater = new WifiUpdater();
+	
+	public WifiStatusViewer()
+	{
+		GridBagLayout gridbag = new GridBagLayout();
+		GridBagConstraints c = new GridBagConstraints();
+
+		setLayout(gridbag);
+
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = GridBagConstraints.REMAINDER; // end row
+		c.weightx = 1.0;
+		c.anchor = GridBagConstraints.CENTER;
+		
+		ssidLabel = new JLabel("ssid: ");
+		ssidLabel.setHorizontalTextPosition(JLabel.CENTER);
+		gridbag.setConstraints(ssidLabel, c);
+		add(ssidLabel);
+
+		bssidLabel = new JLabel("bssid: ");
+		ssidLabel.setHorizontalTextPosition(JLabel.CENTER);
+		gridbag.setConstraints(bssidLabel, c);
+		add(bssidLabel);
+		
+		ipaddrLabel = new JLabel("ip-addr: ");
+		ipaddrLabel.setHorizontalTextPosition(JLabel.CENTER);
+		gridbag.setConstraints(ipaddrLabel, c);
+		add(ipaddrLabel);
+		
+		c.gridwidth = GridBagConstraints.RELATIVE;
+		
+		JLabel qualityLabel = new JLabel("Signal-Quality: ");
+		qualityLabel.setHorizontalTextPosition(JLabel.RIGHT);
+		gridbag.setConstraints(qualityLabel, c);
+		add(qualityLabel);
+		
+		c.gridwidth = GridBagConstraints.REMAINDER; // end row
+		signalQualityBar = new JProgressBar(0,100);
+		signalQualityBar.setStringPainted(true);
+		gridbag.setConstraints(signalQualityBar, c);
+		add(signalQualityBar);
+		
+		c.gridwidth = GridBagConstraints.RELATIVE;
+		
+		JLabel strengthLabel = new JLabel("Signal-Strength: ");
+		strengthLabel.setHorizontalTextPosition(JLabel.RIGHT);
+		gridbag.setConstraints(strengthLabel, c);
+		add(strengthLabel);
+		
+		c.gridwidth = GridBagConstraints.REMAINDER; // end row
+		signalStrengthBar = new JProgressBar(0,100);
+		signalStrengthBar.setStringPainted(true);
+		gridbag.setConstraints(signalStrengthBar, c);
+		add(signalStrengthBar);
+		
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setSize(800, 400);
+		this.pack();
+	
+		this.setEnabled(true);
+		this.setResizable(true);
+		this.setVisible(true);
+	}
+	
+	public static void main(String[] args) {
+		WifiStatusViewer view = new WifiStatusViewer();
+		
+	}
+}

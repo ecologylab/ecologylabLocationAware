@@ -6,7 +6,7 @@ package ecologylab.standalone;
 import java.util.LinkedList;
 import java.util.List;
 
-import ecologylab.sensor.location.gps.listener.NMEAStringListener;
+import ecologylab.sensor.location.NMEAStringListener;
 import ecologylab.sensor.location.gps.listener.GPSDataPrinter;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
 

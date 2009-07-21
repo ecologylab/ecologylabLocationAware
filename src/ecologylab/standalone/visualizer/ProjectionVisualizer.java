@@ -21,7 +21,7 @@ import ecologylab.appframework.PropertiesAndDirectories;
 import ecologylab.projection.PlateCarreeProjection;
 import ecologylab.projection.Projection;
 import ecologylab.projection.SameCoordinatesException;
-import ecologylab.sensor.location.gps.GPS;
+import ecologylab.sensor.location.NMEAReader;
 import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.sensor.location.gps.gui.GPSConnectionControls;
@@ -51,7 +51,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 
 	Timer							t;
 
-	GPS							gps		= new GPS();
+	NMEAReader							gps		= new NMEAReader();
 
 	GPSDataUpdater				updater	= new GPSDataUpdater();
 
@@ -302,7 +302,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 	/**
 	 * @see ecologylab.sensor.location.gps.gui.GPSController#getGps()
 	 */
-	public GPS getGps()
+	public NMEAReader getGps()
 	{
 		return gps;
 	}

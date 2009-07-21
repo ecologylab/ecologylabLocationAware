@@ -22,9 +22,9 @@ public interface GPSDataUpdatedListener
 	// TODO add others in more detail
 	public enum GPSUpdateInterest
 	{
-		LAT_LON, ALT, OTHERS
+		LAT_LON, ALT, SPEED, OTHERS
 	}
-
+	
 	/**
 	 * Indicates what changes in GPS datum should trigger a gpsDatumUpdated call
 	 * for this.

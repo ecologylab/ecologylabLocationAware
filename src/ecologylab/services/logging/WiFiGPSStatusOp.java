@@ -8,10 +8,11 @@ import java.util.TooManyListenersException;
 
 import stec.jenie.NativeException;
 import ecologylab.generic.Generic;
-import ecologylab.sensor.location.gps.GPS;
+import ecologylab.sensor.location.NMEAReader;
+import ecologylab.sensor.location.NMEAStringListener;
 import ecologylab.sensor.location.gps.data.GPSDatum;
+import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
-import ecologylab.sensor.location.gps.listener.NMEAStringListener;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
 import ecologylab.sensor.network.wireless.data.WiFiAdapterStatus;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
@@ -115,7 +116,7 @@ import gnu.io.UnsupportedCommOperationException;
 		
 		RunnableWiFiAdapter wiFi = new RunnableWiFiAdapter(500);
 		
-		GPS gps = new GPS("COM6", 9600);
+		NMEAReader gps = new NMEAReader("COM6", 9600);
 		
 		wiFi.addListener(currentOp);
 		gps.addGPSDataListener(currentOp);
@@ -141,7 +142,7 @@ import gnu.io.UnsupportedCommOperationException;
 	/**
 	 * @return the locationStatus
 	 */
-	public GPSDatum getLocationStatus()
+	public GeoCoordinate getLocationStatus()
 	{
 		return locationStatus;
 	}

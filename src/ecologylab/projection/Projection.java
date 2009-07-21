@@ -9,10 +9,10 @@ import java.awt.geom.Point2D;
 
 import ecologylab.generic.Debug;
 import ecologylab.sensor.location.gps.data.GPSConstants;
-import ecologylab.sensor.location.gps.data.GPSDatum;
+import ecologylab.sensor.location.gps.data.GeoCoordinate;
 
 /**
- * Using two GPSDatum objects, demarking two corners of real-world space, provides functionality to map real-world
+ * Using two GeoCoordinate objects, demarking two corners of real-world space, provides functionality to map real-world
  * coordinates to another (virtual) set of coordinates within a rectangle specified by its size.
  * 
  * The center of the virtual world is considered to be at the center of the two specified points. The angle at which it
@@ -77,18 +77,18 @@ public abstract class Projection extends Debug
 	 * transformed to match this specification; that is, if the points are essentially NE and SW, then this point will be
 	 * computed using the north-most and west-most components of those two coordinates.
 	 */
-	protected GPSDatum					physicalWorldPointNE	= null;
+	protected GeoCoordinate					physicalWorldPointNE	= null;
 
 	/**
 	 * The normalized southest-most physical world point for this mapping; supplied coordinates will automatically be
 	 * transformed to match this specification; that is, if the points are essentially NE and SW, then this point will be
 	 * computed using the south-most and east-most components of those two coordinates.
 	 */
-	protected GPSDatum					physicalWorldPointSW	= null;
+	protected GeoCoordinate					physicalWorldPointSW	= null;
 
-	protected GPSDatum					specedPWP1				= null;
+	protected GeoCoordinate					specedPWP1				= null;
 
-	protected GPSDatum					specedPWP2				= null;
+	protected GeoCoordinate					specedPWP2				= null;
 
 	protected RotationConstraintMode	rotConstMode;
 
@@ -110,14 +110,14 @@ public abstract class Projection extends Debug
 	 * @param rotConstMode
 	 * @throws SameCoordinatesException
 	 */
-	public Projection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2, double virtualWorldWidth,
+	public Projection(GeoCoordinate physicalWorldPoint1, GeoCoordinate physicalWorldPoint2, double virtualWorldWidth,
 			double virtualWorldHeight, RotationConstraintMode rotConstMode) throws SameCoordinatesException
 	{
 		this(physicalWorldPoint1, physicalWorldPoint2, virtualWorldWidth, virtualWorldHeight, 0.0, rotConstMode,
 				ScaleConstraintMode.CONSTANT_SIZE);
 	}
 
-	public Projection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2, double scaleFactor,
+	public Projection(GeoCoordinate physicalWorldPoint1, GeoCoordinate physicalWorldPoint2, double scaleFactor,
 			RotationConstraintMode rotConstMode) throws SameCoordinatesException
 	{
 		this(physicalWorldPoint1, physicalWorldPoint2, 0.0, 0.0, scaleFactor, rotConstMode,
@@ -136,7 +136,7 @@ public abstract class Projection extends Debug
 	 * @param scaleConstMode
 	 * @throws SameCoordinatesException
 	 */
-	protected Projection(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2, double virtualWorldWidth,
+	protected Projection(GeoCoordinate physicalWorldPoint1, GeoCoordinate physicalWorldPoint2, double virtualWorldWidth,
 			double virtualWorldHeight, double scaleFactor, RotationConstraintMode rotConstMode,
 			ScaleConstraintMode scaleConstMode) throws SameCoordinatesException
 	{
@@ -168,7 +168,7 @@ public abstract class Projection extends Debug
 	/**
 	 * @return the physicalWorldPointNE
 	 */
-	public GPSDatum getPhysicalWorldPointNE()
+	public GeoCoordinate getPhysicalWorldPointNE()
 	{
 		return physicalWorldPointNE;
 	}
@@ -176,7 +176,7 @@ public abstract class Projection extends Debug
 	/**
 	 * @return the physicalWorldPointSW
 	 */
-	public GPSDatum getPhysicalWorldPointSW()
+	public GeoCoordinate getPhysicalWorldPointSW()
 	{
 		return physicalWorldPointSW;
 	}
@@ -205,36 +205,36 @@ public abstract class Projection extends Debug
 		return virtualWorldWidth;
 	}
 
-	public final GPSConstants projectIntoReal(Point2D.Double origPoint)
+	public final GeoCoordinate projectIntoReal(Point2D.Double origPoint)
 	{
 		return this.projectIntoReal(origPoint, null);
 	}
 
-	public final GPSConstants projectIntoReal(Point2D.Double origPoint, GPSDatum destDatum)
+	public final GeoCoordinate projectIntoReal(Point2D.Double origPoint, GeoCoordinate destDatum)
 	{
 		if (destDatum == null)
 		{
-			destDatum = new GPSDatum();
+			destDatum = new GeoCoordinate();
 		}
 
 		return this.projectIntoRealImpl(origPoint, destDatum);
 	}
 
 	/**
-	 * Projects the given GPSDatum's coordinates into the virtual space, using some type of projection.
+	 * Projects the given GeoCoordinate's coordinates into the virtual space, using some type of projection.
 	 * 
 	 * Subclasses may override this method, if they are not making affine transformations.
 	 * 
 	 * @param origDatum
 	 * @return a new Point2D.Double containing the virtual space point for origPoint.
 	 */
-	public final Point2D.Double projectIntoVirtual(GPSDatum origDatum)
+	public final Point2D.Double projectIntoVirtual(GeoCoordinate origDatum)
 	{
 		return this.projectIntoVirtual(origDatum, null);
 	}
 
 	/**
-	 * Projects the given GPSDatum's coordinates into the virtual space, using some type of projection.
+	 * Projects the given GeoCoordinate's coordinates into the virtual space, using some type of projection.
 	 * 
 	 * This version takes an instantiated Point2D, so as not to expend resources instantating a new one.
 	 * 
@@ -244,7 +244,7 @@ public abstract class Projection extends Debug
 	 * @param destPoint
 	 * @return destPoint containing the virtual space point for origPoint.
 	 */
-	public final Point2D.Double projectIntoVirtual(GPSDatum origDatum, Point2D.Double destPoint)
+	public final Point2D.Double projectIntoVirtual(GeoCoordinate origDatum, Point2D.Double destPoint)
 	{
 		if (destPoint == null)
 		{
@@ -259,7 +259,7 @@ public abstract class Projection extends Debug
 	 * @param physicalWorldPoint2
 	 * @throws SameCoordinatesException
 	 */
-	public final void setPhysicalWorldCoordinates(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2)
+	public final void setPhysicalWorldCoordinates(GeoCoordinate physicalWorldPoint1, GeoCoordinate physicalWorldPoint2)
 			throws SameCoordinatesException
 	{
 		setPhysicalWorldCoordinatesOnly(physicalWorldPoint1, physicalWorldPoint2);
@@ -310,14 +310,14 @@ public abstract class Projection extends Debug
 	protected abstract void configure();
 
 	/**
-	 * This method does the real work of projectIntoReal; all calls to it are guaranteed to pass an instantiated GPSDatum
+	 * This method does the real work of projectIntoReal; all calls to it are guaranteed to pass an instantiated GeoCoordinate
 	 * object.
 	 * 
 	 * @param destPoint
 	 * @param destDatum
 	 * @return
 	 */
-	protected abstract GPSConstants projectIntoRealImpl(Point2D.Double destPoint, GPSDatum destDatum);
+	protected abstract GeoCoordinate projectIntoRealImpl(Point2D.Double destPoint, GeoCoordinate destDatum);
 
 	/**
 	 * This method does the real work of projectIntoVirtual; all calls to it are guaranteed to pass an instantiated
@@ -327,21 +327,21 @@ public abstract class Projection extends Debug
 	 * @param destPoint
 	 * @return
 	 */
-	protected abstract Point2D.Double projectIntoVirtualImpl(GPSDatum origDatum, Point2D.Double destPoint);
+	protected abstract Point2D.Double projectIntoVirtualImpl(GeoCoordinate origDatum, Point2D.Double destPoint);
 
 	/**
 	 * @param physicalWorldPoint1
 	 * @param physicalWorldPoint2
 	 * @throws SameCoordinatesException
 	 */
-	protected void setPhysicalWorldCoordinatesOnly(GPSDatum physicalWorldPoint1, GPSDatum physicalWorldPoint2)
+	protected void setPhysicalWorldCoordinatesOnly(GeoCoordinate physicalWorldPoint1, GeoCoordinate physicalWorldPoint2)
 			throws SameCoordinatesException
 	{
 		this.specedPWP1 = physicalWorldPoint1;
 		this.specedPWP2 = physicalWorldPoint2;
 
-		this.physicalWorldPointNE = new GPSDatum();
-		this.physicalWorldPointSW = new GPSDatum();
+		this.physicalWorldPointNE = new GeoCoordinate();
+		this.physicalWorldPointSW = new GeoCoordinate();
 
 		// now figure out which lat/lon to use for the NW and SE points, based on physicalWorldPoint1 and 2
 		if (physicalWorldPoint1.compareNS(physicalWorldPoint2) > 0)

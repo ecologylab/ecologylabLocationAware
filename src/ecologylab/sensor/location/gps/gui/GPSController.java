@@ -3,7 +3,7 @@
  */
 package ecologylab.sensor.location.gps.gui;
 
-import ecologylab.sensor.location.gps.GPS;
+import ecologylab.sensor.location.NMEAReader;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
@@ -27,6 +27,6 @@ public interface GPSController
 	/**
 	 * @return the gps
 	 */
-	public GPS getGps();
+	public NMEAReader getGps();
 
 }

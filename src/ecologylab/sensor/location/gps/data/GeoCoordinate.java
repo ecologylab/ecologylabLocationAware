@@ -3,6 +3,8 @@
  */
 package ecologylab.sensor.location.gps.data;
 
+import java.awt.geom.Point2D;
+
 import ecologylab.sensor.location.Location;
 import ecologylab.xml.xml_inherit;
 
@@ -23,6 +25,12 @@ import ecologylab.xml.xml_inherit;
 	/** The altitude, expressed in meters. */
 	@xml_attribute double			alt;
 
+	/**
+	 * A Point2D.Double representation of this's latitude and longitude, instantiated and filled
+	 * through lazy evaluation, when needed.
+	 */
+	protected Point2D.Double								pointRepresentation							= null;
+	
 	/**
 	 * 
 	 */
@@ -93,5 +101,48 @@ import ecologylab.xml.xml_inherit;
 		}
 
 		return kMLCommaDelimited;
+	}
+	
+	public Point2D.Double getPointRepresentation()
+	{
+		if(pointRepresentation == null)
+			pointRepresentation = new Point2D.Double(lon, lat);
+		else
+			pointRepresentation.setLocation(lon, lat);
+		return pointRepresentation;
+	}
+
+	/**
+	 * @param that
+	 * @return positive if this is farther north than that, negative if that is more north; 0 if they
+	 *         lie on exactly the same parallel.
+	 */
+	public double compareNS(GeoCoordinate that)
+	{
+		return this.getLat() - that.getLat();
+	}
+
+	/**
+	 * @param that
+	 * @return compares two GPSDatum's based on the acute angle between their longitudes. Returns 1 if
+	 *         this is farther east than that, -1 if this is farther west, 0 if the two points lie on
+	 *         the same arc, 180/-180 if they are opposite.
+	 */
+	public double compareEW(GeoCoordinate that)
+	{
+		double diff = getLon() - that.getLon();
+	
+		if (diff > 180)
+		{
+			return diff - 360;
+		}
+		else if (diff < -180)
+		{
+			return diff + 360;
+		}
+		else
+		{
+			return diff;
+		}
 	}
 }

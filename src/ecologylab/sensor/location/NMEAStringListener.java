@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ecologylab.sensor.location.gps.listener;
+package ecologylab.sensor.location;
 
 
 /**

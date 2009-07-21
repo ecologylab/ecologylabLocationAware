@@ -11,11 +11,8 @@ import ecologylab.xml.ElementState;
  * 
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  */
-public class LocationStatus extends ElementState
+public class LocationStatus extends GeoCoordinate
 {
-	/** The current location from the sensor. */
-	@xml_nested @xml_tag("loc") protected GeoCoordinate	currentLocation;
-
 	/** TODO make this an actual date. */
 	@xml_attribute protected String				utcTime;
 
@@ -30,7 +27,7 @@ public class LocationStatus extends ElementState
 
 	public GeoCoordinate getCurrentLocation()
 	{
-		return currentLocation;
+		return this;
 	}
 
 	public String getUtcTime()

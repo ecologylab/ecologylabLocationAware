@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ecologylab.sensor.location.gps;
+package ecologylab.sensor.location;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +13,6 @@ import java.util.LinkedList;
 import java.util.TooManyListenersException;
 
 import ecologylab.generic.Debug;
-import ecologylab.sensor.location.gps.listener.NMEAStringListener;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
@@ -30,7 +29,7 @@ import gnu.io.UnsupportedCommOperationException;
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
-public class GPS extends Debug implements SerialPortEventListener
+public class NMEAReader extends Debug implements SerialPortEventListener
 {
 	private CommPortIdentifier							portId;
 
@@ -60,12 +59,12 @@ public class GPS extends Debug implements SerialPortEventListener
 	 * @throws IOException
 	 *           the specified port is a parallel port.
 	 */
-	public GPS(String portName, int baud) throws NoSuchPortException, IOException
+	public NMEAReader(String portName, int baud) throws NoSuchPortException, IOException
 	{
 		this(CommPortIdentifier.getPortIdentifier(portName), baud);
 	}
 
-	public GPS(CommPortIdentifier portId, int baud) throws IOException
+	public NMEAReader(CommPortIdentifier portId, int baud) throws IOException
 	{
 		setup(portId, baud);
 	}
@@ -100,7 +99,7 @@ public class GPS extends Debug implements SerialPortEventListener
 	 * Can also be used to have a GPS instance that is not yet configured, but will be configured
 	 * later. This is useful if listeners need to be the same.
 	 */
-	public GPS()
+	public NMEAReader()
 	{
 
 	}

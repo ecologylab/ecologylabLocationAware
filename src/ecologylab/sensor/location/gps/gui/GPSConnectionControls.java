@@ -3,7 +3,7 @@
  */
 package ecologylab.sensor.location.gps.gui;
 
-import ecologylab.sensor.location.gps.GPS;
+import ecologylab.sensor.location.NMEAReader;
 import ecologylab.sensor.location.gps.gui.strings.GPSStatusStrings;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
@@ -202,7 +202,7 @@ public class GPSConnectionControls extends JPanel implements ActionListener, GPS
 
 		this.projVis = projVis;
 
-		GPS currentGPS = this.projVis.getGps();
+		NMEAReader currentGPS = this.projVis.getGps();
 
 		if (currentGPS == null || !currentGPS.connected())
 		{

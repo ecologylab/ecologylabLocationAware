@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import ecologylab.sensor.location.NMEAStringListener;
+
 /**
  * Logs pure NMEA sentences to a return-delimited file.
  * 
@@ -46,7 +48,7 @@ public class GPSDataLogger implements NMEAStringListener
 	}
 
 	/** 
-	 * @see ecologylab.sensor.location.gps.data.NMEAStringListener#processIncomingNMEAString(java.lang.String)
+	 * @see ecologylab.sensor.location.NMEAStringListener#processIncomingNMEAString(java.lang.String)
 	 */
 	public void processIncomingNMEAString(String gpsDataString)
 	{

@@ -21,6 +21,7 @@ import ecologylab.projection.Projection;
 import ecologylab.projection.SameCoordinatesException;
 import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GPSDatum;
+import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener.GPSUpdateInterest;
 
@@ -38,9 +39,9 @@ public class ProjectionVisualizerPanel extends JPanel implements
 																		.getGreen(), Color.GREEN
 																		.getBlue(), 128);
 
-	GPSDatum							centerPoint;
+	GeoCoordinate							centerPoint;
 
-	GPSDatum							currentPosition;
+	GeoCoordinate							currentPosition;
 
 	PlateCarreeProjection		currentProjection;
 
@@ -63,7 +64,7 @@ public class ProjectionVisualizerPanel extends JPanel implements
 	 * @throws SameCoordinatesException
 	 * 
 	 */
-	public ProjectionVisualizerPanel(GPSDatum centerPoint,
+	public ProjectionVisualizerPanel(GeoCoordinate centerPoint,
 			PlateCarreeProjection currentProjection, int width, int height)
 	{
 		this.w = width;
@@ -80,10 +81,10 @@ public class ProjectionVisualizerPanel extends JPanel implements
 
 		// use the center point to create a projection that is about .25 minutes
 		// expanded in each direction
-		GPSDatum neCorner = new GPSDatum(centerPoint.getLat() + .3, centerPoint
+		GeoCoordinate neCorner = new GPSDatum(centerPoint.getLat() + .3, centerPoint
 				.getLon() + .3);
 
-		GPSDatum swCorner = new GPSDatum(centerPoint.getLat() - .3, centerPoint
+		GeoCoordinate swCorner = new GPSDatum(centerPoint.getLat() - .3, centerPoint
 				.getLon() - .3);
 
 		visualRect = new Rectangle2D.Double(-w / 2.0, -h / 2.0, w, h);

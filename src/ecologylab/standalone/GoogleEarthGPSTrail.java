@@ -3,7 +3,7 @@ package ecologylab.standalone;
 import ecologylab.collections.Scope;
 import ecologylab.composite.kml.sensor.GPSToKMLTrail;
 import ecologylab.net.NetTools;
-import ecologylab.sensor.location.gps.GPS;
+import ecologylab.sensor.location.NMEAReader;
 import ecologylab.sensor.location.gps.SimGPS;
 import ecologylab.sensor.location.gps.SimGPS.PlayMode;
 import ecologylab.services.distributed.server.varieties.KmlServer;
@@ -43,8 +43,10 @@ public class GoogleEarthGPSTrail
 			PortInUseException, UnsupportedCommOperationException,
 			TooManyListenersException, NoSuchPortException
 	{
-		GPS gps = new SimGPS(new File("sampleLogs/zachToGrocery.nmea"),
+		NMEAReader gps = new SimGPS(new File("sampleLogs/billTest.nmea"),
 				PlayMode.FORWARD_BACKWARD);
+		
+		
 
 //		 GPS gps = new GPS("COM19", 115200);
 
@@ -95,7 +97,7 @@ public class GoogleEarthGPSTrail
 
 		s.start();
 
-		gps.addGPSDataListener(new GPSToKMLTrail(line, 2000, 100));
+		gps.addGPSDataListener(new GPSToKMLTrail(line, 2000, 1));
 
 //		System.out.println("Attempting to load the entire simulation file...");
 
