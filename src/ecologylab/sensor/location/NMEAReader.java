@@ -29,7 +29,7 @@ import gnu.io.UnsupportedCommOperationException;
  * @author Zachary O. Toups (toupsz@cs.tamu.edu)
  * 
  */
-public class NMEAReader extends Debug implements SerialPortEventListener
+public class NMEAReader extends Debug implements Runnable
 {
 	private CommPortIdentifier							portId;
 
@@ -41,13 +41,15 @@ public class NMEAReader extends Debug implements SerialPortEventListener
 
 	private LinkedList<NMEAStringListener>	listeners						= new LinkedList<NMEAStringListener>();
 
-	private static final CharsetDecoder			ASCII_DECODER				= Charset.forName("US-ASCII")
+	private CharsetDecoder									ascii_decoder				= Charset.forName("US-ASCII")
 																																	.newDecoder();
 
 	protected StringBuilder									incomingDataBuffer	= new StringBuilder();
 
 	private ByteBuffer											incomingBytes				= ByteBuffer.allocate(10000);
 
+	private Thread													t;
+	
 	/**
 	 * Instantiate a GPS device on a given port and baud rate.
 	 * 
@@ -126,18 +128,20 @@ public class NMEAReader extends Debug implements SerialPortEventListener
 
 		port.setSerialPortParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
 				SerialPort.PARITY_NONE);
-		port.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+		port.setFlowControlMode(SerialPort.FLOWCONTROL_XONXOFF_IN);
 		// port.setDTR(true);
 		port.setRTS(true);
 
-		port.addEventListener(this);
-		port.notifyOnDataAvailable(true);
-
+		//port.addEventListener(this);
+		//port.notifyOnDataAvailable(true);
+		
 		portIn = port.getInputStream();
 
 		if (connected())
 		{
 			debug("...successful.");
+			t = new Thread(this, "NMEA Reader Thread on " + portId.toString() + " @ " + port.getBaudRate() + "bps");
+			t.start();
 		}
 		else
 		{
@@ -169,7 +173,37 @@ public class NMEAReader extends Debug implements SerialPortEventListener
 		}
 	}
 
-	public void serialEvent(SerialPortEvent event)
+	public void run()
+	{
+		incomingBytes.clear();
+		int bytesRead = 0;
+		try
+		{
+			while((bytesRead = portIn.read(this.incomingBytes.array(), 0, incomingBytes.capacity())) >= 0)
+			{
+				if(bytesRead > 0)
+				{
+					// have to set the limit on the bytebuffer, because we just
+					// changed the backing array
+					incomingBytes.limit(bytesRead);
+		
+					incomingDataBuffer.append(ascii_decoder.decode(incomingBytes));
+															
+					handleIncomingChars();			
+				}
+				incomingBytes.clear();
+			}
+		}
+		catch (IOException ioe)
+		{
+			System.out.println("I/O Exception!");
+			ioe.printStackTrace();
+			// incomingDataBuffer.delete(0, 1000);
+		}
+		bytesRead = 1;
+	}
+	
+	/*public void serialEvent(SerialPortEvent event)
 	{
 		// int bytesRead = 0;
 		switch (event.getEventType())
@@ -180,17 +214,19 @@ public class NMEAReader extends Debug implements SerialPortEventListener
 			try
 			{
 				incomingBytes.clear();
-
-				int bytesRead = portIn.read(this.incomingBytes.array());
-
-				if (bytesRead > 0)
+				int bytesRead = 0;
+				
+				while(portIn.available() > 0)
 				{
+					bytesRead = portIn.read(this.incomingBytes.array(), 0, incomingBytes.capacity());
+					
 					// have to set the limit on the bytebuffer, because we just
 					// changed the backing array
 					incomingBytes.limit(bytesRead);
-
-					incomingDataBuffer.append(ASCII_DECODER.decode(incomingBytes));
-					handleIncomingChars();
+	
+					incomingDataBuffer.append(ascii_decoder.decode(incomingBytes));
+					handleIncomingChars();		
+					incomingBytes.clear();
 				}
 			}
 			catch (IOException ioe)
@@ -202,7 +238,7 @@ public class NMEAReader extends Debug implements SerialPortEventListener
 
 			break;
 		}
-	}
+	}*/
 
 	/**
 	 * @param bytesRead
@@ -267,7 +303,7 @@ public class NMEAReader extends Debug implements SerialPortEventListener
 
 	private void fireGPSDataString(String gpsDataString)
 	{
-		debug("firing for: "+gpsDataString);
+		//debug("firing for: "+gpsDataString);
 		
 		for (NMEAStringListener l : listeners)
 		{
