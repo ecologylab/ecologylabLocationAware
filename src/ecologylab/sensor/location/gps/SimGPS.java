@@ -110,10 +110,13 @@ public class SimGPS extends NMEAReader implements ActionListener
 	 */
 	public void sendSentence()
 	{
+		/*
 		this.incomingDataBuffer.append(this.nmeaStrings.get(currentSentence) + "\r\n");
-
 		this.handleIncomingChars();
-
+		 */
+		
+		this.fireGPSDataString(this.nmeaStrings.get(currentSentence).substring(1));
+		
 		if (goingForward)
 		{
 			this.currentSentence++;

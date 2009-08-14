@@ -3,6 +3,8 @@ package ecologylab.sensor.network.wireless2;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
@@ -11,7 +13,6 @@ public class WifiStatusViewer extends JFrame
 	private class WifiUpdater implements WifiListener
 	{
 
-		@Override
 		public void onConnect()
 		{
 			setTitle("Connected");
@@ -24,7 +25,6 @@ public class WifiStatusViewer extends JFrame
 			signalStrengthBar.setString(WifiUtils.getRSSI() +" dBm");
 		}
 
-		@Override
 		public void onDisconnect()
 		{
 			setTitle("Disconnected");
@@ -38,7 +38,6 @@ public class WifiStatusViewer extends JFrame
 			
 		}
 
-		@Override
 		public void onUpdate()
 		{
 			setTitle(WifiUtils.isConnected()?"Connected":"Disconnected");
@@ -55,11 +54,20 @@ public class WifiStatusViewer extends JFrame
 		
 	}
 	
+	private class ScanListener implements ActionListener 
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			System.err.println("Scan result: " + WifiUtils.scan());
+		}
+	}
+	
 	private JProgressBar signalQualityBar, signalStrengthBar;
 	private JLabel ssidLabel;
 	private JLabel bssidLabel;
 	private JLabel ipaddrLabel;
-	private WifiUpdater wifiUpdater = new WifiUpdater();
+	public WifiUpdater wifiUpdater = new WifiUpdater();
+	private JButton scanButton;
 	
 	public WifiStatusViewer()
 	{
@@ -114,6 +122,11 @@ public class WifiStatusViewer extends JFrame
 		gridbag.setConstraints(signalStrengthBar, c);
 		add(signalStrengthBar);
 		
+		scanButton = new JButton("Scan!");
+		scanButton.addActionListener(new ScanListener());
+		gridbag.setConstraints(scanButton, c);
+		add(scanButton);
+		
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(800, 400);
 		this.pack();
@@ -125,6 +138,7 @@ public class WifiStatusViewer extends JFrame
 	
 	public static void main(String[] args) {
 		WifiStatusViewer view = new WifiStatusViewer();
+		WifiUtils.addListener(view.wifiUpdater);
 		
 	}
 }

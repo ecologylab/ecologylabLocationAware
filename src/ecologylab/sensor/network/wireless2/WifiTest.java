@@ -21,19 +21,16 @@ public class WifiTest implements WifiListener
 	
 	}
 
-	@Override
 	public void onConnect()
 	{
 		System.out.println("<------------connected callback!---------------->");
 	}
 
-	@Override
 	public void onDisconnect()
 	{
 		System.out.println("<-----------disconnected callback!-------------->");
 	}
 
-	@Override
 	public void onUpdate()
 	{
 		System.out.println(WifiUtils.getStatusString());

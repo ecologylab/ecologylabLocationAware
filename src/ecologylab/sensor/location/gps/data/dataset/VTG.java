@@ -21,7 +21,6 @@ public enum VTG implements GPSDataFieldBase
 	{
 		public void update(String src, GPSDatum dst)
 		{
-			dst.updateLat(src);
 		}
 	},
 	MAGNETIC_TRACK_MADE_GOOD
@@ -55,53 +54,10 @@ public enum VTG implements GPSDataFieldBase
 			dst.updateGroundSpeed(src);
 		}
 	},
-	HDOP
+	K
 	{
 		public void update(String src, GPSDatum dst)
 		{
-			dst.updateHDOP(src);
-		}
-	},
-	GEOID_HEIGHT
-	{
-		public void update(String src, GPSDatum dst)
-		{
-			dst.updateGeoidHeight(src);
-		}
-	},
-	HEIGHT_UNIT
-	{
-		public void update(String src, GPSDatum dst)
-		{
-			dst.updateHeightUnit(src);
-		}
-	},
-	HEIGHT_DIFF
-	{
-		public void update(String src, GPSDatum dst)
-		{
-			dst.updateHeightDiff(src);
-		}
-	},
-	HEIGHT_DIFF_UNIT
-	{
-		public void update(String src, GPSDatum dst)
-		{
-			dst.updateDiffHeightUnit(src);
-		}
-	},
-	DGPS_AGE
-	{
-		public void update(String src, GPSDatum dst)
-		{
-			dst.updateDGPSAge(src);
-		}
-	},
-	DGPS_REF
-	{
-		public void update(String src, GPSDatum dst)
-		{
-			dst.updateDGPSRef(src);
 		}
 	},
 	CHECKSUM

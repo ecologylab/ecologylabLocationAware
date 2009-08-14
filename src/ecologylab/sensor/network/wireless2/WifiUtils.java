@@ -22,7 +22,7 @@ public class WifiUtils implements WifiConstants
 		}
 	}
 	
-	private static int interfaceState 						= WLAN_INTERFACE_STATE_DISCONNECTED;
+	private static int wlanInterfaceState 						= WLAN_INTERFACE_STATE_DISCONNECTED;
 	
 	private static String ssid 								= "";				//connected networks ssid
 	
@@ -32,8 +32,6 @@ public class WifiUtils implements WifiConstants
 	
 	private static String bssid								= "00:00:00:00:00:00";	//mac address of wifi connection
 	
-	private static NetworkInterface wirelessInterface	= null;
-	
 	private static int updateInterval 						= 2000; 			//ms between updates;
 	
 	private static Timer t;
@@ -42,63 +40,34 @@ public class WifiUtils implements WifiConstants
 	
 	private static ArrayList<WifiListener>	listeners	= new ArrayList<WifiListener>();
 	
+	private static String ipAddrString						= "";
+	
+	private static int interfaceState 						= INTF_OPER_STATUS_DOWN;
+	
 	
 	static {
-		updateNetworkInterface();
-		if(wirelessInterface != null)
+		System.loadLibrary("WifiUtils");
+		
+		if(!(initialized = initialize()))
 		{
-			System.loadLibrary("WifiUtils");
-			if(!(initialized = initialize()))
-			{
-				System.err.println("Failed to initialize WifiUtils!");
-			} else {
-				t = new Timer(updateInterval, new Updater());
-				t.setInitialDelay(0);
-				t.setRepeats(true);
-				t.start();
-				
-			}
-		} else {
 			System.err.println("Failed to initialize WifiUtils!");
-		}
-	}
+		} else {
+			t = new Timer(updateInterval, new Updater());
+			t.setInitialDelay(0);
+			t.setRepeats(true);
+			t.start();
+		} 
+	} 
 	
 	native private static boolean initialize();
 	
 	native private static void updateStats();
 	
-	private static void updateNetworkInterface()
-	{
-		Enumeration<NetworkInterface> interfaces = null;
-		try
-		{
-			interfaces = NetworkInterface.getNetworkInterfaces();
-		}
-		catch (SocketException e)
-		{
-			System.err.println("Unable to enumerate network interfaces.");
-		}
-		
-		if(interfaces != null)
-		{
-			//find first wireless interface
-			while(interfaces.hasMoreElements())
-			{
-				NetworkInterface inf = interfaces.nextElement();
-				if(inf.getDisplayName().toLowerCase().contains("wireless") ||
-					inf.getDisplayName().contains("802.11"))
-				{
-					wirelessInterface = inf;
-					break;
-				}
-			}
-		}
-	}
+	native public static boolean scan();
 	
 	private static void connectCallBack()
 	{
 		t.start();
-		updateNetworkInterface();
 		for(WifiListener listener : listeners)
 		{
 			listener.onConnect();
@@ -108,8 +77,7 @@ public class WifiUtils implements WifiConstants
 	private static void disconnectCallBack()
 	{
 		t.stop();
-		updateNetworkInterface();
-		interfaceState = WLAN_INTERFACE_STATE_DISCONNECTED;
+		wlanInterfaceState = WLAN_INTERFACE_STATE_DISCONNECTED;
 		ssid = "";
 		wlanSignalQuality = 0;
 		rssi = -110;
@@ -120,7 +88,7 @@ public class WifiUtils implements WifiConstants
 		}
 	}
 	
-	protected static void addListener(WifiListener listener)
+	public static void addListener(WifiListener listener)
 	{
 		listeners.add(listener);
 	}
@@ -135,7 +103,8 @@ public class WifiUtils implements WifiConstants
 	
 	public static boolean isConnected()
 	{
-		return interfaceState == WLAN_INTERFACE_STATE_CONNECTED;
+		InetAddress addr = getAddress();
+		return WifiUtils.interfaceState == INTF_OPER_STATUS_UP && addr != null && !addr.isLoopbackAddress();
 	}
 	
 	public static String getSSID()
@@ -155,7 +124,7 @@ public class WifiUtils implements WifiConstants
 	
 	public static int getRSSIPercentage()
 	{
-		return (int) ((rssi + 85) / 75.0);
+		return (int) (((rssi + 85) / 75.0) * 100);
 	}
 	
 	public static int getQuality()
@@ -163,18 +132,24 @@ public class WifiUtils implements WifiConstants
 		return wlanSignalQuality;
 	}
 	
-	public static Enumeration<InetAddress> getAddresses()
-	{
-		return wirelessInterface.getInetAddresses();
-	}
-	
 	public static InetAddress getAddress()
 	{
-		Enumeration<InetAddress> addresses = getAddresses();
-		if(addresses.hasMoreElements())
-			return addresses.nextElement();
-		else
+		if(WifiUtils.ipAddrString == null || WifiUtils.ipAddrString.equals(""))
+		{
 			return null;
+		} else {
+			InetAddress tmp = null;
+			try
+			{
+				tmp = InetAddress.getByName(ipAddrString);
+			}
+			catch (UnknownHostException e)
+			{
+				tmp = null;
+				e.printStackTrace();
+			}
+			return tmp;
+		}
 	}
 	
 	public static String getStatusString()
@@ -184,12 +159,7 @@ public class WifiUtils implements WifiConstants
 		{
 			status += "Connected to ssid: " + ssid + " with bssid: " + bssid + "\n";
 			
-			status += "IP-Addresses:\n";
-			Enumeration<InetAddress> addresses = getAddresses();
-			while(addresses.hasMoreElements())
-			{
-				status+= "\t" + addresses.nextElement() + "\n";
-			}
+			status += "IP-Address: " + getAddress();
 			
 			status += "\nConnection Quality: " + wlanSignalQuality + " RSSI: " + rssi;
 		} else {

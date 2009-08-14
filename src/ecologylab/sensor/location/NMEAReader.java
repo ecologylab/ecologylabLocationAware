@@ -3,8 +3,11 @@
  */
 package ecologylab.sensor.location;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
@@ -33,20 +36,13 @@ public class NMEAReader extends Debug implements Runnable
 {
 	private CommPortIdentifier							portId;
 
-	private SerialPort											port								= null;
+	private SerialPort											port									= null;
 
 	private int															baud;
 
-	private InputStream											portIn							= null;
+	private BufferedReader											portIn							= null;
 
 	private LinkedList<NMEAStringListener>	listeners						= new LinkedList<NMEAStringListener>();
-
-	private CharsetDecoder									ascii_decoder				= Charset.forName("US-ASCII")
-																																	.newDecoder();
-
-	protected StringBuilder									incomingDataBuffer	= new StringBuilder();
-
-	private ByteBuffer											incomingBytes				= ByteBuffer.allocate(10000);
 
 	private Thread													t;
 	
@@ -128,14 +124,26 @@ public class NMEAReader extends Debug implements Runnable
 
 		port.setSerialPortParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
 				SerialPort.PARITY_NONE);
-		port.setFlowControlMode(SerialPort.FLOWCONTROL_XONXOFF_IN);
+		port.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 		// port.setDTR(true);
 		port.setRTS(true);
+		
+		if(port.isReceiveFramingEnabled())
+		{
+			debug("Using framing!");
+			port.enableReceiveFraming('\n');
+		} else {
+			debug("Not using framing!");
+			port.enableReceiveTimeout(5000);
+			port.enableReceiveThreshold(1);
+		}
 
 		//port.addEventListener(this);
 		//port.notifyOnDataAvailable(true);
 		
-		portIn = port.getInputStream();
+		
+		
+		portIn = new BufferedReader(new InputStreamReader(port.getInputStream(), "US-ASCII"));
 
 		if (connected())
 		{
@@ -168,6 +176,14 @@ public class NMEAReader extends Debug implements Runnable
 				port.close();
 
 				port = null;
+				try
+				{
+					portIn.close();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 				portIn = null;
 			}
 		}
@@ -175,95 +191,28 @@ public class NMEAReader extends Debug implements Runnable
 
 	public void run()
 	{
-		incomingBytes.clear();
-		int bytesRead = 0;
-		try
-		{
-			while((bytesRead = portIn.read(this.incomingBytes.array(), 0, incomingBytes.capacity())) >= 0)
+			String nmeaLine = null;
+			
+			try{
+				portIn.readLine();
+				portIn.skip(1);
+				nmeaLine = portIn.readLine();
+			} catch (IOException e)
 			{
-				if(bytesRead > 0)
-				{
-					// have to set the limit on the bytebuffer, because we just
-					// changed the backing array
-					incomingBytes.limit(bytesRead);
-		
-					incomingDataBuffer.append(ascii_decoder.decode(incomingBytes));
-															
-					handleIncomingChars();			
-				}
-				incomingBytes.clear();
-			}
-		}
-		catch (IOException ioe)
-		{
-			System.out.println("I/O Exception!");
-			ioe.printStackTrace();
-			// incomingDataBuffer.delete(0, 1000);
-		}
-		bytesRead = 1;
-	}
-	
-	/*public void serialEvent(SerialPortEvent event)
-	{
-		// int bytesRead = 0;
-		switch (event.getEventType())
-		{
-		case (SerialPortEvent.DATA_AVAILABLE):
-			// when data is available, we read it, parse it as ASCII
-			// strings, and pass it to a data listener
-			try
-			{
-				incomingBytes.clear();
-				int bytesRead = 0;
-				
-				while(portIn.available() > 0)
-				{
-					bytesRead = portIn.read(this.incomingBytes.array(), 0, incomingBytes.capacity());
-					
-					// have to set the limit on the bytebuffer, because we just
-					// changed the backing array
-					incomingBytes.limit(bytesRead);
-	
-					incomingDataBuffer.append(ascii_decoder.decode(incomingBytes));
-					handleIncomingChars();		
-					incomingBytes.clear();
-				}
-			}
-			catch (IOException ioe)
-			{
-				System.out.println("I/O Exception!");
-				ioe.printStackTrace();
-				// incomingDataBuffer.delete(0, 1000);
-			}
-
-			break;
-		}
-	}*/
-
-	/**
-	 * @param bytesRead
-	 * @throws CharacterCodingException
-	 */
-	protected void handleIncomingChars()
-	{
-
-		int endOfMessage = incomingDataBuffer.indexOf("\r\n");
-		int startOfMessage = incomingDataBuffer.indexOf("$");
-
-		if (startOfMessage > -1 && endOfMessage > -1 && startOfMessage < endOfMessage)
-		{
-			try
-			{
-				this.fireGPSDataString(incomingDataBuffer.substring(startOfMessage + 1, endOfMessage));
-
-				incomingDataBuffer.delete(startOfMessage, endOfMessage + 2);
-			}
-			catch (Exception e)
-			{
-				// TODO handle disconnect properly
 				e.printStackTrace();
 			}
-		}
+			
+			while(nmeaLine != null)
+			{
+				this.fireGPSDataString(nmeaLine);
+				
+				try {
+					portIn.skip(1);
+					nmeaLine = portIn.readLine();
+				} catch (IOException ioe) {
+					ioe.printStackTrace();
+				}
+			}		
 	}
 
 	public void addGPSDataListener(NMEAStringListener l)
@@ -301,7 +250,7 @@ public class NMEAReader extends Debug implements Runnable
 		return -1;
 	}
 
-	private void fireGPSDataString(String gpsDataString)
+	protected void fireGPSDataString(String gpsDataString)
 	{
 		//debug("firing for: "+gpsDataString);
 		

@@ -2,9 +2,9 @@ package ecologylab.sensor.network.wireless2;
 
 public interface WifiListener extends WifiConstants 
 {
-	public abstract void onDisconnect();
+	public void onDisconnect();
 	
-	public abstract void onConnect();
+	public void onConnect();
 	
-	public abstract void onUpdate();
+	public void onUpdate();
 }

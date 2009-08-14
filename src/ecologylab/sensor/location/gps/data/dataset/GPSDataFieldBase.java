@@ -19,4 +19,5 @@ public interface GPSDataFieldBase
 	 * @param dst
 	 */
 	void update(String src, GPSDatum dst);
+	
 }

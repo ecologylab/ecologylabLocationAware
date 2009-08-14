@@ -7,6 +7,7 @@ import ecologylab.sensor.location.gps.data.GPSDatum;
 
 public enum GGA implements GPSDataFieldBase
 {
+	
 	UTC_POS_TIME
 	{
 		public void update(String src, GPSDatum dst)

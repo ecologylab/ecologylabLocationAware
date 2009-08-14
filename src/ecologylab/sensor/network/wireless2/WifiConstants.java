@@ -13,6 +13,11 @@ public interface WifiConstants
 	public static final int WLAN_INTERFACE_STATE_DISCOVERING             = 6;
 	public static final int WLAN_INTERFACE_STATE_AUTHENTICATING          = 7;
 	
-	
-
+	public static final int INTF_OPER_STATUS_UP									= 1;
+	public static final int INTF_OPER_STATUS_DOWN								= 2;
+	public static final int INTF_OPER_STATUS_TESTING							= 3;
+	public static final int INTF_OPER_STATUS_UNKNOWN							= 4;
+	public static final int INTF_OPER_STATUS_DORMANT							= 5;
+	public static final int INTF_OPER_STATUS_NOT_PRESENT						= 6;
+	public static final int INTF_OPER_STATUS_LOWER_LAYER_DOWN				= 7;
 }

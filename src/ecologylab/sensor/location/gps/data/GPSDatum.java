@@ -4,6 +4,7 @@
 package ecologylab.sensor.location.gps.data;
 
 import java.awt.geom.Point2D;
+import java.util.Calendar;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +19,7 @@ import ecologylab.sensor.location.gps.data.dataset.GPSDataFieldBase;
 import ecologylab.sensor.location.gps.data.dataset.GSA;
 import ecologylab.sensor.location.gps.data.dataset.GSV;
 import ecologylab.sensor.location.gps.data.dataset.RMC;
+import ecologylab.sensor.location.gps.data.dataset.VTG;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener.GPSUpdateInterest;
 import ecologylab.xml.xml_inherit;
@@ -120,6 +122,8 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	@xml_nested
 	private SVData[]										trackedSVs;
 
+	private Calendar										utcTime = Calendar.getInstance();
+	
 	/**
 	 * All up-to-date data on SVs that have been reported on by the GPS hardware.
 	 */
@@ -127,6 +131,8 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 
 	/** Used for moving data around when processing NMEA sentences. */
 	private char[]											tempDataStore;
+	
+	private double 										HDOPMultiplier = 3.0;											
 
 	public GPSDatum()
 	{
@@ -156,7 +162,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	{
 		if (tempDataStore == null)
 		{
-			tempDataStore = new char[80];
+			tempDataStore = new char[100];
 		}
 
 		return tempDataStore;
@@ -246,7 +252,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 				}
 				break;
 			case ('V'):
-				// TODO check VTG
+				fieldBase = VTG.values();
 				break;
 			case ('Z'):
 				// TODO check ZDA
@@ -277,6 +283,10 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 									if (i - dataStart > 0)
 									{
 										field.update(new String(tempData, dataStart, (i - dataStart)), this);
+									}
+									else
+									{
+										field.update(null, this);
 									}
 									finishedField = true;
 								}
@@ -332,6 +342,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateLonHemisphere(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
+		
 		setLon(AngularCoord.signForHemisphere(src.charAt(0), getLon()));
 
 		this.pointDirty = true;
@@ -344,6 +357,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateLon(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
+				
 		double oldLon = getLon();
 
 		setLon(AngularCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 3)),
@@ -364,6 +380,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateLatHemisphere(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
+		
 		setLat(AngularCoord.signForHemisphere(src.charAt(0), getLat()));
 
 		this.pointDirty = true;
@@ -376,6 +395,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateLat(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
+		
 		double oldLat = getLat();
 
 		setLat(AngularCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 2)),
@@ -396,7 +418,20 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateUtcPosTime(String utcString)
 	{
-		this.utcTime = utcString;
+		if(utcString == null || utcString.length() == 0)
+			return;
+		
+		double time = Double.parseDouble(utcString);
+		
+		int hour = (int) (time / 10000);
+		int minute = ((int) (time / 100)) % 100;
+		int second = ((int) (time)) % 100;
+		int milliSecond = ((int) (time * 1000)) % 1000;
+		
+		this.utcTime.set(Calendar.HOUR_OF_DAY, hour);
+		this.utcTime.set(Calendar.MINUTE, minute);
+		this.utcTime.set(Calendar.SECOND, second);
+		this.utcTime.set(Calendar.MILLISECOND, milliSecond);
 	}
 
 	/**
@@ -407,6 +442,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateNumSats(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
+		
 		this.numSats = Integer.parseInt(src);
 	}
 
@@ -418,6 +456,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateGPSQual(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
+		
 		this.gpsQual = Integer.parseInt(src);
 	}
 
@@ -429,6 +470,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateDGPSRef(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
+		
 		this.dgpsRefStation = Integer.parseInt(src);
 	}
 
@@ -443,6 +487,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateDiffHeightUnit(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
+		
 		if (src.charAt(0) != 'M')
 		{
 			warning("GPS is not using meters: " + src);
@@ -457,6 +504,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateDGPSAge(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
+		
 		this.dgpsAge = Float.parseFloat(src);
 	}
 
@@ -466,6 +516,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateHeightUnit(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
+		
 		if (src.charAt(0) != 'M')
 		{
 			warning("GPS is not using meters: " + src);
@@ -480,6 +533,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateGeoidHeight(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
+		
 		this.geoidHeight = Float.parseFloat(src);
 	}
 
@@ -491,6 +547,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateDataValid(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
+		
 		switch (src.charAt(0))
 		{
 		case 'A':
@@ -512,6 +571,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateAutoCalcMode(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
+		
 		switch (src.charAt(0))
 		{
 		case 'A':
@@ -530,6 +592,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateCalcMode(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
+		
 		// values will be either 0, 1, or 2
 		this.calcMode = Integer.parseInt(src);
 	}
@@ -545,6 +610,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void addSVToTrackedList(String sVIDString, int i)
 	{
+		if(sVIDString == null || sVIDString.length() == 0)
+			return;
+		
 		Integer index = new Integer(i);
 		int sVID = Integer.parseInt(sVIDString);
 
@@ -572,6 +640,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void setCurrentSV(String sVIDString)
 	{
+		if(sVIDString == null || sVIDString.length() == 0)
+			return;
+		
 		int sVID = Integer.parseInt(sVIDString);
 
 		HashMap<Integer, SVData> allSVsLocal = this.allSVs();
@@ -594,6 +665,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void setCurrentSVElev(String currentSVElevationString)
 	{
+		if(currentSVElevationString == null || currentSVElevationString.length() == 0)
+			return;
+		
 		int elevation = Integer.parseInt(currentSVElevationString);
 
 		this.currentSV.setElevation(elevation);
@@ -607,6 +681,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void setCurrentSVAzi(String currentSVAzimuthString)
 	{
+		if(currentSVAzimuthString == null || currentSVAzimuthString.length() == 0)
+			return;
+		
 		int azimuth = Integer.parseInt(currentSVAzimuthString);
 
 		this.currentSV.setAzimuth(azimuth);
@@ -620,6 +697,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void setCurrentSVSNR(String currentSVSNRString)
 	{
+		if(currentSVSNRString == null || currentSVSNRString.length() == 0)
+			return;
+		
 		int snr = Integer.parseInt(currentSVSNRString);
 
 		this.currentSV.setSnr(snr);
@@ -635,7 +715,10 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateHDOP(String src)
 	{
-		this.hdop = Float.parseFloat(src);
+		if(src != null && !src.equals(""))
+			this.hdop = Float.parseFloat(src);
+		else
+			this.hdop = 50.0f;
 	}
 
 	/**
@@ -643,6 +726,8 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updatePDOP(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
 		this.pdop = Float.parseFloat(src);
 	}
 
@@ -651,6 +736,8 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	public void updateVDOP(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
 		this.vdop = Float.parseFloat(src);
 	}
 
@@ -919,6 +1006,8 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 
 	public void updateGroundSpeed(String src)
 	{
+		if(src == null || src.length() == 0)
+			return;
 		//convert from kph to meters per sec
 		this.grndSpd = Float.parseFloat(src)*1000.0/60.0/60.0;
 	}
@@ -926,5 +1015,30 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	public double getSpeed()
 	{
 		return grndSpd;
+	}
+	
+	public long getTimeInMillis()
+	{
+		return utcTime.getTimeInMillis();
+	}
+	
+	public Calendar getTime()
+	{
+		return (Calendar) utcTime.clone();
+	}
+	
+	public String getTimeString()
+	{
+		return utcTime.get(Calendar.HOUR_OF_DAY) + ":" + utcTime.get(Calendar.MINUTE) + ":" + utcTime.get(Calendar.SECOND);
+	}
+	
+	public void setHDOPMultiplier(double mult)
+	{
+		this.HDOPMultiplier = mult;
+	}
+	
+	public double getHorizontalUncertainty()
+	{
+		return this.hdop * this.HDOPMultiplier;
 	}
 }

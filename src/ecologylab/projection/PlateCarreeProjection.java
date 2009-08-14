@@ -14,6 +14,7 @@ import ecologylab.projection.Projection.RotationConstraintMode;
 import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
+import ecologylab.xml.XMLTranslationException;
 
 /**
  * A plate carree projection directly maps X coordinates to longitude and Y coordinates to latitude.
@@ -61,10 +62,10 @@ public class PlateCarreeProjection extends Projection
 
 	/**
 	 * @param physicalWorldPoint1
-	 *          the northmost and westmost corner of the physical world that will be mapped to the
+	 *          the northmost and eastmost corner of the physical world that will be mapped to the
 	 *          virtual space.
 	 * @param physicalWorldPoint2
-	 *          the southmost and eastmost corner of the physical world that will be mapped to the
+	 *          the southmost and westmost corner of the physical world that will be mapped to the
 	 *          virtual space.
 	 * @param virtualWorldWidth
 	 *          the width of the virtual space, which will map between the west coordinate of
@@ -88,8 +89,8 @@ public class PlateCarreeProjection extends Projection
 
 	public static void main(String[] args) throws SameCoordinatesException
 	{
-		PlateCarreeProjection p = new PlateCarreeProjection(new GeoCoordinate( -96.3476861111111, 30.62242222222222, 0),
-				new GeoCoordinate( -96.33219166666666, 30.60736666666667, 0), 1483.91, 1667.10, Projection.RotationConstraintMode.ANCHOR_POINTS);
+		PlateCarreeProjection p = new PlateCarreeProjection(new GeoCoordinate( 30.62241857929544, -96.33219192254931, 0),
+				new GeoCoordinate( 30.60736755997001, -96.34768568921732, 0), 1483.91, 1667.10, Projection.RotationConstraintMode.CARDINAL_DIRECTIONS);
 
 		Scanner scan = new Scanner(System.in);
 		
@@ -97,7 +98,10 @@ public class PlateCarreeProjection extends Projection
 		
 		while(scan.hasNextDouble())
 		{
-			GeoCoordinate temp = new GeoCoordinate(scan.nextDouble(), scan.nextDouble(), 0);
+			double longitude = scan.nextDouble();
+			double latitude = scan.nextDouble();
+			
+			GeoCoordinate temp = new GeoCoordinate(latitude, longitude, 0);
 			coords.add(temp);
 		}
 
@@ -105,6 +109,15 @@ public class PlateCarreeProjection extends Projection
 		{
 			Point2D.Double transformedPoint = p.projectIntoVirtual(d);
 
+			try
+			{
+				System.out.println(d.translateToXML());
+			}
+			catch (XMLTranslationException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			System.out.print(d.getLon() + ", " + d.getLat());
 			System.out.print(" > ");
 			System.out.println(transformedPoint.x + ", " + transformedPoint.y);
@@ -128,10 +141,10 @@ public class PlateCarreeProjection extends Projection
 	@Override
 	protected void configure()
 	{
-		double eastMostLon = this.physicalWorldPointNE.getLon();
+		double westMostLon = this.physicalWorldPointSW.getLon();
 		double northMostLat = this.physicalWorldPointNE.getLat();
 
-		translateToOriginX = Point2D.distance(eastMostLon, 0, 0, 0) * (eastMostLon > 0 ? -1.0 : 1.0);
+		translateToOriginX = Point2D.distance(westMostLon, 0, 0, 0) * (westMostLon > 0 ? -1.0 : 1.0);
 		translateToOriginY = Point2D.distance(0, northMostLat, 0, 0) * (northMostLat > 0 ? -1.0 : 1.0);
 
 		switch (this.rotConstMode)
@@ -145,6 +158,7 @@ public class PlateCarreeProjection extends Projection
 
 			// first determine the scaling factor
 			// need the longest dimension of the virtual world
+						
 			if (this.virtualWorldHeight > this.virtualWorldWidth)
 			{ // then our "bounding box" specified by the real world coordinates is constraining us on
 				// height more than
@@ -168,7 +182,7 @@ public class PlateCarreeProjection extends Projection
 			// we need to maintain a constant size and aspect ratio for the virtual world
 
 			// determine the scaling factor
-			this.scaleFactor = this.virtualWorldHeight / realPointsDistance;
+			this.scaleFactor = Math.sqrt(virtualCenterLineSq) / realPointsDistance;
 
 			break;
 		}
@@ -178,8 +192,10 @@ public class PlateCarreeProjection extends Projection
 			this.transformMatrix = new AffineTransform();
 		}
 
+		
 		this.transformMatrix.setToIdentity();
 
+		
 		this.transformMatrix.scale(scaleFactor, -1.0 * scaleFactor);
 		this.transformMatrix.rotate(rotation, 0, 0);
 		this.transformMatrix.translate(translateToOriginX, translateToOriginY);

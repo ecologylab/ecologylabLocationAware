@@ -48,7 +48,10 @@ public class CompassDataUpdater implements NMEAStringListener
 	private boolean checkCheckSum(String gpsData)
 	{
 		char[] tempData = tempDataStore();
-
+		
+		if(gpsData.length() < 3)
+			return false;
+		
 		// check the checksum before doing any processing
 		int checkSumSplit = gpsData.length() - 3;
 
