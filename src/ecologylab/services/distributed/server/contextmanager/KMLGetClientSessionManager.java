@@ -75,7 +75,7 @@ public class KMLGetClientSessionManager extends ClientSessionManager
 		outgoingMessageHeaderBuf.setLength(0);
 	}
 
-	@Override protected void createHeader(StringBuilder outgoingMessageBuf,
+	protected void createHeader(StringBuilder outgoingMessageBuf,
 			StringBuilder outgoingMessageHeaderBuf,
 			RequestMessage incomingRequest, ResponseMessage outgoingResponse,
 			long uid)
