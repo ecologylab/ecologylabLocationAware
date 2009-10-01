@@ -75,7 +75,7 @@ public class KMLGetClientSessionManager extends ClientSessionManager
 		outgoingMessageHeaderBuf.setLength(0);
 	}
 
-	protected void createHeader(StringBuilder outgoingMessageBuf,
+	@Override protected void createHeader(int messageSize,
 			StringBuilder outgoingMessageHeaderBuf,
 			RequestMessage incomingRequest, ResponseMessage outgoingResponse,
 			long uid)
@@ -84,7 +84,7 @@ public class KMLGetClientSessionManager extends ClientSessionManager
 		outgoingMessageHeaderBuf.append(HTTP_HEADER_LINE_DELIMITER);
 		
 		outgoingMessageHeaderBuf.append(CONTENT_LENGTH_STRING+':');
-		outgoingMessageHeaderBuf.append(outgoingMessageBuf.length());
+		outgoingMessageHeaderBuf.append(messageSize);
 		outgoingMessageHeaderBuf.append(HTTP_HEADER_LINE_DELIMITER);
 
 /*		outgoingMessageHeaderBuf.append(UNIQUE_IDENTIFIER_STRING);
@@ -93,7 +93,6 @@ public class KMLGetClientSessionManager extends ClientSessionManager
 		outgoingMessageHeaderBuf.append(HTTP_HEADER_LINE_DELIMITER);*/
 
 		outgoingMessageHeaderBuf.append("content-type: text/xml");
-		outgoingMessageHeaderBuf.append(HTTP_HEADER_TERMINATOR);
 
 	}
 

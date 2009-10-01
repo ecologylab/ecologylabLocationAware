@@ -3,9 +3,12 @@
  */
 package ecologylab.projection;
 
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
 import ecologylab.generic.Debug;
+import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
 
 /**
@@ -158,8 +161,6 @@ public abstract class Projection extends Debug
 		debug("real world size: ");
 		debug("width: " + this.realWorldWidth);
 		debug("height: " + this.realWorldHeight);
-
-		debug("scaling factor: " + this.getScale());
 	}
 
 	/**
