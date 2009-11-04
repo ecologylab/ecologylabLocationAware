@@ -3,8 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ecologylabFundamental"/>
-	<classpathentry exported="true" kind="lib" path="/ecologylabSerial/lib/RXTXcomm.jar"/>
 	<classpathentry kind="lib" path="lib/jenie.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ecologylabGraphics"/>
+	<classpathentry kind="lib" path="lib/RXTXcomm.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
