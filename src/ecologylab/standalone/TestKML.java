@@ -36,7 +36,7 @@ public class TestKML
 	 */
 	public static void main(String[] args) throws XMLTranslationException
 	{
-		ElementState k =  ElementState.translateFromXML(new File("c:\\kml.xml"), KMLTranslations.get());
+		ElementState k =  ElementState.translateFromXMLCharSequence(someKml, KMLTranslations.get());
 		
 		k.translateToXML(System.out);
 	}
