@@ -16,11 +16,11 @@ import ecologylab.xml.library.kml.style.StyleSelector;
  */
 @xml_inherit public abstract class Container extends KmlFeature
 {
-	@xml_collection("Placemark") ArrayList<Placemark>	placemarks	= new ArrayList<Placemark>();
+	@xml_collection("Placemark") ArrayList<Placemark>	placemarks;
 
-	@xml_collection("Document") ArrayList<Document>		documents	= new ArrayList<Document>();
+	@xml_collection("Document") ArrayList<Document>		documents;
 
-	@xml_collection("Folder") ArrayList<Folder>			folder		= new ArrayList<Folder>();
+	@xml_collection("Folder") ArrayList<Folder>			folder;
 
 	// TODO Folder, NetworkLink, PhotoOverlay, ScreenOverlay, GroundOverlay
 	/**
