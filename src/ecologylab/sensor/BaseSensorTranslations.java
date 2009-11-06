@@ -46,7 +46,7 @@ public class BaseSensorTranslations
 	 */
 	public static TranslationScope get()
 	{
-		return TranslationScope.get(PACKAGE_NAME, TRANSLATIONS,
-				ElementTypeTranslations.get());
+		return TranslationScope.get(PACKAGE_NAME, ElementTypeTranslations.get(),
+				TRANSLATIONS);
 	}
 }

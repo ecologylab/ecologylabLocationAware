@@ -66,10 +66,11 @@ public class KmlServer extends HttpGetServer
 			Scope objectRegistry, int idleConnectionTimeout,
 			int maxPacketSize, Kml kmlData) throws IOException, BindException
 	{
-		super(portNumber, inetAddresses, TranslationScope.get(
-				"double_threaded_logging " + inetAddresses[0].toString() + ":"
-						+ portNumber, KML_MESSAGE_CLASSES, requestTranslationSpace,
-				KMLTranslations.get()), objectRegistry, idleConnectionTimeout,
+		super(portNumber, inetAddresses, 
+				TranslationScope.get(connectionTscopeName(inetAddresses, portNumber), 
+						 DefaultServicesTranslations.get(), 
+						 requestTranslationSpace, KML_MESSAGE_CLASSES), 
+				objectRegistry, idleConnectionTimeout,
 				maxPacketSize);
 
 		this.applicationObjectScope.put(KmlRequest.KML_DATA, kmlData);

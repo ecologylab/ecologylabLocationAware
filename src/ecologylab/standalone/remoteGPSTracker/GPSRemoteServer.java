@@ -39,8 +39,8 @@ public class GPSRemoteServer extends NIODatagramServer
 					NMEAUpdateResponse.class };
 
 		TranslationScope nmeaUpdateTranslations = TranslationScope.get("nmeaUpdateTrans",
-																	GpsTrackerClasses,
-																	DefaultServicesTranslations.get());
+																	DefaultServicesTranslations.get(),
+																	GpsTrackerClasses);
 		
 		Scope serverScope = new Scope();
 		

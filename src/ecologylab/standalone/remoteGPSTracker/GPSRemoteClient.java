@@ -60,8 +60,8 @@ public class GPSRemoteClient extends NIODatagramClient implements NMEAStringList
 				 								NMEAUpdateResponse.class };
 		
 		TranslationScope nmeaUpdateTranslations = TranslationScope.get("nmeaUpdateTrans",
-																							GpsTrackerClasses,
-																							DefaultServicesTranslations.get());
+																							DefaultServicesTranslations.get(),
+																							GpsTrackerClasses);
 		
 		Scope clientScope = new Scope();
 		
