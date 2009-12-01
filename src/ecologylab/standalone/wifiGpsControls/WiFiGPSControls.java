@@ -29,6 +29,7 @@ import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.sensor.location.gps.gui.GPSConnectionControls;
 import ecologylab.sensor.location.gps.gui.GPSController;
 import ecologylab.sensor.location.gps.gui.meter.GPSArcConstellationMeter;
+import ecologylab.sensor.location.gps.listener.GPSDataPrinter;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
@@ -176,6 +177,10 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 		this.gps = new NMEAReader();
 		this.gps.addGPSDataListener(this.currentOp);
 		this.gps.addGPSDataListener(updater);
+		
+		debug("setting up gps printer");
+		GPSDataPrinter p = new GPSDataPrinter();
+		this.gps.addGPSDataListener(p);
 
 		debug("setting up datum");
 		GPSDataUpdater d = new GPSDataUpdater();

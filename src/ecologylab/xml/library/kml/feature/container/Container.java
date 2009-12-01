@@ -37,7 +37,21 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	
 	public void addPlacemark(Placemark newPlacemark)
 	{
-		this.placemarks.add(newPlacemark);
+		this.placemarks().add(newPlacemark);
+	}
+	
+	private ArrayList<Placemark> placemarks()
+	{
+		if (placemarks == null)
+		{
+			synchronized (this)
+			{
+				if (placemarks == null)
+					placemarks = new ArrayList<Placemark>();
+			}
+		}
+		
+		return placemarks;
 	}
 	
 	/**
@@ -46,7 +60,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	 */
 	public ArrayList<Placemark> getPlacemarks() 
 	{
-		return placemarks;
+		return placemarks();
 	}
 	public ArrayList<Document> getDocuments() 
 	{
