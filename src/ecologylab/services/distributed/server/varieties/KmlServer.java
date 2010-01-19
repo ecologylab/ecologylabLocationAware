@@ -22,29 +22,28 @@ import ecologylab.xml.library.kml.KMLTranslations;
 import ecologylab.xml.library.kml.Kml;
 
 /**
- * @author Zach
+ * @author Zachary O. Toups (zach@ecologylab.net)
  * 
  */
 public class KmlServer extends HttpGetServer
 {
 	public static final Class	KML_MESSAGE_CLASSES[]	=
-																		{ KmlRequest.class,
-			KmlResponse.class									};
-	
-	public static String someKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + 
-	"<kml xmlns=\"http://earth.google.com/kml/2.2\">\r\n" + 
-	"<Document>\r\n" + 
-	"  <name>BalloonStyle.kml</name>\r\n" + 
-	"  <open>1</open>\r\n" + 
-	"  <Placemark>\r\n" + 
-	"    <name>BalloonStyle</name>\r\n" + 
-	"    <description>An example of BalloonStyle</description>\r\n" + 
-	"    <Point>\r\n" + 
-	"      <coordinates>-122.370533,37.823842,0</coordinates>\r\n" + 
-	"    </Point>\r\n" + 
-	"  </Placemark>\r\n" + 
-	"</Document>\r\n" + 
-	"</kml>";
+																									{ KmlRequest.class, KmlResponse.class };
+
+	public static String			someKml								= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
+																											+ "<kml xmlns=\"http://earth.google.com/kml/2.2\">\r\n"
+																											+ "<Document>\r\n"
+																											+ "  <name>BalloonStyle.kml</name>\r\n"
+																											+ "  <open>1</open>\r\n"
+																											+ "  <Placemark>\r\n"
+																											+ "    <name>BalloonStyle</name>\r\n"
+																											+ "    <description>An example of BalloonStyle</description>\r\n"
+																											+ "    <Point>\r\n"
+																											+ "      <coordinates>-122.370533,37.823842,0</coordinates>\r\n"
+																											+ "    </Point>\r\n"
+																											+ "  </Placemark>\r\n"
+																											+ "</Document>\r\n"
+																											+ "</kml>";
 
 	/**
 	 * @param portNumber
@@ -54,24 +53,19 @@ public class KmlServer extends HttpGetServer
 	 * @param idleConnectionTimeout
 	 * @param maxPacketSize
 	 * @param kmlData
-	 *           the singleton Kml object that will be sent when Google Earth
-	 *           requests KML. This object can be modified by other parts of the
-	 *           application to change what information is displayed in Google
-	 *           Earth.
+	 *          the singleton Kml object that will be sent when Google Earth requests KML. This object
+	 *          can be modified by other parts of the application to change what information is
+	 *          displayed in Google Earth.
 	 * @throws IOException
 	 * @throws BindException
 	 */
 	public KmlServer(int portNumber, InetAddress[] inetAddresses,
-			TranslationScope requestTranslationSpace,
-			Scope objectRegistry, int idleConnectionTimeout,
+			TranslationScope requestTranslationSpace, Scope objectRegistry, int idleConnectionTimeout,
 			int maxPacketSize, Kml kmlData) throws IOException, BindException
 	{
-		super(portNumber, inetAddresses, 
-				TranslationScope.get(connectionTscopeName(inetAddresses, portNumber), 
-						 DefaultServicesTranslations.get(), 
-						 requestTranslationSpace, KML_MESSAGE_CLASSES), 
-				objectRegistry, idleConnectionTimeout,
-				maxPacketSize);
+		super(portNumber, inetAddresses, TranslationScope.get(connectionTscopeName(inetAddresses,
+				portNumber), DefaultServicesTranslations.get(), requestTranslationSpace,
+				KML_MESSAGE_CLASSES), objectRegistry, idleConnectionTimeout, maxPacketSize);
 
 		this.applicationObjectScope.put(KmlRequest.KML_DATA, kmlData);
 	}
@@ -87,39 +81,36 @@ public class KmlServer extends HttpGetServer
 	 * @throws BindException
 	 */
 	public KmlServer(int portNumber, InetAddress inetAddress,
-			TranslationScope requestTranslationSpace,
-			Scope objectRegistry, int idleConnectionTimeout,
+			TranslationScope requestTranslationSpace, Scope objectRegistry, int idleConnectionTimeout,
 			int maxPacketSize, Kml kmlData) throws IOException, BindException
 	{
-		this(portNumber, addressToAddresses(inetAddress),
-				requestTranslationSpace, objectRegistry, idleConnectionTimeout,
-				maxPacketSize, kmlData);
+		this(portNumber, addressToAddresses(inetAddress), requestTranslationSpace, objectRegistry,
+				idleConnectionTimeout, maxPacketSize, kmlData);
 	}
 
 	/**
 	 * @param args
 	 * @throws IOException
 	 * @throws BindException
-	 * @throws XMLTranslationException 
+	 * @throws XMLTranslationException
 	 */
 	public static void main(String[] args) throws BindException, IOException, XMLTranslationException
 	{
 		TranslationScope serverTranslations = DefaultServicesTranslations.get();
 
 		Kml kmlData = (Kml) ElementState.translateFromXMLCharSequence(someKml, KMLTranslations.get());
-		
-		KmlServer s = new KmlServer(8080, NetTools
-				.getAllInetAddressesForLocalhost(), serverTranslations,
-				new Scope(), 1000000, 1000000, kmlData);
+
+		KmlServer s = new KmlServer(8080, NetTools.getAllInetAddressesForLocalhost(),
+				serverTranslations, new Scope(), 1000000, 1000000, kmlData);
 
 		s.start();
 	}
 
-	@Override protected AbstractClientSessionManager generateContextManager(
-			Object token, SelectionKey sk, TranslationScope translationSpaceIn,
-			Scope registryIn)
+	@Override
+	protected AbstractClientSessionManager generateContextManager(String token, SelectionKey sk,
+			TranslationScope translationSpaceIn, Scope registryIn)
 	{
-		return new KMLGetClientSessionManager(token, this.maxMessageSize, this.getBackend(),
-				this, sk, translationSpaceIn, registryIn);
+		return new KMLGetClientSessionManager(token, this.maxMessageSize, this.getBackend(), this, sk,
+				translationSpaceIn, registryIn);
 	}
 }

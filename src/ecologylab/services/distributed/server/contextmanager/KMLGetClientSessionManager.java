@@ -34,7 +34,7 @@ public class KMLGetClientSessionManager extends ClientSessionManager
 	 * @param translationSpace
 	 * @param registry
 	 */
-	public KMLGetClientSessionManager(Object token, int maxPacketSize,
+	public KMLGetClientSessionManager(String token, int maxPacketSize,
 			NIOServerIOThread server, NIOServerProcessor frontend,
 			SelectionKey socketKey, TranslationScope translationSpace,
 			Scope<?> registry)
