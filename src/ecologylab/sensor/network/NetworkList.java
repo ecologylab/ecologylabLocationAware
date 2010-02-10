@@ -19,7 +19,7 @@ import ecologylab.xml.types.element.HashMapState;
  * way, the WiFiList should only contain the most current data, and
  * currently-undetected WiFi networks will not be in the list.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  */
 @xml_inherit public abstract class NetworkList<NET extends NetworkStatus>
 		extends HashMapState<String, NET>

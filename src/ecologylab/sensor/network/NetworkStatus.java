@@ -11,7 +11,7 @@ import ecologylab.xml.types.element.Mappable;
  * 
  * TODO Support for current data rate, etc.??
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  */
 public abstract class NetworkStatus extends ElementState implements
 		Mappable<String>

@@ -9,7 +9,7 @@ import ecologylab.xml.ElementState;
 /**
  * Represents the location data from a location sensor of some sort.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  */
 public class LocationStatus extends GeoCoordinate
 {

@@ -18,7 +18,7 @@ import ecologylab.xml.xml_inherit;
  * way, the WiFiList should only contain the most current data, and
  * currently-undetected WiFi networks will not be in the list.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  */
 @xml_inherit public class WiFiSourceList extends NetworkList<WiFiSource>
 		implements WiFiStringDataListener
@@ -111,7 +111,7 @@ import ecologylab.xml.xml_inherit;
 	 * objects used by the WiFiList. Prevents unncessary instantiation if
 	 * possible.
 	 * 
-	 * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+	 * @author Zachary O. Toups (zach@ecologylab.net)
 	 */
 	class WiFiStatusPool extends ResourcePool<WiFiSource>
 	{

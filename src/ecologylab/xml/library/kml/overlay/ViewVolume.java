@@ -24,7 +24,7 @@ import ecologylab.xml.ElementState;
  * When you specify an image pyramid, you also modify the <href> in the <Icon>
  * element to include specifications for which tiles to load.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu) (Java classes only)
+ * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
  */
 public class ViewVolume extends ElementState
 {

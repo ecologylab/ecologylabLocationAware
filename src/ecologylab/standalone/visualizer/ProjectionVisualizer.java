@@ -37,7 +37,7 @@ import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 
 /**
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  * 
  */
 public class ProjectionVisualizer extends ApplicationEnvironment implements

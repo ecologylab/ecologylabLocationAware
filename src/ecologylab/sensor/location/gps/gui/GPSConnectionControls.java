@@ -29,7 +29,7 @@ import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
 /**
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  * 
  */
 public class GPSConnectionControls extends JPanel implements ActionListener, GPSStatusStrings

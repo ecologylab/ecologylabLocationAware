@@ -17,7 +17,7 @@ import ecologylab.xml.types.element.ArrayListState;
 /**
  * Demonstrates how to load log data, and how to access it.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  */
 public class DemoLogUse
 {

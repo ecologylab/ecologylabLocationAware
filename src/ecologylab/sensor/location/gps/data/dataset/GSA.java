@@ -14,7 +14,7 @@ import ecologylab.sensor.location.gps.data.GPSDatum;
  * numberofsatellitesusedtodetermine the positionand theaccuracy
  * ofthemeasurements (DOP:Dilutionof Precision).
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  * 
  */
 public enum GSA implements GPSDataFieldBase

@@ -29,7 +29,7 @@ import ecologylab.xml.xml_inherit;
  * datum is as up-to-date as possible as of the time stamp. Whenever no new data is provided, the
  * old data is retained.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  * 
  */
 @xml_inherit

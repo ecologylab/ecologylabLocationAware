@@ -12,7 +12,7 @@ import ecologylab.xml.xml_inherit;
  * An object for representing a set of 3d coordinates on the earth's surface:
  * latitude, longitude, and altitude.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  */
 @xml_inherit public class GeoCoordinate extends Location
 {

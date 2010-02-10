@@ -29,7 +29,7 @@ import gnu.io.UnsupportedCommOperationException;
  * which encapsulate the sensor data at some time. Uses GPSDeviceProfiles to handle multiple
  * different types of GPS equipment, based on the type of data it produces.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  * 
  */
 public class NMEAReader extends Debug implements Runnable

@@ -7,7 +7,7 @@ import stec.jenie.NativeException;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
 
 /**
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  */
 public interface WiFiConnectionController
 {

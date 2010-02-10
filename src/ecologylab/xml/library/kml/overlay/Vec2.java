@@ -17,7 +17,7 @@ import ecologylab.xml.ElementState;
  * different ways—for example, x can be in pixels and y can be a fraction. The
  * origin of the coordinate system is in the lower left corner of the icon.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu) (Java classes only)
+ * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
  */
 public class Vec2 extends ElementState
 {

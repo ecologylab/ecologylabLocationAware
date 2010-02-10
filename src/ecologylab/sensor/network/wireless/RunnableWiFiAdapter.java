@@ -15,7 +15,7 @@ import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
  * An abstraction of the WiFi adapter interface that is configured to
  * automatically update a set of listeners at a specified interval.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  */
 public class RunnableWiFiAdapter extends WiFiAdapter implements
 		StartAndStoppable

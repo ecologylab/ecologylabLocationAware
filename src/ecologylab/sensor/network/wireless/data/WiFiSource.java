@@ -12,7 +12,7 @@ import ecologylab.xml.types.element.Mappable;
  * 
  * Inherited field, id, contains the ssid for the network in question.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  */
 @xml_inherit public class WiFiSource extends WirelessNetwork implements
 		Mappable<String>

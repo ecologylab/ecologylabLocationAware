@@ -12,7 +12,7 @@ import ecologylab.xml.ElementState;
  * Specifies where the top, bottom, right, and left sides of a bounding box for
  * the ground overlay are aligned.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu) (Java classes only)
+ * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
  */
 public class LatLonBox extends ElementState
 {

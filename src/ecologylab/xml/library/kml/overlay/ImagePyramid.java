@@ -15,7 +15,7 @@ import ecologylab.xml.ElementState;
  * scene. A large field of view, like a wide-angle lens, focuses on a large part
  * of the scene.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu) (Java classes only)
+ * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
  */
 public class ImagePyramid extends ElementState
 {

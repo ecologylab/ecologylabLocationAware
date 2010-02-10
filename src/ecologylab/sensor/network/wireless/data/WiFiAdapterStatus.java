@@ -16,7 +16,7 @@ import ecologylab.xml.xml_inherit;
  * Represents the current status of a WiFi adapter, including a list of
  * WiFiConnections and the current MAC address of the connected router (if any).
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  */
 @xml_inherit public class WiFiAdapterStatus extends ElementState implements
 		WiFiStringDataListener

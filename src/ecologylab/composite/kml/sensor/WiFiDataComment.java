@@ -15,7 +15,7 @@ import ecologylab.xml.library.kml.feature.KmlFeature;
  * Can modify the Description component of a KmlFeature to keep it updated with
  * an HTML-formatted string indicating the current WiFi status.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  */
 public class WiFiDataComment implements WiFiStringDataListener
 {

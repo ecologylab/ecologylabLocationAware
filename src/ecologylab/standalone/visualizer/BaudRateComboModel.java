@@ -9,7 +9,7 @@ import javax.swing.event.ListDataListener;
 import ecologylab.generic.Debug;
 
 /**
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  *
  */
 public class BaudRateComboModel extends Debug implements ComboBoxModel

@@ -19,7 +19,7 @@ import ecologylab.xml.library.kml.overlay.Vec2;
  * specified in the <color> element of <IconStyle> is blended with the color of
  * the <Icon>.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu) (Java classes only)
+ * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
  */
 @xml_inherit public class IconStyle extends ColorStyle
 {

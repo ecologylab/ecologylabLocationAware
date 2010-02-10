@@ -14,7 +14,7 @@ import ecologylab.xml.types.element.ArrayListState;
  * This information is not generally needed for working with a GPS, but may be
  * helpful in some data analysis and display.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  * 
  */
 public class GPSDeviceProfile extends ElementState

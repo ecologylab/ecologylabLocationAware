@@ -31,7 +31,7 @@ import ecologylab.xml.XMLTranslationException;
  * 
  * PlateCarreeProjection sets scale in terms of virtual world points : degrees latitude/longitude.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  * 
  */
 public class PlateCarreeProjection extends Projection

@@ -9,7 +9,7 @@ import ecologylab.xml.xml_inherit;
 /**
  * Extends Network to provide signal strength information.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  */
 @xml_inherit public abstract class WirelessNetwork extends NetworkStatus
 {

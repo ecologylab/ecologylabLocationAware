@@ -6,7 +6,7 @@ package ecologylab.sensor.location.gps.listener;
 import ecologylab.sensor.location.NMEAStringListener;
 
 /**
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  *
  */
 public class GPSDataPrinter implements NMEAStringListener

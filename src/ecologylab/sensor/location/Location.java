@@ -11,7 +11,7 @@ import ecologylab.xml.ElementState;
  * 
  * This object is only used for organization, not for storing any data.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  */
 public abstract class Location extends ElementState
 {

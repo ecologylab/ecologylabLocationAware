@@ -21,7 +21,7 @@ import ecologylab.xml.library.kml.style.IconStyle;
  * Icon tint is based on the provided color scale; the point on the scale is
  * selected based on the % connectivity from the current WiFi adapter.
  * 
- * @author Zachary O. Toups (toupsz@cs.tamu.edu)
+ * @author Zachary O. Toups (zach@ecologylab.net)
  */
 public class WiFiColoredIcon extends Debug implements WiFiStringDataListener,
 		Cloneable
