@@ -15,7 +15,7 @@ public class TestGPS
 {
     public static void main(String[] args) throws PortInUseException, UnsupportedCommOperationException, IOException, TooManyListenersException, NoSuchPortException
     {
-        NMEAReader g = new NMEAReader("COM40", 115200);
+        NMEAReader g = new NMEAReader("COM5", 9600);
         
         File fileToWriteTo = new File("gpsLog.log");
         
@@ -24,5 +24,10 @@ public class TestGPS
         g.addGPSDataListener(new GPSDataLogger(fileToWriteTo));
         
         g.connect();
+        
+        byte[] data = {(byte) 0xB5, 0x62, 0x06, 0x04, 0x04, 0x00,
+              0x00, 0x00, 0x00, 0x00, 0x0E, 0x64}; 
+        
+       // g.getPort().getOutputStream().write(data);
     }
 }
