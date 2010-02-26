@@ -9,8 +9,6 @@ import ecologylab.sensor.location.NMEAReader;
 import ecologylab.sensor.location.NMEAStringListener;
 import ecologylab.services.distributed.client.NIODatagramClient;
 import ecologylab.services.messages.DefaultServicesTranslations;
-import ecologylab.tutorials.oodss.HistoryEchoRequest;
-import ecologylab.tutorials.oodss.HistoryEchoResponse;
 import ecologylab.xml.TranslationScope;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
