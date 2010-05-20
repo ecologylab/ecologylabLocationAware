@@ -4,6 +4,7 @@
 package ecologylab.standalone;
 
 import java.io.File;
+import java.util.List;
 
 import ecologylab.sensor.BaseSensorTranslations;
 import ecologylab.services.logging.Logging;
@@ -12,7 +13,6 @@ import ecologylab.services.logging.WiFiGPSStatusOp;
 import ecologylab.xml.ElementState;
 import ecologylab.xml.TranslationScope;
 import ecologylab.xml.XMLTranslationException;
-import ecologylab.xml.types.element.ArrayListState;
 
 /**
  * Demonstrates how to load log data, and how to access it.
@@ -43,7 +43,7 @@ public class DemoLogUse
 				.translateFromXML(f, translations);
 
 		// extract the sequence of operations
-		ArrayListState<WiFiGPSStatusOp> opSeq = ops.getOpSequence();
+		List<WiFiGPSStatusOp> opSeq = ops.getOpSequence();
 
 		// show off some of the contents. :)
 		System.out.println("First op: ");

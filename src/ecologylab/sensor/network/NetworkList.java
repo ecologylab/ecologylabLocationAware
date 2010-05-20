@@ -4,26 +4,30 @@
 package ecologylab.sensor.network;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Set;
 
 import ecologylab.generic.ResourcePool;
+import ecologylab.xml.ElementState;
 import ecologylab.xml.xml_inherit;
-import ecologylab.xml.types.element.HashMapState;
 
 /**
- * A moment of data on wifi status objects, which are hashed according to MAC
- * address.
+ * A moment of data on wifi status objects, which are hashed according to MAC address.
  * 
- * WiFiList can only be updated by providing a list of WiFiStatus objects, which
- * will be checked against the existing list by MAC address. The existing list
- * will then be updated to contain ONLY those access points provided. In this
- * way, the WiFiList should only contain the most current data, and
- * currently-undetected WiFi networks will not be in the list.
+ * WiFiList can only be updated by providing a list of WiFiStatus objects, which will be checked
+ * against the existing list by MAC address. The existing list will then be updated to contain ONLY
+ * those access points provided. In this way, the WiFiList should only contain the most current
+ * data, and currently-undetected WiFi networks will not be in the list.
  * 
  * @author Zachary O. Toups (zach@ecologylab.net)
  */
-@xml_inherit public abstract class NetworkList<NET extends NetworkStatus>
-		extends HashMapState<String, NET>
+@xml_inherit
+public abstract class NetworkList<NET extends NetworkStatus> extends ElementState
 {
+	@xml_collection
+	@xml_nowrap
+	protected HashMap<String, NET>	netList;
+
 	/**
 	 * 
 	 */
@@ -40,19 +44,19 @@ import ecologylab.xml.types.element.HashMapState;
 	public abstract void updateFromDataString(String newData);
 
 	/**
-	 * Clears the ap list and adds all the currentWiFiStatuses. Order(n+m) time,
-	 * where n = currentWiFiStatuses.size() and m = aps.size().
+	 * Clears the ap list and adds all the currentWiFiStatuses. Order(n+m) time, where n =
+	 * currentWiFiStatuses.size() and m = aps.size().
 	 * 
-	 * The ap list contains clones of the data in the Collection, so it is safe
-	 * to modify currentWiFiStatuses after this method call.
+	 * The ap list contains clones of the data in the Collection, so it is safe to modify
+	 * currentWiFiStatuses after this method call.
 	 * 
 	 * @param currentWiFiStatuses
 	 */
 	public void update(Collection<NET> currentWiFiStatuses)
 	{
-		for (String macAddr : keySet())
+		for (String macAddr : netList.keySet())
 		{
-			this.pool().release(remove(macAddr));
+			this.pool().release(netList.remove(macAddr));
 		}
 
 		for (NetworkStatus w : currentWiFiStatuses)
@@ -63,19 +67,23 @@ import ecologylab.xml.types.element.HashMapState;
 
 			newW.conformTo(w);
 
-			add(newW);
+			netList.put(newW.key(), newW);
 		}
 	}
 
 	/**
-	 * The proper way to access the pool object in this. Use of this method, only
-	 * when necessary, will ensure that pool will only be instaniated if
-	 * necessary.
+	 * The proper way to access the pool object in this. Use of this method, only when necessary, will
+	 * ensure that pool will only be instantiated if necessary.
 	 * 
-	 * This allows a WiFiList that is, for example, sent over the network, to
-	 * only have pool instantiated if it updates the list of access points.
+	 * This allows a WiFiList that is, for example, sent over the network, to only have pool
+	 * instantiated if it updates the list of access points.
 	 * 
 	 * @return
 	 */
 	protected abstract ResourcePool<NET> pool();
+	
+	public Collection<NET> values()
+	{
+		return this.netList.values();
+	}
 }

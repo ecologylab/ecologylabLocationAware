@@ -3,10 +3,11 @@
  */
 package ecologylab.sensor.location.gps;
 
+import java.util.ArrayList;
+
 import ecologylab.sensor.BaseSensorTranslations;
 import ecologylab.xml.ElementState;
 import ecologylab.xml.XMLTranslationException;
-import ecologylab.xml.types.element.ArrayListState;
 
 /**
  * Encapsulates information about a GPS device, including its specifications.
@@ -79,14 +80,14 @@ public class GPSDeviceProfile extends ElementState
 		this.channels = channels;
 	}
 
-	@SuppressWarnings("unchecked") public static void main(String[] args) throws XMLTranslationException
-	{
-		ArrayListState<GPSDeviceProfile> profiles = (ArrayListState<GPSDeviceProfile>) ElementState
-				.translateFromXML("config/gpsProfiles.xml", BaseSensorTranslations
-						.get());
-		
-		profiles.translateToXML(System.out);
-	}
+//	@SuppressWarnings("unchecked") public static void main(String[] args) throws XMLTranslationException
+//	{
+////		ArrayList<GPSDeviceProfile> profiles = (ArrayList<GPSDeviceProfile>) ElementState
+////				.translateFromXML("config/gpsProfiles.xml", BaseSensorTranslations
+////						.get());
+////		
+////		profiles.translateToXML(System.out);
+//	}
 
 	/**
 	 * @return the make

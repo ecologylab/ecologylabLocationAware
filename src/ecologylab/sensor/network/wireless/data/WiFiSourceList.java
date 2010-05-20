@@ -41,7 +41,7 @@ import ecologylab.xml.xml_inherit;
 	{
 		String[] aps = newData.split("\\*\n");
 
-		this.clear();
+		this.netList.clear();
 
 		for (String s : aps)
 		{
@@ -50,7 +50,7 @@ import ecologylab.xml.xml_inherit;
 				String[] apData = s.split("\n");
 
 				WiFiSource wfs = new WiFiSource();
-				this.put(apData[1], wfs);
+				this.netList.put(apData[1], wfs);
 
 				wfs.updateData(s);
 			}
@@ -131,5 +131,14 @@ import ecologylab.xml.xml_inherit;
 		{
 			return new WiFiSource();
 		}
+	}
+
+	/**
+	 * @param currentAP
+	 * @return
+	 */
+	public WiFiSource get(String currentAP)
+	{
+		return netList.get(currentAP);
 	}
 }
