@@ -8,8 +8,8 @@ import java.util.List;
 
 import ecologylab.sensor.BaseSensorTranslations;
 import ecologylab.services.logging.Logging;
-import ecologylab.services.logging.LoggingTranslations;
 import ecologylab.services.logging.WiFiGPSStatusOp;
+import ecologylab.services.logging.translationScope.LoggingTranslations;
 import ecologylab.xml.ElementState;
 import ecologylab.xml.TranslationScope;
 import ecologylab.xml.XMLTranslationException;
