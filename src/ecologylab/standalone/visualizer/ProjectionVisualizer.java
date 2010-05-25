@@ -87,7 +87,7 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements
 			float prefsAssetVersion) throws XMLTranslationException,
 			NoSuchPortException, IOException
 	{
-		super(applicationName, translationSpace, args, prefsAssetVersion);
+		super(applicationName, translationSpace, null, args, prefsAssetVersion);
 
 		configure();
 	}

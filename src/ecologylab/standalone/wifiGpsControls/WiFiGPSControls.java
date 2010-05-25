@@ -116,7 +116,7 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 	public WiFiGPSControls(String applicationName, TranslationScope translationSpace, String[] args,
 			float prefsAssetVersion) throws XMLTranslationException, NoSuchPortException, IOException
 	{
-		super(applicationName, translationSpace, args, prefsAssetVersion);
+		super(applicationName, translationSpace, null, args, prefsAssetVersion);
 
 		configure();
 	}

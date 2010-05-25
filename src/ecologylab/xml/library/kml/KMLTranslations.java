@@ -17,7 +17,7 @@ import ecologylab.xml.library.kml.geometry.Polygon;
 import ecologylab.xml.library.kml.view.AbstractView;
 import ecologylab.xml.library.kml.view.Camera;
 import ecologylab.xml.library.kml.view.LookAt;
-import ecologylab.xml.types.element.ElementTypeTranslations;
+import ecologylab.xml.types.element.ElementTypeTranslationsProvider;
 
 /**
  * Provide XML translation mappings for use with KML.
@@ -43,7 +43,7 @@ public class KMLTranslations
 	 */
 	public static TranslationScope get()
 	{
-		return TranslationScope.get(PACKAGE_NAME, ElementTypeTranslations.get(),
+		return TranslationScope.get(PACKAGE_NAME, ElementTypeTranslationsProvider.get(),
 				TRANSLATIONS);
 	}
 }

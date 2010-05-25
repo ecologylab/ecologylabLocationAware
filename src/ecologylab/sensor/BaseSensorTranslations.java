@@ -14,7 +14,7 @@ import ecologylab.sensor.network.wireless.data.WiFiSourceList;
 import ecologylab.sensor.network.wireless.data.WirelessNetwork;
 import ecologylab.services.logging.WiFiGPSStatusOp;
 import ecologylab.xml.TranslationScope;
-import ecologylab.xml.types.element.ElementTypeTranslations;
+import ecologylab.xml.types.element.ElementTypeTranslationsProvider;
 
 /**
  * Provide XML translation mappings for use with sensors.
@@ -46,7 +46,7 @@ public class BaseSensorTranslations
 	 */
 	public static TranslationScope get()
 	{
-		return TranslationScope.get(PACKAGE_NAME, ElementTypeTranslations.get(),
+		return TranslationScope.get(PACKAGE_NAME, ElementTypeTranslationsProvider.get(),
 				TRANSLATIONS);
 	}
 }
