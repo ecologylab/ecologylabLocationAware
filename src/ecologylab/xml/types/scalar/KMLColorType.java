@@ -105,4 +105,22 @@ public class KMLColorType extends ScalarType<KMLColor>
 	{
 		return this.getInstance(value);
 	}
+
+	@Override
+	public String getCSharptType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getDbType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getObjectiveCType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
