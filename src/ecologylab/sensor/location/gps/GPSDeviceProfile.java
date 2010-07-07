@@ -3,7 +3,7 @@
  */
 package ecologylab.sensor.location.gps;
 
-import ecologylab.xml.ElementState;
+import ecologylab.serialization.ElementState;
 
 /**
  * Encapsulates information about a GPS device, including its specifications.

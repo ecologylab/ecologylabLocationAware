@@ -6,6 +6,8 @@ package ecologylab.xml.types.scalar;
 import java.awt.Color;
 import java.awt.color.ColorSpace;
 
+import ecologylab.serialization.types.scalar.TypeRegistry;
+
 /**
  * @author Zach
  * 

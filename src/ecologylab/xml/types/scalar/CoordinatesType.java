@@ -3,11 +3,12 @@
  */
 package ecologylab.xml.types.scalar;
 
-import ecologylab.xml.ScalarUnmarshallingContext;
+import ecologylab.serialization.ScalarUnmarshallingContext;
+import ecologylab.serialization.types.scalar.ReferenceType;
 import ecologylab.xml.library.kml.geometry.Coordinates;
 
 /**
- * Type system entry for {@link ecologylab.xml.library.kml.geometry.Coordinates Coordinates}. A very
+ * Type system entry for {@link ecologylab.serialization.library.kml.geometry.Coordinates Coordinates}. A very
  * simple case.
  * 
  * @author Zachary O. Toups (touspz@gmail.com)

@@ -4,6 +4,8 @@
 package ecologylab.services.messages;
 
 import ecologylab.collections.Scope;
+import ecologylab.oodss.messages.RequestMessage;
+import ecologylab.oodss.messages.ResponseMessage;
 import ecologylab.xml.library.kml.Kml;
 
 /**
@@ -24,7 +26,7 @@ public class KmlRequest extends RequestMessage
 	}
 
 	/**
-	 * @see ecologylab.services.messages.RequestMessage#performService(ecologylab.collections.Scope)
+	 * @see ecologylab.oodss.messages.RequestMessage#performService(ecologylab.collections.Scope)
 	 */
 	@Override public ResponseMessage performService(
 			Scope objectRegistry)

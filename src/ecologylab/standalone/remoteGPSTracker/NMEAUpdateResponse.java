@@ -1,7 +1,7 @@
 package ecologylab.standalone.remoteGPSTracker;
 
 import ecologylab.collections.Scope;
-import ecologylab.services.messages.ResponseMessage;
+import ecologylab.oodss.messages.ResponseMessage;
 
 public class NMEAUpdateResponse<S extends Scope> extends ResponseMessage<S>
 {

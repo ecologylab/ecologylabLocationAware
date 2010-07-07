@@ -5,11 +5,11 @@ import java.net.InetSocketAddress;
 import java.util.TooManyListenersException;
 
 import ecologylab.collections.Scope;
+import ecologylab.oodss.distributed.client.NIODatagramClient;
+import ecologylab.oodss.messages.DefaultServicesTranslations;
 import ecologylab.sensor.location.NMEAReader;
 import ecologylab.sensor.location.NMEAStringListener;
-import ecologylab.services.distributed.client.NIODatagramClient;
-import ecologylab.services.messages.DefaultServicesTranslations;
-import ecologylab.xml.TranslationScope;
+import ecologylab.serialization.TranslationScope;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;

@@ -1,8 +1,8 @@
 package ecologylab.xml.library.kml.geometry;
 
-import ecologylab.xml.Hint;
-import ecologylab.xml.simpl_inherit;
-import ecologylab.xml.ElementState.xml_tag;
+import ecologylab.serialization.Hint;
+import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.ElementState.xml_tag;
 
 @simpl_inherit @xml_tag("LinearRing") public class LinearRing extends Geometry
 {

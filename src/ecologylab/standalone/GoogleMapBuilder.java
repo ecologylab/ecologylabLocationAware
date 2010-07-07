@@ -16,8 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileFilter;
 
+import ecologylab.oodss.logging.playback.ExtensionFilter;
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
-import ecologylab.services.logging.playback.ExtensionFilter;
 
 public class GoogleMapBuilder
 {

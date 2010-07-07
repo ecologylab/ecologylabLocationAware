@@ -3,7 +3,7 @@
  */
 package ecologylab.xml.library.kml.overlay;
 
-import ecologylab.xml.ElementState;
+import ecologylab.serialization.ElementState;
 
 /**
  * Created according to

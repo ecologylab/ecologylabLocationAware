@@ -3,7 +3,7 @@
  */
 package ecologylab.xml.library.kml;
 
-import ecologylab.xml.ElementState;
+import ecologylab.serialization.ElementState;
 
 /**
  * From:

@@ -8,9 +8,9 @@ import ecologylab.generic.Generic;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
 import ecologylab.sensor.network.wireless.WiFiAdapter;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
-import ecologylab.xml.ElementState;
-import ecologylab.xml.SIMPLTranslationException;
-import ecologylab.xml.simpl_inherit;
+import ecologylab.serialization.ElementState;
+import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.simpl_inherit;
 
 /**
  * Represents the current status of a WiFi adapter, including a list of

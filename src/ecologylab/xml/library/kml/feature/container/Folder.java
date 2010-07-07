@@ -3,8 +3,8 @@
  */
 package ecologylab.xml.library.kml.feature.container;
 
-import ecologylab.xml.simpl_inherit;
-import ecologylab.xml.ElementState.xml_tag;
+import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.ElementState.xml_tag;
 
 /**
  * From http://code.google.com/apis/kml/documentation/kml_tags_beta1.html#folder

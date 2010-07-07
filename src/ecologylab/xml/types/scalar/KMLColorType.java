@@ -5,7 +5,8 @@ package ecologylab.xml.types.scalar;
 
 import java.lang.reflect.Field;
 
-import ecologylab.xml.ScalarUnmarshallingContext;
+import ecologylab.serialization.ScalarUnmarshallingContext;
+import ecologylab.serialization.types.scalar.ScalarType;
 
 /**
  * Type system entry for java.awt.Color. Uses a hex string as initialization.
@@ -33,7 +34,7 @@ public class KMLColorType extends ScalarType<KMLColor>
 	 *          is interpreted as hex-encoded RGB value, in the same style as HTML & CSS. A #
 	 *          character at the start is unneccesary, but acceptable.
 	 * 
-	 * @see ecologylab.xml.types.scalar.ScalarType#getInstance(java.lang.String)
+	 * @see ecologylab.serialization.types.scalar.ScalarType#getInstance(java.lang.String)
 	 */
 	@Override
 	public KMLColor getInstance(String value)

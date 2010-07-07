@@ -1,6 +1,7 @@
 package ecologylab.xml.library.kml;
 
-import ecologylab.xml.TranslationScope;
+import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.types.element.ElementTypeTranslationsProvider;
 import ecologylab.xml.library.kml.feature.KmlFeature;
 import ecologylab.xml.library.kml.feature.Placemark;
 import ecologylab.xml.library.kml.feature.container.Container;
@@ -17,7 +18,6 @@ import ecologylab.xml.library.kml.geometry.Polygon;
 import ecologylab.xml.library.kml.view.AbstractView;
 import ecologylab.xml.library.kml.view.Camera;
 import ecologylab.xml.library.kml.view.LookAt;
-import ecologylab.xml.types.element.ElementTypeTranslationsProvider;
 
 /**
  * Provide XML translation mappings for use with KML.
@@ -26,7 +26,7 @@ import ecologylab.xml.types.element.ElementTypeTranslationsProvider;
  */
 public class KMLTranslations
 {
-	public static final String	PACKAGE_NAME	= "ecologylab.xml.library.kml";
+	public static final String	PACKAGE_NAME	= "ecologylab.serialization.library.kml";
 
 	public static final Class	TRANSLATIONS[]	=
 															{ Container.class,
@@ -39,7 +39,7 @@ public class KMLTranslations
 	/**
 	 * This accessor will work from anywhere, in any order, and stay efficient.
 	 * 
-	 * @return TranslationSpace for basic ecologylab.services
+	 * @return TranslationSpace for basic ecologylab.oodss
 	 */
 	public static TranslationScope get()
 	{

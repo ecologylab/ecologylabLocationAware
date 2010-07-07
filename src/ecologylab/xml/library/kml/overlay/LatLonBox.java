@@ -3,8 +3,8 @@
  */
 package ecologylab.xml.library.kml.overlay;
 
-import ecologylab.xml.ElementState;
-import ecologylab.xml.Hint;
+import ecologylab.serialization.ElementState;
+import ecologylab.serialization.Hint;
 
 /**
  * According to

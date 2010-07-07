@@ -4,7 +4,7 @@
 package ecologylab.sensor.network.wireless.data;
 
 import ecologylab.sensor.network.NetworkStatus;
-import ecologylab.xml.simpl_inherit;
+import ecologylab.serialization.simpl_inherit;
 
 /**
  * Extends Network to provide signal strength information.

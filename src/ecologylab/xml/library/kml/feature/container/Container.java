@@ -5,7 +5,7 @@ package ecologylab.xml.library.kml.feature.container;
 
 import java.util.ArrayList;
 
-import ecologylab.xml.simpl_inherit;
+import ecologylab.serialization.simpl_inherit;
 import ecologylab.xml.library.kml.feature.KmlFeature;
 import ecologylab.xml.library.kml.feature.Placemark;
 import ecologylab.xml.library.kml.style.StyleSelector;

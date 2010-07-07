@@ -3,7 +3,7 @@
  */
 package ecologylab.sensor.location;
 
-import ecologylab.xml.ElementState;
+import ecologylab.serialization.ElementState;
 
 /**
  * A general-purpose object for representing a Location. Should be used as a

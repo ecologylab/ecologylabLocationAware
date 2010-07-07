@@ -3,6 +3,7 @@
  */
 package ecologylab.services.messages;
 
+import ecologylab.oodss.messages.ResponseMessage;
 import ecologylab.xml.library.kml.Kml;
 
 /**
@@ -26,7 +27,7 @@ public class KmlResponse extends ResponseMessage
 	}
 
 	/**
-	 * @see ecologylab.services.messages.ResponseMessage#isOK()
+	 * @see ecologylab.oodss.messages.ResponseMessage#isOK()
 	 */
 	@Override public boolean isOK()
 	{

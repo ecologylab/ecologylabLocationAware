@@ -3,8 +3,8 @@
  */
 package ecologylab.xml.library.kml.overlay;
 
-import ecologylab.xml.Hint;
-import ecologylab.xml.simpl_inherit;
+import ecologylab.serialization.Hint;
+import ecologylab.serialization.simpl_inherit;
 import ecologylab.xml.library.kml.feature.KmlFeature;
 import ecologylab.xml.library.kml.style.Icon;
 import ecologylab.xml.library.kml.style.StyleSelector;

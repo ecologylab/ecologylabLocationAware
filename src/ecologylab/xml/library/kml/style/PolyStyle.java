@@ -5,7 +5,7 @@ package ecologylab.xml.library.kml.style;
 
 import java.awt.Color;
 
-import ecologylab.xml.Hint;
+import ecologylab.serialization.Hint;
 
 /**
  * @author Zach

@@ -7,15 +7,15 @@ import java.io.UnsupportedEncodingException;
 import java.nio.channels.SelectionKey;
 
 import ecologylab.collections.Scope;
-import ecologylab.services.distributed.impl.NIOServerIOThread;
-import ecologylab.services.distributed.server.NIOServerProcessor;
-import ecologylab.services.distributed.server.clientsessionmanager.HTTPGetClientSessionManager;
+import ecologylab.oodss.distributed.impl.NIOServerIOThread;
+import ecologylab.oodss.distributed.server.NIOServerProcessor;
+import ecologylab.oodss.distributed.server.clientsessionmanager.HTTPGetClientSessionManager;
+import ecologylab.oodss.messages.RequestMessage;
+import ecologylab.oodss.messages.ResponseMessage;
+import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.TranslationScope;
 import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
-import ecologylab.services.messages.RequestMessage;
-import ecologylab.services.messages.ResponseMessage;
-import ecologylab.xml.TranslationScope;
-import ecologylab.xml.SIMPLTranslationException;
 
 /**
  * This client manager simply serves whatever object is located at KML_DATA in the ObjectRegistry.

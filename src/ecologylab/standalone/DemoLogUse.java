@@ -6,12 +6,12 @@ package ecologylab.standalone;
 import java.io.File;
 import java.util.List;
 
+import ecologylab.oodss.logging.Logging;
+import ecologylab.oodss.logging.translationScope.LoggingTranslationsProvider;
 import ecologylab.sensor.BaseSensorTranslations;
-import ecologylab.services.logging.Logging;
+import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.TranslationScope;
 import ecologylab.services.logging.WiFiGPSStatusOp;
-import ecologylab.services.logging.translationScope.LoggingTranslationsProvider;
-import ecologylab.xml.TranslationScope;
-import ecologylab.xml.SIMPLTranslationException;
 
 /**
  * Demonstrates how to load log data, and how to access it.

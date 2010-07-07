@@ -5,8 +5,8 @@ package ecologylab.xml.library.kml.style;
 
 import java.awt.Color;
 
-import ecologylab.xml.Hint;
-import ecologylab.xml.simpl_inherit;
+import ecologylab.serialization.Hint;
+import ecologylab.serialization.simpl_inherit;
 import ecologylab.xml.library.kml.KmlObject;
 import ecologylab.xml.types.scalar.KMLColor;
 

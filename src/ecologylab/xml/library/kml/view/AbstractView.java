@@ -3,7 +3,7 @@
  */
 package ecologylab.xml.library.kml.view;
 
-import ecologylab.xml.simpl_inherit;
+import ecologylab.serialization.simpl_inherit;
 import ecologylab.xml.library.kml.KmlObject;
 
 /**

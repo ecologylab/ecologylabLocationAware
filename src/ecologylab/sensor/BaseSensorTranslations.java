@@ -12,9 +12,9 @@ import ecologylab.sensor.network.NetworkStatus;
 import ecologylab.sensor.network.wireless.data.WiFiAdapterStatus;
 import ecologylab.sensor.network.wireless.data.WiFiSourceList;
 import ecologylab.sensor.network.wireless.data.WirelessNetwork;
+import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.types.element.ElementTypeTranslationsProvider;
 import ecologylab.services.logging.WiFiGPSStatusOp;
-import ecologylab.xml.TranslationScope;
-import ecologylab.xml.types.element.ElementTypeTranslationsProvider;
 
 /**
  * Provide XML translation mappings for use with sensors.
@@ -23,7 +23,7 @@ import ecologylab.xml.types.element.ElementTypeTranslationsProvider;
  */
 public class BaseSensorTranslations
 {
-	public static final String	PACKAGE_NAME	= "ecologylab.xml.library.kml";
+	public static final String	PACKAGE_NAME	= "ecologylab.serialization.library.kml";
 
 	public static final Class	TRANSLATIONS[]	=
 															{ 
@@ -42,7 +42,7 @@ public class BaseSensorTranslations
 	/**
 	 * This accessor will work from anywhere, in any order, and stay efficient.
 	 * 
-	 * @return TranslationSpace for basic ecologylab.services
+	 * @return TranslationSpace for basic ecologylab.oodss
 	 */
 	public static TranslationScope get()
 	{

@@ -3,8 +3,8 @@
  */
 package ecologylab.xml.library.kml.style;
 
-import ecologylab.xml.ElementState;
-import ecologylab.xml.Hint;
+import ecologylab.serialization.ElementState;
+import ecologylab.serialization.Hint;
 import ecologylab.xml.library.kml.overlay.Vec2;
 
 /**

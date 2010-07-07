@@ -3,7 +3,7 @@
  */
 package ecologylab.xml.library.kml;
 
-import ecologylab.xml.ElementState;
+import ecologylab.serialization.ElementState;
 import ecologylab.xml.library.kml.feature.Placemark;
 import ecologylab.xml.library.kml.feature.container.Document;
 import ecologylab.xml.library.kml.feature.container.Folder;

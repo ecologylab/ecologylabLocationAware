@@ -10,13 +10,14 @@ import java.nio.channels.SelectionKey;
 
 import ecologylab.collections.Scope;
 import ecologylab.net.NetTools;
-import ecologylab.services.distributed.server.clientsessionmanager.HTTPGetClientSessionManager;
+import ecologylab.oodss.distributed.server.clientsessionmanager.HTTPGetClientSessionManager;
+import ecologylab.oodss.distributed.server.varieties.HttpGetServer;
+import ecologylab.oodss.messages.DefaultServicesTranslations;
+import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.TranslationScope;
 import ecologylab.services.distributed.server.contextmanager.KMLGetClientSessionManager;
-import ecologylab.services.messages.DefaultServicesTranslations;
 import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
-import ecologylab.xml.TranslationScope;
-import ecologylab.xml.SIMPLTranslationException;
 import ecologylab.xml.library.kml.KMLTranslations;
 import ecologylab.xml.library.kml.Kml;
 

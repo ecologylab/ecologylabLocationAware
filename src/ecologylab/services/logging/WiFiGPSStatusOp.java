@@ -8,6 +8,8 @@ import java.util.TooManyListenersException;
 
 import stec.jenie.NativeException;
 import ecologylab.generic.Generic;
+import ecologylab.oodss.logging.Logging;
+import ecologylab.oodss.logging.MixedInitiativeOp;
 import ecologylab.sensor.location.NMEAReader;
 import ecologylab.sensor.location.NMEAStringListener;
 import ecologylab.sensor.location.gps.data.GPSDatum;
@@ -16,7 +18,7 @@ import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
 import ecologylab.sensor.network.wireless.data.WiFiAdapterStatus;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
-import ecologylab.xml.simpl_inherit;
+import ecologylab.serialization.simpl_inherit;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
@@ -86,7 +88,7 @@ import gnu.io.UnsupportedCommOperationException;
 	}
 
 	/**
-	 * @see ecologylab.services.logging.MixedInitiativeOp#performAction(boolean)
+	 * @see ecologylab.oodss.logging.MixedInitiativeOp#performAction(boolean)
 	 */
 	@Override public void performAction(boolean invert)
 	{

@@ -3,7 +3,7 @@
  */
 package ecologylab.sensor.location.gps.data;
 
-import ecologylab.xml.ElementState;
+import ecologylab.serialization.ElementState;
 
 /**
  * An object for representing a world coordinate (either latitude, or longitude), stored as a floating-point degree. Can

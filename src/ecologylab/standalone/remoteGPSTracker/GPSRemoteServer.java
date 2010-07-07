@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 
 import ecologylab.collections.Scope;
+import ecologylab.oodss.distributed.server.NIODatagramServer;
+import ecologylab.oodss.messages.DefaultServicesTranslations;
 import ecologylab.sensor.location.gps.listener.GPSDataLogger;
-import ecologylab.services.distributed.server.NIODatagramServer;
-import ecologylab.services.messages.DefaultServicesTranslations;
-import ecologylab.xml.TranslationScope;
+import ecologylab.serialization.TranslationScope;
 
 public class GPSRemoteServer extends NIODatagramServer
 {

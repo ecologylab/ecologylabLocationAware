@@ -8,10 +8,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
-import ecologylab.xml.ElementState;
-import ecologylab.xml.Hint;
+import ecologylab.serialization.ElementState;
+import ecologylab.serialization.Hint;
+import ecologylab.serialization.types.scalar.TypeRegistry;
 import ecologylab.xml.types.scalar.CoordinatesType;
-import ecologylab.xml.types.scalar.TypeRegistry;
 
 /**
  * The Coordinates object is a special case specifically for KML. Because KML

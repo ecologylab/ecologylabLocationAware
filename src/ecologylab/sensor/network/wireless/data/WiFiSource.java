@@ -3,9 +3,9 @@
  */
 package ecologylab.sensor.network.wireless.data;
 
-import ecologylab.xml.SIMPLTranslationException;
-import ecologylab.xml.simpl_inherit;
-import ecologylab.xml.types.element.Mappable;
+import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.types.element.Mappable;
 
 /**
  * Represents a moment of wifi status data for a potential WiFi connection.

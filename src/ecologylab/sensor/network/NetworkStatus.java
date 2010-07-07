@@ -3,8 +3,8 @@
  */
 package ecologylab.sensor.network;
 
-import ecologylab.xml.ElementState;
-import ecologylab.xml.types.element.Mappable;
+import ecologylab.serialization.ElementState;
+import ecologylab.serialization.types.element.Mappable;
 
 /**
  * Represents a data network, most likely wireless.

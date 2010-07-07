@@ -1,9 +1,9 @@
 package ecologylab.standalone.remoteGPSTracker;
 
 import ecologylab.collections.Scope;
+import ecologylab.oodss.messages.RequestMessage;
+import ecologylab.oodss.messages.ResponseMessage;
 import ecologylab.sensor.location.NMEAStringListener;
-import ecologylab.services.messages.RequestMessage;
-import ecologylab.services.messages.ResponseMessage;
 
 public class NMEAUpdateRequest extends RequestMessage
 {

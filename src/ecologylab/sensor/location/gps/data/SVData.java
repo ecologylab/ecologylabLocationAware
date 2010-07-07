@@ -3,8 +3,8 @@
  */
 package ecologylab.sensor.location.gps.data;
 
-import ecologylab.xml.ElementState;
-import ecologylab.xml.types.element.Mappable;
+import ecologylab.serialization.ElementState;
+import ecologylab.serialization.types.element.Mappable;
 
 /**
  * Stores information about a GPS satellite (space vehicle, or SV), as reported
