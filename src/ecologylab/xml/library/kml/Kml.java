@@ -31,21 +31,21 @@ import ecologylab.xml.library.kml.overlay.ScreenOverlay;
  */
 public class Kml extends ElementState
 {
-	@xml_nested @xml_tag("Placemark") Placemark				placemark		= null;
+	@simpl_composite @xml_tag("Placemark") Placemark				placemark		= null;
 
-	@xml_nested @xml_tag("Document") Document					document			= null;
+	@simpl_composite @xml_tag("Document") Document					document			= null;
 
-	@xml_nested @xml_tag("Folder") Folder						folder			= null;
+	@simpl_composite @xml_tag("Folder") Folder						folder			= null;
 
-	@xml_nested @xml_tag("GroundOverlay") GroundOverlay	groundOverlay	= null;
+	@simpl_composite @xml_tag("GroundOverlay") GroundOverlay	groundOverlay	= null;
 
-	@xml_nested @xml_tag("PhotoOverlay") PhotoOverlay		photoOverlay	= null;
+	@simpl_composite @xml_tag("PhotoOverlay") PhotoOverlay		photoOverlay	= null;
 
-	@xml_nested @xml_tag("ScreenOverlay") ScreenOverlay	screenOverlay	= null;
+	@simpl_composite @xml_tag("ScreenOverlay") ScreenOverlay	screenOverlay	= null;
 
 	// TODO NetworkLink
 
-	@xml_attribute String											xmlns				= "http://earth.google.com/kml/2.2";
+	@simpl_scalar String											xmlns				= "http://earth.google.com/kml/2.2";
 
 	/**
 	 * No-argument constructor for automatic translation to/from KML.

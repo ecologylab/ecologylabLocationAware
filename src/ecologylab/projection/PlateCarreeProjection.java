@@ -10,9 +10,6 @@ import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import ecologylab.projection.Projection.RotationConstraintMode;
-import ecologylab.sensor.location.gps.data.GPSConstants;
-import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.xml.XMLTranslationException;
 
@@ -113,7 +110,7 @@ public class PlateCarreeProjection extends Projection
 
 			try
 			{
-				System.out.println(d.translateToXML());
+				System.out.println(d.serialize());
 			}
 			catch (XMLTranslationException e)
 			{

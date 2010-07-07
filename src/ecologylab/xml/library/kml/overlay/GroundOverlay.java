@@ -3,7 +3,8 @@
  */
 package ecologylab.xml.library.kml.overlay;
 
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.Hint;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.library.kml.geometry.Point;
 import ecologylab.xml.library.kml.style.StyleSelector;
 
@@ -19,13 +20,13 @@ import ecologylab.xml.library.kml.style.StyleSelector;
  * 
  * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
  */
-@xml_inherit public class GroundOverlay extends Overlay
+@simpl_inherit public class GroundOverlay extends Overlay
 {
 	/**
 	 * Specifies the distance above the earth's surface, in meters, and is
 	 * interpreted according to <altitudeMode>.
 	 */
-	@xml_leaf protected double										altitude;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) protected double										altitude;
 
 	/**
 	 * Specifies how the <altitude>is interpreted. Possible values are
@@ -42,7 +43,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	 * above the terrain by 7 meters.
 	 * 
 	 */
-	@xml_nested @xml_tag("altitudeMode") protected String	altitudeMode;
+	@simpl_composite @xml_tag("altitudeMode") protected String	altitudeMode;
 
 	/** valid value for shape. */
 	public static final String										CLAMP_TO_GROUND	= "clampToGround";
@@ -54,7 +55,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	 * Specifies where the top, bottom, right, and left sides of a bounding box
 	 * for the ground overlay are aligned.
 	 */
-	@xml_nested @xml_tag("LatLonBox") protected LatLonBox	latLonBox;
+	@simpl_composite @xml_tag("LatLonBox") protected LatLonBox	latLonBox;
 
 	/**
 	 * The <Point> element acts as a <Point> inside a <Placemark> element. It
@@ -62,7 +63,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	 * specified by the <styleUrl> and <StyleSelector> fields, just as it is for
 	 * <Placemark>.
 	 */
-	@xml_nested @xml_tag("Point") protected Point			point;
+	@simpl_composite @xml_tag("Point") protected Point			point;
 
 	/**
 	 * 

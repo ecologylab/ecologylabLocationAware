@@ -47,15 +47,15 @@ public class DemoLogUse
 
 		// show off some of the contents. :)
 		System.out.println("First op: ");
-		opSeq.get(0).translateToXML(System.out);
+		opSeq.get(0).serialize(System.out);
 
 		System.out.println();
 		System.out.println("9th op: ");
-		opSeq.get(10).translateToXML(System.out);
+		opSeq.get(10).serialize(System.out);
 
 		System.out.println();
 		System.out.println("last op (" + (opSeq.size() - 1) + "): ");
-		opSeq.get(opSeq.size() - 1).translateToXML(System.out);
+		opSeq.get(opSeq.size() - 1).serialize(System.out);
 
 		// in order to use these objects, you can use the getLocationStatus() and
 		// getNetworkStatus() methods in WiFiGPSStatusOp

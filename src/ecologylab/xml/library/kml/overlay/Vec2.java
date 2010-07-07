@@ -31,13 +31,13 @@ public class Vec2 extends ElementState
 	 * Either the number of pixels, a fractional component of the icon, or a
 	 * pixel inset indicating the x component of a point on the icon.
 	 */
-	@xml_attribute public float	x;
+	@simpl_scalar public float	x;
 
 	/**
 	 * Either the number of pixels, a fractional component of the icon, or a
 	 * pixel inset indicating the y component of a point on the icon.
 	 */
-	@xml_attribute public float	y;
+	@simpl_scalar public float	y;
 
 	/**
 	 * xunits - Units in which the x value is specified. A value of fraction
@@ -45,7 +45,7 @@ public class Vec2 extends ElementState
 	 * indicates the x value in pixels. A value of insetPixels indicates the
 	 * indent from the right edge of the icon.
 	 */
-	@xml_attribute public String	xunits;
+	@simpl_scalar public String	xunits;
 
 	/**
 	 * yunits - Units in which the y value is specified. A value of fraction
@@ -53,7 +53,7 @@ public class Vec2 extends ElementState
 	 * indicates the y value in pixels. A value of insetPixels indicates the
 	 * indent from the top edge of the icon.
 	 */
-	@xml_attribute public String	yunits;
+	@simpl_scalar public String	yunits;
 
 	/**
 	 * 

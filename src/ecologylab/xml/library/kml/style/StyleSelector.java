@@ -3,14 +3,14 @@
  */
 package ecologylab.xml.library.kml.style;
 
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.library.kml.KmlObject;
 
 /**
  * @author Zach
  *
  */
-@xml_inherit
+@simpl_inherit
 public class StyleSelector extends KmlObject
 {
 	/**

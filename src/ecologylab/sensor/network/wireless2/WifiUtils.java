@@ -2,11 +2,9 @@ package ecologylab.sensor.network.wireless2;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Enumeration;
-
-import java.net.*;
 
 import javax.swing.Timer;
 

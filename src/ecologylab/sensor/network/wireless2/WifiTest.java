@@ -1,8 +1,6 @@
 package ecologylab.sensor.network.wireless2;
 
 import java.io.IOException;
-import java.net.*;
-import java.util.Enumeration;
 
 public class WifiTest implements WifiListener
 {

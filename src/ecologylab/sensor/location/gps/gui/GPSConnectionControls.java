@@ -3,13 +3,6 @@
  */
 package ecologylab.sensor.location.gps.gui;
 
-import ecologylab.sensor.location.NMEAReader;
-import ecologylab.sensor.location.gps.gui.strings.GPSStatusStrings;
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.UnsupportedCommOperationException;
-
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -27,6 +20,13 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
+
+import ecologylab.sensor.location.NMEAReader;
+import ecologylab.sensor.location.gps.gui.strings.GPSStatusStrings;
+import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
+import gnu.io.UnsupportedCommOperationException;
 
 /**
  * @author Zachary O. Toups (zach@ecologylab.net)

@@ -1,32 +1,23 @@
 package ecologylab.standalone;
-import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileFilter;
 
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.services.logging.playback.ExtensionFilter;
-
-import java.awt.Point;
 
 public class GoogleMapBuilder
 {

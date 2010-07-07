@@ -3,7 +3,8 @@
  */
 package ecologylab.xml.library.kml.feature;
 
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.Hint;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.library.kml.KmlObject;
 import ecologylab.xml.library.kml.style.Style;
 import ecologylab.xml.library.kml.style.StyleSelector;
@@ -12,16 +13,16 @@ import ecologylab.xml.library.kml.style.StyleSelector;
  * @author Zach
  * 
  */
-@xml_inherit public abstract class KmlFeature extends KmlObject
+@simpl_inherit public abstract class KmlFeature extends KmlObject
 {
-	@xml_leaf String									name;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) String									name;
 
-	@xml_leaf int										visibility;	// actually a boolean
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) int										visibility;	// actually a boolean
 
 	// -- can only be 0 or
 	// 1
 
-	@xml_leaf int										open;			// actually a boolean
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) int										open;			// actually a boolean
 
 	// -- can only be 0 or
 	// 1
@@ -30,23 +31,23 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 
 	// TODO atom:link??
 
-	@xml_leaf String									address;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) String									address;
 
 	// TODO xal:AddressDetails??
 
-	@xml_leaf @xml_tag("phoneNumber") String	phoneNumber;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("phoneNumber") String	phoneNumber;
 
 	// TODO Snippet??
 
-	@xml_leaf(CDATA) String									description;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF_CDATA) String									description;
 
 	// TODO AbstractView??
 
 	// TODO TimePrimitive??
 
-	@xml_leaf @xml_tag("styleUrl") String		styleUrl;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("styleUrl") String		styleUrl;
 
-	@xml_nested @xml_tag("Style") Style			style;
+	@simpl_composite @xml_tag("Style") Style			style;
 
 	// TODO StyleMap
 

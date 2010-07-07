@@ -3,11 +3,7 @@
  */
 package ecologylab.sensor.location.gps;
 
-import java.util.ArrayList;
-
-import ecologylab.sensor.BaseSensorTranslations;
 import ecologylab.xml.ElementState;
-import ecologylab.xml.XMLTranslationException;
 
 /**
  * Encapsulates information about a GPS device, including its specifications.
@@ -20,19 +16,19 @@ import ecologylab.xml.XMLTranslationException;
  */
 public class GPSDeviceProfile extends ElementState
 {
-	@xml_attribute private String	make;
+	@simpl_scalar private String	make;
 
-	@xml_attribute private String	model;
+	@simpl_scalar private String	model;
 
 	/** Maximum baud for communicating with the device. */
-	@xml_attribute private int		maxBaud;
+	@simpl_scalar private int		maxBaud;
 
 	/**
 	 * Expected GPS accuracy in meters when using differential GPS.
 	 * 
 	 * Example: <b>&lt;2 meter accuracy</b>, 95% typical
 	 */
-	@xml_attribute private float	dgpsAccuracy;
+	@simpl_scalar private float	dgpsAccuracy;
 
 	/**
 	 * (hope I got this right!) Expected likelihood that the accuracy is correct
@@ -40,14 +36,14 @@ public class GPSDeviceProfile extends ElementState
 	 * 
 	 * Example: &lt;2 meter accuracy, <b>95% typical</b>
 	 */
-	@xml_attribute private float	dgpsPrecision;
+	@simpl_scalar private float	dgpsPrecision;
 
 	/**
 	 * Expected GPS accuracy in meters when using non-differential GPS.
 	 * 
 	 * Example: <b>&lt;2 meter accuracy</b>, 95% typical
 	 */
-	@xml_attribute private float	gpsAccuracy;
+	@simpl_scalar private float	gpsAccuracy;
 
 	/**
 	 * (hope I got this right!) Expected likelihood that the accuracy is correct
@@ -55,9 +51,9 @@ public class GPSDeviceProfile extends ElementState
 	 * 
 	 * Example: &lt;2 meter accuracy, <b>95% typical</b>
 	 */
-	@xml_attribute private float	gpsPrecision;
+	@simpl_scalar private float	gpsPrecision;
 
-	@xml_attribute private int		channels;
+	@simpl_scalar private int		channels;
 
 	/**
 	 * 

@@ -3,12 +3,9 @@
  */
 package ecologylab.projection;
 
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
 import ecologylab.generic.Debug;
-import ecologylab.sensor.location.gps.data.GPSConstants;
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
 
 /**

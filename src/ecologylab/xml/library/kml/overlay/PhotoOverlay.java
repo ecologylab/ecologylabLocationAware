@@ -3,7 +3,8 @@
  */
 package ecologylab.xml.library.kml.overlay;
 
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.Hint;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.library.kml.geometry.Point;
 import ecologylab.xml.library.kml.style.StyleSelector;
 
@@ -36,14 +37,14 @@ import ecologylab.xml.library.kml.style.StyleSelector;
  * 
  * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
  */
-@xml_inherit public class PhotoOverlay extends Overlay
+@simpl_inherit public class PhotoOverlay extends Overlay
 {
 	/**
 	 * Adjusts how the photo is placed inside the field of view. This element is
 	 * useful if your photo has been rotated and deviates slightly from a desired
 	 * horizontal view.
 	 */
-	@xml_leaf protected int													rotation;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) protected int													rotation;
 
 	/**
 	 * Defines how much of the current scene is visible. Specifying the field of
@@ -52,7 +53,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	 * scene. A large field of view, like a wide-angle lens, focuses on a large
 	 * part of the scene.
 	 */
-	@xml_nested @xml_tag("ViewVolume") protected ViewVolume		viewVolume;
+	@simpl_composite @xml_tag("ViewVolume") protected ViewVolume		viewVolume;
 
 	/**
 	 * For very large images, you'll need to construct an image pyramid, which is
@@ -71,7 +72,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	 * When you specify an image pyramid, you also modify the <href> in the
 	 * <Icon> element to include specifications for which tiles to load.
 	 */
-	@xml_nested @xml_tag("ImagePyramid") protected ImagePyramid	imagePyramid;
+	@simpl_composite @xml_tag("ImagePyramid") protected ImagePyramid	imagePyramid;
 
 	/**
 	 * The <Point> element acts as a <Point> inside a <Placemark> element. It
@@ -79,7 +80,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	 * specified by the <styleUrl> and <StyleSelector> fields, just as it is for
 	 * <Placemark>.
 	 */
-	@xml_nested @xml_tag("Point") protected Point					point;
+	@simpl_composite @xml_tag("Point") protected Point					point;
 
 	/**
 	 * The PhotoOverlay is projected onto the <shape>. The <shape> can be one of
@@ -92,7 +93,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	 * 
 	 * SPHERE - sphere - for spherical panoramas
 	 */
-	@xml_nested protected String											shape;
+	@simpl_composite protected String											shape;
 
 	/** valid value for shape. */
 	public static final String												RECTANGLE	= "rectangle";

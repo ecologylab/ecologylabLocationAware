@@ -5,7 +5,8 @@ package ecologylab.xml.library.kml.style;
 
 import java.awt.Color;
 
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.Hint;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.library.kml.KmlObject;
 import ecologylab.xml.types.scalar.KMLColor;
 
@@ -13,11 +14,11 @@ import ecologylab.xml.types.scalar.KMLColor;
  * @author Zach
  * 
  */
-@xml_inherit public class ColorStyle extends KmlObject
+@simpl_inherit public class ColorStyle extends KmlObject
 {
-	@xml_leaf KMLColor								color;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) KMLColor								color;
 
-	@xml_leaf @xml_tag("colorMode") String	colorMode;	// either normal or random
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("colorMode") String	colorMode;	// either normal or random
 
 	/**
 	 * 

@@ -3,20 +3,20 @@
  */
 package ecologylab.xml.library.kml.style;
 
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.ElementState.xml_tag;
 
 /**
  * @author Zach
  *
  */
-@xml_inherit
+@simpl_inherit
 @xml_tag("Style")
 public class Style extends StyleSelector
 {
-	@xml_nested @xml_tag("LineStyle") LineStyle lineStyle;
-	@xml_nested @xml_tag("PolyStyle") PolyStyle polyStyle;
-	@xml_nested @xml_tag("IconStyle") IconStyle iconStyle;
+	@simpl_composite @xml_tag("LineStyle") LineStyle lineStyle;
+	@simpl_composite @xml_tag("PolyStyle") PolyStyle polyStyle;
+	@simpl_composite @xml_tag("IconStyle") IconStyle iconStyle;
 
 	// TODO labelstyle, balloonstyle, liststyle
 	

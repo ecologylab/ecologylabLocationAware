@@ -5,8 +5,9 @@ package ecologylab.xml.library.kml.style;
 
 import java.awt.Color;
 
+import ecologylab.xml.Hint;
 import ecologylab.xml.XMLTranslationException;
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.library.kml.overlay.Vec2;
 
 /**
@@ -21,19 +22,19 @@ import ecologylab.xml.library.kml.overlay.Vec2;
  * 
  * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
  */
-@xml_inherit public class IconStyle extends ColorStyle
+@simpl_inherit public class IconStyle extends ColorStyle
 {
 	/** Resizes the icon. */
-	@xml_leaf private float									scale;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) private float									scale;
 
 	/**
 	 * Direction (that is, North, South, East, West), in degrees. Default=0
 	 * (North). (See diagram.) Values range from 0 to 360 degrees.
 	 */
-	@xml_leaf private float									heading;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) private float									heading;
 
 	/** A custom Icon. In <IconStyle>, the only child element of <Icon> is <href> */
-	@xml_nested @xml_tag("Icon") private Icon			icon;
+	@simpl_composite @xml_tag("Icon") private Icon			icon;
 
 	/**
 	 * Specifies the position within the Icon that is "anchored" to the <Point>
@@ -45,7 +46,7 @@ import ecologylab.xml.library.kml.overlay.Vec2;
 	 * be a fraction. The origin of the coordinate system is in the lower left
 	 * corner of the icon.
 	 */
-	@xml_nested @xml_tag("hotSpot") private Vec2	hotSpot;
+	@simpl_composite @xml_tag("hotSpot") private Vec2	hotSpot;
 
 	/**
 	 * 
@@ -102,7 +103,7 @@ import ecologylab.xml.library.kml.overlay.Vec2;
 		
 		Style s = new Style("randomColorIcon", null, null, iS);
 		
-		s.translateToXML(System.out);
+		s.serialize(System.out);
 	}
 
 	public void setHref(String iconURL)

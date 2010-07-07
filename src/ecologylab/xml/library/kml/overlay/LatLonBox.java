@@ -4,6 +4,7 @@
 package ecologylab.xml.library.kml.overlay;
 
 import ecologylab.xml.ElementState;
+import ecologylab.xml.Hint;
 
 /**
  * According to
@@ -20,34 +21,34 @@ public class LatLonBox extends ElementState
 	 * Specifies the latitude of the north edge of the bounding box, in decimal
 	 * degrees from 0 to ±90.
 	 */
-	@xml_leaf public double	north;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) public double	north;
 
 	/**
 	 * Specifies the latitude of the south edge of the bounding box, in decimal
 	 * degrees from 0 to ±90.
 	 */
-	@xml_leaf public double	south;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) public double	south;
 
 	/**
 	 * Specifies the longitude of the east edge of the bounding box, in decimal
 	 * degrees from 0 to ±180. (For overlays that overlap the meridian of 180°
 	 * longitude, values can extend beyond that range.)
 	 */
-	@xml_leaf public double	east;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) public double	east;
 
 	/**
 	 * Specifies the longitude of the west edge of the bounding box, in decimal
 	 * degrees from 0 to ±180. (For overlays that overlap the meridian of 180°
 	 * longitude, values can extend beyond that range.)
 	 */
-	@xml_leaf public double	west;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) public double	west;
 
 	/**
 	 * Specifies a rotation of the overlay about its center, in degrees. Values
 	 * can be ±180. The default is 0 (north). Rotations are specified in a
 	 * counterclockwise direction.
 	 */
-	@xml_leaf public double	rotation;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) public double	rotation;
 
 	/**
 	 * 

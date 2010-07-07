@@ -3,7 +3,7 @@
  */
 package ecologylab.xml.library.kml.feature.container;
 
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.ElementState.xml_tag;
 
 /**
@@ -16,7 +16,7 @@ import ecologylab.xml.ElementState.xml_tag;
  * @author Zach
  * 
  */
-@xml_inherit @xml_tag("Folder") public class Folder extends Container 
+@simpl_inherit @xml_tag("Folder") public class Folder extends Container 
 {
 	/**
 	 * 

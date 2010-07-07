@@ -4,6 +4,7 @@
 package ecologylab.xml.library.kml.overlay;
 
 import ecologylab.xml.ElementState;
+import ecologylab.xml.Hint;
 
 /**
  * According to
@@ -39,20 +40,20 @@ public class ViewVolume extends ElementState
 	 * a power of 2. A tile size of 256 (the default) or 512 is recommended. The
 	 * original image is divided into tiles of this size, at varying resolutions.
 	 */
-	@xml_leaf @xml_tag("tileSize") public int		tileSize;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("tileSize") public int		tileSize;
 
 	/** Width in pixels of the original image. */
-	@xml_leaf @xml_tag("maxWidth") public int		maxWidth;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("maxWidth") public int		maxWidth;
 
 	/** Height in pixels of the original image. */
-	@xml_leaf @xml_tag("maxHeight") public int	maxHeight;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("maxHeight") public int	maxHeight;
 
 	/**
 	 * Specifies where to begin numbering the tiles in each layer of the pyramid.
 	 * A value of lowerLeft specifies that row 1, column 1 of each layer is in
 	 * the bottom left corner of the grid.
 	 */
-	@xml_leaf @xml_tag("gridOrigin") public int	gridOrigin;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("gridOrigin") public int	gridOrigin;
 
 	/**
 	 * 

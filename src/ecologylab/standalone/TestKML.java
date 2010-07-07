@@ -3,8 +3,6 @@
  */
 package ecologylab.standalone;
 
-import java.io.File;
-
 import ecologylab.xml.ElementState;
 import ecologylab.xml.XMLTranslationException;
 import ecologylab.xml.library.kml.KMLTranslations;
@@ -38,7 +36,7 @@ public class TestKML
 	{
 		ElementState k =  ElementState.translateFromXMLCharSequence(someKml, KMLTranslations.get());
 		
-		k.translateToXML(System.out);
+		k.serialize(System.out);
 	}
 
 }

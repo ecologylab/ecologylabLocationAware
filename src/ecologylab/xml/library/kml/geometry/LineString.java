@@ -3,7 +3,8 @@
  */
 package ecologylab.xml.library.kml.geometry;
 
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.Hint;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.ElementState.xml_tag;
 
 /**
@@ -20,7 +21,7 @@ import ecologylab.xml.ElementState.xml_tag;
  * @author Zach
  * 
  */
-@xml_inherit @xml_tag("LineString") public class LineString extends Geometry
+@simpl_inherit @xml_tag("LineString") public class LineString extends Geometry
 {
 	/**
 	 * Boolean value (0 or 1). Specifies whether to connect the LineString to the
@@ -30,7 +31,7 @@ import ecologylab.xml.ElementState.xml_tag;
 	 * vertices in the LineString are extruded toward the center of the Earth's
 	 * sphere.
 	 */
-	@xml_leaf int										extrude;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) int										extrude;
 
 	/**
 	 * Boolean value (0 or 1). Specifies whether to allow the LineString to
@@ -39,9 +40,9 @@ import ecologylab.xml.ElementState.xml_tag;
 	 * so that they follow the curvature of the earth (otherwise, they may go
 	 * underground and be hidden).
 	 */
-	@xml_leaf int										tessellate;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) int										tessellate;
 
-	@xml_leaf @xml_tag("altitudeMode") String	altitudeMode;	// enum values:
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("altitudeMode") String	altitudeMode;	// enum values:
 
 	// "clampToGround",
 	// "relativeToGround",

@@ -3,7 +3,7 @@
  */
 package ecologylab.xml.library.kml.feature.container;
 
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.ElementState.xml_tag;
 import ecologylab.xml.library.kml.style.StyleSelector;
 
@@ -11,7 +11,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
  * @author Zach
  * 
  */
-@xml_inherit @xml_tag("Document") public class Document extends Container // TODO
+@simpl_inherit @xml_tag("Document") public class Document extends Container // TODO
 																									// -
 																									// unclear,
 																									// does

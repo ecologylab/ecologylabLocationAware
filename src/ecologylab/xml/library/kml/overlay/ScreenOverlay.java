@@ -3,7 +3,8 @@
  */
 package ecologylab.xml.library.kml.overlay;
 
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.Hint;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.library.kml.style.StyleSelector;
 
 /**
@@ -25,7 +26,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
  * 
  * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
  */
-@xml_inherit public class ScreenOverlay extends Overlay
+@simpl_inherit public class ScreenOverlay extends Overlay
 {
 	/**
 	 * Specifies a point on (or outside of) the overlay image that is mapped to
@@ -38,7 +39,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	 * be a fraction. The origin of the coordinate system is in the lower left
 	 * corner of the image.
 	 */
-	@xml_nested @xml_tag("overlayXY") protected Vec2	overlayXY;
+	@simpl_composite @xml_tag("overlayXY") protected Vec2	overlayXY;
 
 	/**
 	 * Specifies a point relative to the screen origin that the overlay image is
@@ -49,10 +50,10 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	 * ways—for example, x can be in pixels and y can be a fraction. The origin
 	 * of the coordinate system is in the lower left corner of the screen.
 	 */
-	@xml_nested @xml_tag("screenXY") protected Vec2		screenXY;
+	@simpl_composite @xml_tag("screenXY") protected Vec2		screenXY;
 
 	/** Point relative to the screen about which the screen overlay is rotated. */
-	@xml_nested @xml_tag("rotationXY") protected Vec2	rotationXY;
+	@simpl_composite @xml_tag("rotationXY") protected Vec2	rotationXY;
 
 	/**
 	 * Specifies the size of the image for the screen overlay, as follows:
@@ -63,7 +64,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	 * 
 	 * A value of n sets the value of the dimension
 	 */
-	@xml_nested protected Vec2									size;
+	@simpl_composite protected Vec2									size;
 
 	/**
 	 * Indicates the angle of rotation of the parent object. A value of 0 means
@@ -72,7 +73,7 @@ import ecologylab.xml.library.kml.style.StyleSelector;
 	 * The center of the <rotation>, if not (.5,.5), is specified in
 	 * <rotationXY>.
 	 */
-	@xml_leaf protected float									rotation;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) protected float									rotation;
 
 	/**
 	 * 

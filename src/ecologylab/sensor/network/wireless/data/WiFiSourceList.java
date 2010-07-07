@@ -6,7 +6,7 @@ package ecologylab.sensor.network.wireless.data;
 import ecologylab.generic.ResourcePool;
 import ecologylab.sensor.network.NetworkList;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 
 /**
  * A moment of data on wifi status objects, which are hashed according to MAC
@@ -20,7 +20,7 @@ import ecologylab.xml.xml_inherit;
  * 
  * @author Zachary O. Toups (zach@ecologylab.net)
  */
-@xml_inherit public class WiFiSourceList extends NetworkList<WiFiSource>
+@simpl_inherit public class WiFiSourceList extends NetworkList<WiFiSource>
 		implements WiFiStringDataListener
 {
 	/**

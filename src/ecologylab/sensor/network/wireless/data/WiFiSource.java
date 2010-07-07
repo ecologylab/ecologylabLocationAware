@@ -4,7 +4,7 @@
 package ecologylab.sensor.network.wireless.data;
 
 import ecologylab.xml.XMLTranslationException;
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.types.element.Mappable;
 
 /**
@@ -14,7 +14,7 @@ import ecologylab.xml.types.element.Mappable;
  * 
  * @author Zachary O. Toups (zach@ecologylab.net)
  */
-@xml_inherit public class WiFiSource extends WirelessNetwork implements
+@simpl_inherit public class WiFiSource extends WirelessNetwork implements
 		Mappable<String>
 {
 	public static final String			AD_HOC			= "AD_HOC";
@@ -26,13 +26,13 @@ import ecologylab.xml.types.element.Mappable;
 	public static final String			UNSECURED		= "UNSECURED";
 	
 	/** The operating channel for the network. */
-	@xml_attribute protected int		channel;
+	@simpl_scalar protected int		channel;
 
 	/** The type of the network; either AD_HOC or ACCESS_POINT. */
-	@xml_attribute protected String	networkType;
+	@simpl_scalar protected String	networkType;
 
 	/** The security for the network; either SECURED or UNSECURED. */
-	@xml_attribute protected String	security;
+	@simpl_scalar protected String	security;
 
 	public WiFiSource()
 	{
@@ -98,7 +98,7 @@ import ecologylab.xml.types.element.Mappable;
 		w.updateData("Snakes on a Plane\r\n" + "00:18:39:d0:4d:43\r\n"
 				+ "-40\r\n" + "94\r\n" + "8\r\n" + "ACCESS_POINT\r\n" + "SECURED");
 
-		System.out.println(w.translateToXML());
+		System.out.println(w.serialize());
 	}
 
 	public int getChannel()

@@ -3,7 +3,8 @@
  */
 package ecologylab.xml.library.kml.overlay;
 
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.Hint;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.library.kml.feature.KmlFeature;
 import ecologylab.xml.library.kml.style.Icon;
 import ecologylab.xml.library.kml.style.StyleSelector;
@@ -22,13 +23,13 @@ import ecologylab.xml.types.scalar.KMLColor;
  * 
  * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
  */
-@xml_inherit public abstract class Overlay extends KmlFeature
+@simpl_inherit public abstract class Overlay extends KmlFeature
 {
-	@xml_leaf protected KMLColor							color;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) protected KMLColor							color;
 
-	@xml_leaf @xml_tag("drawOrder") protected int	drawOrder;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("drawOrder") protected int	drawOrder;
 	
-	@xml_nested @xml_tag("Icon") protected Icon			icon;
+	@simpl_composite @xml_tag("Icon") protected Icon			icon;
 
 	/**
 	 * 

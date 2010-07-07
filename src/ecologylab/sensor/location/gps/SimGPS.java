@@ -3,10 +3,6 @@
  */
 package ecologylab.sensor.location.gps;
 
-import ecologylab.sensor.location.NMEAReader;
-import gnu.io.PortInUseException;
-import gnu.io.UnsupportedCommOperationException;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -17,6 +13,10 @@ import java.util.ArrayList;
 import java.util.TooManyListenersException;
 
 import javax.swing.Timer;
+
+import ecologylab.sensor.location.NMEAReader;
+import gnu.io.PortInUseException;
+import gnu.io.UnsupportedCommOperationException;
 
 /**
  * A simulated GPS that uses a text file containing NMEA sentences to drive a GPS-based application.

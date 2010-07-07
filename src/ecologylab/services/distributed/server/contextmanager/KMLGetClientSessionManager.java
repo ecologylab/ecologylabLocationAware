@@ -49,7 +49,7 @@ public class KMLGetClientSessionManager extends HTTPGetClientSessionManager
 			throws XMLTranslationException
 	{
 		outgoingMessageBuf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
-		((KmlResponse) responseMessage).getKml().translateToXML(outgoingMessageBuf);
+		((KmlResponse) responseMessage).getKml().serialize(outgoingMessageBuf);
 		outgoingMessageBuf.append("\r\n");
 	}
 

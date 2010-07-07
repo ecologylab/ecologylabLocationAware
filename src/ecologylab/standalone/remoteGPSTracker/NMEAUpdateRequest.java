@@ -4,7 +4,6 @@ import ecologylab.collections.Scope;
 import ecologylab.sensor.location.NMEAStringListener;
 import ecologylab.services.messages.RequestMessage;
 import ecologylab.services.messages.ResponseMessage;
-import ecologylab.xml.ElementState.xml_attribute;
 
 public class NMEAUpdateRequest extends RequestMessage
 {
@@ -13,7 +12,7 @@ public class NMEAUpdateRequest extends RequestMessage
 	
 	public static final NMEAUpdateResponse response = new NMEAUpdateResponse();
 	
-	private @xml_attribute String nmea = "";
+	private @simpl_scalar String nmea = "";
 	
 	@Override
 	public ResponseMessage performService(Scope clientSessionScope)

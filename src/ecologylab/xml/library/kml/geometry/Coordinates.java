@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.xml.ElementState;
+import ecologylab.xml.Hint;
 import ecologylab.xml.types.scalar.CoordinatesType;
 import ecologylab.xml.types.scalar.TypeRegistry;
 
@@ -41,7 +42,7 @@ public class Coordinates extends ElementState
 		TypeRegistry.register(CoordinatesType.class);
 	}
 
-	@xml_leaf private String					coords;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) private String					coords;
 
 	ArrayList<GeoCoordinate>	coordinateList	= new ArrayList<GeoCoordinate>();
 

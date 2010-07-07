@@ -20,10 +20,10 @@ public abstract class NetworkStatus extends ElementState implements
 	 * The identifier for the network, for example, SSID for a wifi network. Note
 	 * that id is not necessarily unique.
 	 */
-	@xml_attribute protected String						id;
+	@simpl_scalar protected String						id;
 
 	/** The MAC address of the network. */
-	@xml_attribute @xml_tag("mac") protected String	macAddr;
+	@simpl_scalar @xml_tag("mac") protected String	macAddr;
 
 	/**
 	 * 

@@ -5,7 +5,7 @@ package ecologylab.xml.library.kml.feature.container;
 
 import java.util.ArrayList;
 
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.library.kml.feature.KmlFeature;
 import ecologylab.xml.library.kml.feature.Placemark;
 import ecologylab.xml.library.kml.style.StyleSelector;
@@ -14,13 +14,13 @@ import ecologylab.xml.library.kml.style.StyleSelector;
  * @author Zach
  * 
  */
-@xml_inherit public abstract class Container extends KmlFeature
+@simpl_inherit public abstract class Container extends KmlFeature
 {
-	@xml_collection("Placemark") ArrayList<Placemark>	placemarks;
+	@simpl_collection("Placemark") ArrayList<Placemark>	placemarks;
 
-	@xml_collection("Document") ArrayList<Document>		documents;
+	@simpl_collection("Document") ArrayList<Document>		documents;
 
-	@xml_collection("Folder") ArrayList<Folder>			folder;
+	@simpl_collection("Folder") ArrayList<Folder>			folder;
 
 	// TODO Folder, NetworkLink, PhotoOverlay, ScreenOverlay, GroundOverlay
 	/**

@@ -16,7 +16,7 @@ import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
 import ecologylab.sensor.network.wireless.data.WiFiAdapterStatus;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
@@ -30,14 +30,14 @@ import gnu.io.UnsupportedCommOperationException;
  * 
  * @author Zachary O. Toups (zach@ecologylab.net)
  */
-@xml_inherit public class WiFiGPSStatusOp extends MixedInitiativeOp implements
+@simpl_inherit public class WiFiGPSStatusOp extends MixedInitiativeOp implements
 		WiFiStringDataListener, NMEAStringListener
 {
 	/**
 	 * The status from the location system at the moment this was recorded.
 	 * Becomes frozen when the event is recorded.
 	 */
-	@xml_nested protected GPSDatum				locationStatus;
+	@simpl_composite protected GPSDatum				locationStatus;
 
 	private GPSDataUpdater							locationStatusUpdater								= null;
 
@@ -51,11 +51,11 @@ import gnu.io.UnsupportedCommOperationException;
 	 * The status from the network system at the moment this was recorded.
 	 * Becomes frozen when the event is recorded.
 	 */
-	@xml_nested protected WiFiAdapterStatus	netStatus;
+	@simpl_composite protected WiFiAdapterStatus	netStatus;
 
-	@xml_attribute protected String				utcTime;
+	@simpl_scalar protected String				utcTime;
 
-	@xml_attribute protected String				utcDate;
+	@simpl_scalar protected String				utcDate;
 
 	/**
 	 * 

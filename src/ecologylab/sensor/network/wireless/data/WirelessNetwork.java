@@ -4,20 +4,20 @@
 package ecologylab.sensor.network.wireless.data;
 
 import ecologylab.sensor.network.NetworkStatus;
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 
 /**
  * Extends Network to provide signal strength information.
  * 
  * @author Zachary O. Toups (zach@ecologylab.net)
  */
-@xml_inherit public abstract class WirelessNetwork extends NetworkStatus
+@simpl_inherit public abstract class WirelessNetwork extends NetworkStatus
 {
 	/** Signal strength to the specified wireless access point in terms of dBm. */
-	@xml_attribute @xml_tag("ss") protected int				signalStrength				= Integer.MIN_VALUE;
+	@simpl_scalar @xml_tag("ss") protected int				signalStrength				= Integer.MIN_VALUE;
 
 	/** Signal strength as percent specified by WAP manufacturer. */
-	@xml_attribute @xml_tag("ss_percent") protected int	signalStrengthPercent	= 0;
+	@simpl_scalar @xml_tag("ss_percent") protected int	signalStrengthPercent	= 0;
 
 	/**
 	 * 

@@ -3,7 +3,7 @@
  */
 package ecologylab.xml.library.kml.feature;
 
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.ElementState.xml_tag;
 import ecologylab.xml.library.kml.geometry.LineString;
 import ecologylab.xml.library.kml.geometry.Point;
@@ -13,13 +13,13 @@ import ecologylab.xml.library.kml.geometry.Polygon;
  * @author Zach
  * 
  */
-@xml_inherit @xml_tag("Placemark") public class Placemark extends KmlFeature
+@simpl_inherit @xml_tag("Placemark") public class Placemark extends KmlFeature
 {
-	@xml_nested @xml_tag("Point") Point					point			= null;
+	@simpl_composite @xml_tag("Point") Point					point			= null;
 
-	@xml_nested @xml_tag("LineString") LineString	lineString	= null;
+	@simpl_composite @xml_tag("LineString") LineString	lineString	= null;
 	
-	@xml_nested @xml_tag("Polygon") Polygon			polygon		=	null;
+	@simpl_composite @xml_tag("Polygon") Polygon			polygon		=	null;
 
 	// TODO LinearRing, Polygon, MultiGeometry, Model
 

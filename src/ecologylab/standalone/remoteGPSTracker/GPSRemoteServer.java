@@ -2,7 +2,6 @@ package ecologylab.standalone.remoteGPSTracker;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 
 import ecologylab.collections.Scope;
 import ecologylab.sensor.location.gps.listener.GPSDataLogger;

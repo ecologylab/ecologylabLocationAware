@@ -8,7 +8,6 @@ import gnu.io.UnsupportedCommOperationException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.TooManyListenersException;
 
 public class TestGPS

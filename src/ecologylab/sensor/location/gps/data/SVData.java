@@ -18,25 +18,25 @@ public class SVData extends ElementState implements Mappable<Integer>
 	private Integer				key;
 
 	/** The identification number of the satellite. */
-	@xml_attribute private int	id;
+	@simpl_scalar private int	id;
 
 	/**
 	 * The elevation from the horizon in integer degrees (0-90); -1 (null) if not
 	 * tracking.
 	 */
-	@xml_attribute private int	elevation;
+	@simpl_scalar private int	elevation;
 
 	/**
 	 * The azimuth of the satellite, measured in integer degrees from true north
 	 * (0-360); -1 (null) if not tracking.
 	 */
-	@xml_attribute private int	azimuth;
+	@simpl_scalar private int	azimuth;
 
 	/**
 	 * The signal-to-noise ratio for the satellite's signal, in db-Hz (1-99); -1
 	 * (null) if not tracking.
 	 */
-	@xml_attribute private int	snr;
+	@simpl_scalar private int	snr;
 
 	/**
 	 * No-argument constructor for automatic XML translation.

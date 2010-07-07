@@ -4,7 +4,6 @@
 package ecologylab.sensor.location;
 
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
-import ecologylab.xml.ElementState;
 
 /**
  * Represents the location data from a location sensor of some sort.
@@ -14,9 +13,9 @@ import ecologylab.xml.ElementState;
 public class LocationStatus extends GeoCoordinate
 {
 	/** TODO make this an actual date. */
-	@xml_attribute protected String				utcTime;
+	@simpl_scalar protected String				utcTime;
 
-	@xml_attribute protected String				utcDate;
+	@simpl_scalar protected String				utcDate;
 
 	/**
 	 * 

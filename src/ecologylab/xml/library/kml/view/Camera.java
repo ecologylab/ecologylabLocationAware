@@ -3,8 +3,8 @@
  */
 package ecologylab.xml.library.kml.view;
 
-import ecologylab.xml.xml_inherit;
-import ecologylab.xml.ElementState.xml_leaf;
+import ecologylab.xml.Hint;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.ElementState.xml_tag;
 
 /**
@@ -13,21 +13,21 @@ import ecologylab.xml.ElementState.xml_tag;
  * @author Zach
  * 
  */
-@xml_inherit @xml_tag("Camera") public class Camera extends AbstractView
+@simpl_inherit @xml_tag("Camera") public class Camera extends AbstractView
 {
-	@xml_leaf double									longitude;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) double									longitude;
 
-	@xml_leaf double									latitude;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) double									latitude;
 
-	@xml_leaf double									altitude;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) double									altitude;
 
-	@xml_leaf double									heading;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) double									heading;
 
-	@xml_leaf double									tilt;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) double									tilt;
 
-	@xml_leaf double									roll;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) double									roll;
 
-	@xml_leaf @xml_tag("altitudeMode") String	altitudeMode;	// enum values:
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("altitudeMode") String	altitudeMode;	// enum values:
 																				// "clampToGround",
 																				// "relativeToGround",
 																				// or "absolute"

@@ -6,7 +6,7 @@ package ecologylab.sensor.location.gps.data;
 import java.awt.geom.Point2D;
 
 import ecologylab.sensor.location.Location;
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 
 /**
  * An object for representing a set of 3d coordinates on the earth's surface:
@@ -14,16 +14,16 @@ import ecologylab.xml.xml_inherit;
  * 
  * @author Zachary O. Toups (zach@ecologylab.net)
  */
-@xml_inherit public class GeoCoordinate extends Location
+@simpl_inherit public class GeoCoordinate extends Location
 {
 	/** The latitude, expressed in degrees in double-precision degrees. */
-	@xml_attribute double	lat;
+	@simpl_scalar double	lat;
 
 	/** The longitude, expressed in degrees in double-precision degrees. */
-	@xml_attribute double	lon;
+	@simpl_scalar double	lon;
 
 	/** The altitude, expressed in meters. */
-	@xml_attribute double			alt;
+	@simpl_scalar double			alt;
 
 	/**
 	 * A Point2D.Double representation of this's latitude and longitude, instantiated and filled

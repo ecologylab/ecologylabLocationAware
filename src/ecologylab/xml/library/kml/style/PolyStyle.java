@@ -5,15 +5,17 @@ package ecologylab.xml.library.kml.style;
 
 import java.awt.Color;
 
+import ecologylab.xml.Hint;
+
 /**
  * @author Zach
  * 
  */
 public class PolyStyle extends ColorStyle
 {
-	@xml_leaf int	fill;	// boolean: 0 or 1
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) int	fill;	// boolean: 0 or 1
 
-	@xml_leaf int	outline; // boolean: 0 or 1
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) int	outline; // boolean: 0 or 1
 
 	/**
 	 * 

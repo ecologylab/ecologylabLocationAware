@@ -4,6 +4,7 @@
 package ecologylab.xml.library.kml.overlay;
 
 import ecologylab.xml.ElementState;
+import ecologylab.xml.Hint;
 
 /**
  * According to
@@ -23,31 +24,31 @@ public class ImagePyramid extends ElementState
 	 * Angle, in degrees, between the camera's viewing direction and the left
 	 * side of the view volume.
 	 */
-	@xml_leaf @xml_tag("leftFov") public int		leftFov;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("leftFov") public int		leftFov;
 
 	/**
 	 * Angle, in degrees, between the camera's viewing direction and the right
 	 * side of the view volume.
 	 */
-	@xml_leaf @xml_tag("rightFov") public int		rightFov;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("rightFov") public int		rightFov;
 
 	/**
 	 * Angle, in degrees, between the camera's viewing direction and the bottom
 	 * side of the view volume.
 	 */
-	@xml_leaf @xml_tag("bottomFov") public int	bottomFov;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("bottomFov") public int	bottomFov;
 
 	/**
 	 * Angle, in degrees, between the camera's viewing direction and the top side
 	 * of the view volume.
 	 */
-	@xml_leaf @xml_tag("topFov") public int		topFov;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("topFov") public int		topFov;
 
 	/**
 	 * Measurement in meters along the viewing direction from the camera
 	 * viewpoint to the PhotoOverlay shape.
 	 */
-	@xml_leaf @xml_tag("near") public int			near;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("near") public int			near;
 
 	/**
 	 * 

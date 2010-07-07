@@ -20,7 +20,7 @@ import ecologylab.xml.ElementState;
  */
 public abstract class KmlObject extends ElementState
 {
-	@xml_attribute String	id;
+	@simpl_scalar String	id;
 
 	/**
 	 * 

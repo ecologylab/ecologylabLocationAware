@@ -10,7 +10,7 @@ import ecologylab.sensor.network.wireless.WiFiAdapter;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
 import ecologylab.xml.ElementState;
 import ecologylab.xml.XMLTranslationException;
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 
 /**
  * Represents the current status of a WiFi adapter, including a list of
@@ -18,12 +18,12 @@ import ecologylab.xml.xml_inherit;
  * 
  * @author Zachary O. Toups (zach@ecologylab.net)
  */
-@xml_inherit public class WiFiAdapterStatus extends ElementState implements
+@simpl_inherit public class WiFiAdapterStatus extends ElementState implements
 		WiFiStringDataListener
 {
-	@xml_attribute String		currentMacAddr = WiFiAdapter.NOT_ASSOCIATED;
+	@simpl_scalar String		currentMacAddr = WiFiAdapter.NOT_ASSOCIATED;
 
-	@xml_nested WiFiSourceList	availableConnections	= new WiFiSourceList();
+	@simpl_composite WiFiSourceList	availableConnections	= new WiFiSourceList();
 
 	public WiFiAdapterStatus()
 	{
@@ -74,7 +74,7 @@ import ecologylab.xml.xml_inherit;
 		{
 			try
 			{
-				status.translateToXML(System.out);
+				status.serialize(System.out);
 				System.out.println();
 			}
 			catch (XMLTranslationException e1)

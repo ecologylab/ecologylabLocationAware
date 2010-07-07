@@ -3,7 +3,6 @@
  */
 package ecologylab.xml.types.scalar;
 
-import java.awt.Color;
 import java.lang.reflect.Field;
 
 import ecologylab.xml.ScalarUnmarshallingContext;

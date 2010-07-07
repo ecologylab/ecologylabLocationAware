@@ -22,7 +22,7 @@ import ecologylab.sensor.location.gps.data.dataset.RMC;
 import ecologylab.sensor.location.gps.data.dataset.VTG;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener.GPSUpdateInterest;
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 
 /**
  * Represents an instant of GPS data computed from a series of NMEA strings. Each component of the
@@ -32,7 +32,7 @@ import ecologylab.xml.xml_inherit;
  * @author Zachary O. Toups (zach@ecologylab.net)
  * 
  */
-@xml_inherit
+@simpl_inherit
 public class GPSDatum extends LocationStatus implements GPSConstants
 {
 	public enum DopType
@@ -43,19 +43,19 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	/**
 	 * The ground speed recorded by the gps in meters per second.
 	 */
-	@xml_attribute
+	@simpl_scalar
 	public double grndSpd = 0.0;
 	
 	/**
 	 * Quality of GPS data; values will be either GPS_QUAL_NO, GPS_QUAL_GPS, GPS_QUAL_DGPS.
 	 */
-	@xml_attribute
+	@simpl_scalar
 	public int													gpsQual;
 
 	/**
 	 * The number of satellites the GPS receiver is using to compute the solution.
 	 */
-	@xml_attribute
+	@simpl_scalar
 	public int													numSats;
 
 	/**
@@ -65,47 +65,47 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 * 
 	 * See http://www.codepedia.com/1/Geometric+Dilution+of+Precision+(DOP) for more information.
 	 */
-	@xml_attribute
+	@simpl_scalar
 	public float												hdop;
 
 	/** Position Dillution of Precision */
-	@xml_attribute
+	@simpl_scalar
 	public float												pdop;
 
 	/** Vertical Dillution of Precision */
-	@xml_attribute
+	@simpl_scalar
 	public float												vdop;
 
 	/**
 	 * The altitude of the antenna of the GPS (location where the signals are recieved). In meters.
 	 */
-	@xml_attribute
+	@simpl_scalar
 	protected float											geoidHeight;
 
 	/** The differential between the elipsoid and the geoid. In meters. */
-	@xml_attribute
+	@simpl_scalar
 	protected float											heightDiff;
 
-	@xml_attribute
+	@simpl_scalar
 	protected float											dgpsAge;
 
-	@xml_attribute
+	@simpl_scalar
 	protected int												dgpsRefStation;
 
 	/** Indicates whether or not the current GPS data is valid. */
-	@xml_attribute
+	@simpl_scalar
 	protected boolean										dataValid;
 
 	/**
 	 * Indicates whether or not the calculation mode (2D/3D) is automatically selected.
 	 */
-	@xml_attribute
+	@simpl_scalar
 	protected boolean										autoCalcMode;
 
 	/**
 	 * Calculating mode (2D/3D); valid values are CALC_MODE_NONE, CALC_MODE_2D, or CALC_MODE_3D.
 	 */
-	@xml_attribute
+	@simpl_scalar
 	protected int												calcMode;
 
 	/**
@@ -119,7 +119,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	/**
 	 * References to data about the currently-tracked satellites (space vehicles, SVs).
 	 */
-	@xml_nested
+	@simpl_composite
 	private SVData[]										trackedSVs;
 
 	private Calendar										utcTime = Calendar.getInstance();

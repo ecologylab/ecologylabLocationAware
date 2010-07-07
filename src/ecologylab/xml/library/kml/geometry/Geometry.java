@@ -3,17 +3,18 @@
  */
 package ecologylab.xml.library.kml.geometry;
 
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.Hint;
+import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.library.kml.KmlObject;
 
 /**
  * @author Zach
  *
  */
-@xml_inherit
+@simpl_inherit
 public abstract class Geometry extends KmlObject
 {
-	@xml_leaf protected Coordinates	coordinates	= new Coordinates();
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) protected Coordinates	coordinates	= new Coordinates();
 
 	/**
 	 * 

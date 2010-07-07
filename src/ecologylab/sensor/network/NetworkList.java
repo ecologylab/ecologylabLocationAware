@@ -5,11 +5,10 @@ package ecologylab.sensor.network;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Set;
 
 import ecologylab.generic.ResourcePool;
 import ecologylab.xml.ElementState;
-import ecologylab.xml.xml_inherit;
+import ecologylab.xml.simpl_inherit;
 
 /**
  * A moment of data on wifi status objects, which are hashed according to MAC address.
@@ -21,11 +20,11 @@ import ecologylab.xml.xml_inherit;
  * 
  * @author Zachary O. Toups (zach@ecologylab.net)
  */
-@xml_inherit
+@simpl_inherit
 public abstract class NetworkList<NET extends NetworkStatus> extends ElementState
 {
-	@xml_collection
-	@xml_nowrap
+	@simpl_collection
+	@simpl_nowrap
 	protected HashMap<String, NET>	netList;
 
 	/**
