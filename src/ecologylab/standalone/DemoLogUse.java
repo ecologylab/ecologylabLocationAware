@@ -38,8 +38,7 @@ public class DemoLogUse
 				"gps wifi log translations", spacesToCompose);
 
 		// translate the file from XML into a Logging of type WiFiGPSStatusOp
-		Logging<WiFiGPSStatusOp> ops = (Logging<WiFiGPSStatusOp>) TranslationScope
-				.translateFromXML(f, translations);
+		Logging<WiFiGPSStatusOp> ops = (Logging<WiFiGPSStatusOp>) translations.deserialize(f);
 
 		// extract the sequence of operations
 		List<WiFiGPSStatusOp> opSeq = ops.getOpSequence();

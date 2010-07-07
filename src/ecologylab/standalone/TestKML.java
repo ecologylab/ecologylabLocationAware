@@ -35,7 +35,7 @@ public class TestKML
 	 */
 	public static void main(String[] args) throws SIMPLTranslationException
 	{
-		ElementState k =  TranslationScope.translateFromXMLCharSequence(someKml, KMLTranslations.get());
+		ElementState k =  KMLTranslations.get().deserializeCharSequence(someKml);
 		
 		k.serialize(System.out);
 	}

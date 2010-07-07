@@ -97,7 +97,7 @@ public class KmlServer extends HttpGetServer
 	{
 		TranslationScope serverTranslations = DefaultServicesTranslations.get();
 
-		Kml kmlData = (Kml) TranslationScope.translateFromXMLCharSequence(someKml, KMLTranslations.get());
+		Kml kmlData = (Kml) KMLTranslations.get().deserializeCharSequence(someKml);
 
 		KmlServer s = new KmlServer(8080, NetTools.getAllInetAddressesForLocalhost(),
 				serverTranslations, new Scope(), 1000000, 1000000, kmlData);
