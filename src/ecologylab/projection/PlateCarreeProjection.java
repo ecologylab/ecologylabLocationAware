@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
-import ecologylab.xml.XMLTranslationException;
+import ecologylab.xml.SIMPLTranslationException;
 
 /**
  * A plate carree projection directly maps X coordinates to longitude and Y coordinates to latitude.
@@ -112,7 +112,7 @@ public class PlateCarreeProjection extends Projection
 			{
 				System.out.println(d.serialize());
 			}
-			catch (XMLTranslationException e)
+			catch (SIMPLTranslationException e)
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();

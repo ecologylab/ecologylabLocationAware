@@ -29,7 +29,7 @@ import ecologylab.sensor.location.gps.gui.GPSController;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
 import ecologylab.xml.TranslationScope;
-import ecologylab.xml.XMLTranslationException;
+import ecologylab.xml.SIMPLTranslationException;
 import ecologylab.xml.library.geom.Rectangle2DDoubleState;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
@@ -61,11 +61,11 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 
 	/**
 	 * @param applicationName
-	 * @throws XMLTranslationException
+	 * @throws SIMPLTranslationException
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public ProjectionVisualizer(String applicationName) throws XMLTranslationException,
+	public ProjectionVisualizer(String applicationName) throws SIMPLTranslationException,
 			NoSuchPortException, IOException
 	{
 		super(applicationName);
@@ -75,15 +75,15 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 
 	/**
 	 * @param applicationName
-	 * @param translationSpace
+	 * @param translationScope
 	 * @param args
 	 * @param prefsAssetVersion
-	 * @throws XMLTranslationException
+	 * @throws SIMPLTranslationException
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
 	public ProjectionVisualizer(String applicationName, TranslationScope translationScope,
-			String[] args, float prefsAssetVersion) throws XMLTranslationException, NoSuchPortException,
+			String[] args, float prefsAssetVersion) throws SIMPLTranslationException, NoSuchPortException,
 			IOException
 	{
 		super(applicationName, translationScope, (TranslationScope) null, args, prefsAssetVersion);
@@ -94,12 +94,12 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	/**
 	 * @param applicationName
 	 * @param args
-	 * @throws XMLTranslationException
+	 * @throws SIMPLTranslationException
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
 	public ProjectionVisualizer(String applicationName, String[] args)
-			throws XMLTranslationException, NoSuchPortException, IOException
+			throws SIMPLTranslationException, NoSuchPortException, IOException
 	{
 		super(applicationName, args);
 
@@ -110,12 +110,12 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	 * @param baseClass
 	 * @param applicationName
 	 * @param args
-	 * @throws XMLTranslationException
+	 * @throws SIMPLTranslationException
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
 	public ProjectionVisualizer(Class baseClass, String applicationName, String[] args)
-			throws XMLTranslationException, NoSuchPortException, IOException
+			throws SIMPLTranslationException, NoSuchPortException, IOException
 	{
 		super(baseClass, applicationName, args);
 
@@ -125,18 +125,18 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 	/**
 	 * @param baseClass
 	 * @param applicationName
-	 * @param translationSpace
+	 * @param translationScope
 	 * @param args
 	 * @param prefsAssetVersion
-	 * @throws XMLTranslationException
+	 * @throws SIMPLTranslationException
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
 	public ProjectionVisualizer(Class baseClass, String applicationName,
-			TranslationScope translationSpace, String[] args, float prefsAssetVersion)
-			throws XMLTranslationException, NoSuchPortException, IOException
+			TranslationScope translationScope, String[] args, float prefsAssetVersion)
+			throws SIMPLTranslationException, NoSuchPortException, IOException
 	{
-		super(baseClass, applicationName, translationSpace, args, prefsAssetVersion);
+		super(baseClass, applicationName, translationScope, args, prefsAssetVersion);
 
 		configure();
 	}
@@ -214,11 +214,11 @@ public class ProjectionVisualizer extends ApplicationEnvironment implements GPSD
 
 	/**
 	 * @param args
-	 * @throws XMLTranslationException
+	 * @throws SIMPLTranslationException
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public static void main(String[] args) throws XMLTranslationException, NoSuchPortException,
+	public static void main(String[] args) throws SIMPLTranslationException, NoSuchPortException,
 			IOException
 	{
 		new ProjectionVisualizer("Projection Visualizer");

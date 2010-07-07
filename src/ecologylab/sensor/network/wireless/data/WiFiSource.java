@@ -3,7 +3,7 @@
  */
 package ecologylab.sensor.network.wireless.data;
 
-import ecologylab.xml.XMLTranslationException;
+import ecologylab.xml.SIMPLTranslationException;
 import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.types.element.Mappable;
 
@@ -91,7 +91,7 @@ import ecologylab.xml.types.element.Mappable;
 		this.security = data[6];
 	}
 
-	public static void main(String[] args) throws XMLTranslationException
+	public static void main(String[] args) throws SIMPLTranslationException
 	{
 		WiFiSource w = new WiFiSource();
 

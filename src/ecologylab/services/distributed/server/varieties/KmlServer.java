@@ -17,7 +17,7 @@ import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
 import ecologylab.xml.ElementState;
 import ecologylab.xml.TranslationScope;
-import ecologylab.xml.XMLTranslationException;
+import ecologylab.xml.SIMPLTranslationException;
 import ecologylab.xml.library.kml.KMLTranslations;
 import ecologylab.xml.library.kml.Kml;
 
@@ -92,9 +92,9 @@ public class KmlServer extends HttpGetServer
 	 * @param args
 	 * @throws IOException
 	 * @throws BindException
-	 * @throws XMLTranslationException
+	 * @throws SIMPLTranslationException
 	 */
-	public static void main(String[] args) throws BindException, IOException, XMLTranslationException
+	public static void main(String[] args) throws BindException, IOException, SIMPLTranslationException
 	{
 		TranslationScope serverTranslations = DefaultServicesTranslations.get();
 
@@ -108,9 +108,9 @@ public class KmlServer extends HttpGetServer
 
 	@Override
 	protected HTTPGetClientSessionManager generateContextManager(String token, SelectionKey sk,
-			TranslationScope translationSpaceIn, Scope registryIn)
+			TranslationScope translationScopeIn, Scope registryIn)
 	{
 		return new KMLGetClientSessionManager(token, this.maxMessageSize, this.getBackend(), this, sk,
-				translationSpaceIn, registryIn);
+				translationScopeIn, registryIn);
 	}
 }

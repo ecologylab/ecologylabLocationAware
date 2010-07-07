@@ -12,7 +12,7 @@ import ecologylab.services.logging.WiFiGPSStatusOp;
 import ecologylab.services.logging.translationScope.LoggingTranslationsProvider;
 import ecologylab.xml.ElementState;
 import ecologylab.xml.TranslationScope;
-import ecologylab.xml.XMLTranslationException;
+import ecologylab.xml.SIMPLTranslationException;
 
 /**
  * Demonstrates how to load log data, and how to access it.
@@ -24,9 +24,9 @@ public class DemoLogUse
 
 	/**
 	 * @param args
-	 * @throws XMLTranslationException
+	 * @throws SIMPLTranslationException
 	 */
-	public static void main(String[] args) throws XMLTranslationException
+	public static void main(String[] args) throws SIMPLTranslationException
 	{
 		// create a new file from the argument to the application
 		File f = new File(args[0]);

@@ -9,7 +9,7 @@ import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
 import ecologylab.sensor.network.wireless.WiFiAdapter;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
 import ecologylab.xml.ElementState;
-import ecologylab.xml.XMLTranslationException;
+import ecologylab.xml.SIMPLTranslationException;
 import ecologylab.xml.simpl_inherit;
 
 /**
@@ -77,7 +77,7 @@ import ecologylab.xml.simpl_inherit;
 				status.serialize(System.out);
 				System.out.println();
 			}
-			catch (XMLTranslationException e1)
+			catch (SIMPLTranslationException e1)
 			{
 				e1.printStackTrace();
 			}

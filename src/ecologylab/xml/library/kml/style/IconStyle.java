@@ -6,7 +6,7 @@ package ecologylab.xml.library.kml.style;
 import java.awt.Color;
 
 import ecologylab.xml.Hint;
-import ecologylab.xml.XMLTranslationException;
+import ecologylab.xml.SIMPLTranslationException;
 import ecologylab.xml.simpl_inherit;
 import ecologylab.xml.library.kml.overlay.Vec2;
 
@@ -93,9 +93,9 @@ import ecologylab.xml.library.kml.overlay.Vec2;
 	 * </IconStyle> </Style>
 	 * 
 	 * @param args
-	 * @throws XMLTranslationException 
+	 * @throws SIMPLTranslationException 
 	 */
-	public static void main(String args[]) throws XMLTranslationException
+	public static void main(String args[]) throws SIMPLTranslationException
 	{
 		IconStyle iS = new IconStyle(null,
 				"http://maps.google.com/mapfiles/kml/pal3/icon21.png", 1.1f, 0f,

@@ -40,7 +40,7 @@ import ecologylab.services.logging.Logging;
 import ecologylab.services.logging.WiFiGPSStatusOp;
 import ecologylab.services.messages.DefaultServicesTranslations;
 import ecologylab.xml.TranslationScope;
-import ecologylab.xml.XMLTranslationException;
+import ecologylab.xml.SIMPLTranslationException;
 import ecologylab.xml.library.geom.Rectangle2DDoubleState;
 import ecologylab.xml.library.kml.Kml;
 import gnu.io.CommPortIdentifier;
@@ -92,11 +92,11 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 
 	/**
 	 * @param applicationName
-	 * @throws XMLTranslationException
+	 * @throws SIMPLTranslationException
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public WiFiGPSControls(String applicationName) throws XMLTranslationException,
+	public WiFiGPSControls(String applicationName) throws SIMPLTranslationException,
 			NoSuchPortException, IOException
 	{
 		super(applicationName);
@@ -106,15 +106,15 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 
 	/**
 	 * @param applicationName
-	 * @param translationSpace
+	 * @param translationScope
 	 * @param args
 	 * @param prefsAssetVersion
-	 * @throws XMLTranslationException
+	 * @throws SIMPLTranslationException
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
 	public WiFiGPSControls(String applicationName, TranslationScope translationScope, String[] args,
-			float prefsAssetVersion) throws XMLTranslationException, NoSuchPortException, IOException
+			float prefsAssetVersion) throws SIMPLTranslationException, NoSuchPortException, IOException
 	{
 		super(applicationName, translationScope, (TranslationScope) null, args, prefsAssetVersion);
 
@@ -124,11 +124,11 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 	/**
 	 * @param applicationName
 	 * @param args
-	 * @throws XMLTranslationException
+	 * @throws SIMPLTranslationException
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public WiFiGPSControls(String applicationName, String[] args) throws XMLTranslationException,
+	public WiFiGPSControls(String applicationName, String[] args) throws SIMPLTranslationException,
 			NoSuchPortException, IOException
 	{
 		super(applicationName, args);
@@ -140,12 +140,12 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 	 * @param baseClass
 	 * @param applicationName
 	 * @param args
-	 * @throws XMLTranslationException
+	 * @throws SIMPLTranslationException
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
 	public WiFiGPSControls(Class baseClass, String applicationName, String[] args)
-			throws XMLTranslationException, NoSuchPortException, IOException
+			throws SIMPLTranslationException, NoSuchPortException, IOException
 	{
 		super(baseClass, applicationName, args);
 
@@ -155,18 +155,18 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 	/**
 	 * @param baseClass
 	 * @param applicationName
-	 * @param translationSpace
+	 * @param translationScope
 	 * @param args
 	 * @param prefsAssetVersion
-	 * @throws XMLTranslationException
+	 * @throws SIMPLTranslationException
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
 	public WiFiGPSControls(Class baseClass, String applicationName,
-			TranslationScope translationSpace, String[] args, float prefsAssetVersion)
-			throws XMLTranslationException, NoSuchPortException, IOException
+			TranslationScope translationScope, String[] args, float prefsAssetVersion)
+			throws SIMPLTranslationException, NoSuchPortException, IOException
 	{
-		super(baseClass, applicationName, translationSpace, args, prefsAssetVersion);
+		super(baseClass, applicationName, translationScope, args, prefsAssetVersion);
 
 		configure();
 	}
@@ -293,11 +293,11 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 
 	/**
 	 * @param args
-	 * @throws XMLTranslationException
+	 * @throws SIMPLTranslationException
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public static void main(String[] args) throws XMLTranslationException, NoSuchPortException,
+	public static void main(String[] args) throws SIMPLTranslationException, NoSuchPortException,
 			IOException
 	{
 		new WiFiGPSControls("Control Panel");

@@ -15,7 +15,7 @@ import ecologylab.services.messages.KmlResponse;
 import ecologylab.services.messages.RequestMessage;
 import ecologylab.services.messages.ResponseMessage;
 import ecologylab.xml.TranslationScope;
-import ecologylab.xml.XMLTranslationException;
+import ecologylab.xml.SIMPLTranslationException;
 
 /**
  * This client manager simply serves whatever object is located at KML_DATA in the ObjectRegistry.
@@ -31,14 +31,14 @@ public class KMLGetClientSessionManager extends HTTPGetClientSessionManager
 	 * @param server
 	 * @param frontend
 	 * @param socketKey
-	 * @param translationSpace
+	 * @param translationScope
 	 * @param registry
 	 */
 	public KMLGetClientSessionManager(String token, int maxPacketSize, NIOServerIOThread server,
-			NIOServerProcessor frontend, SelectionKey socketKey, TranslationScope translationSpace,
+			NIOServerProcessor frontend, SelectionKey socketKey, TranslationScope translationScope,
 			Scope<?> registry)
 	{
-		super(token, maxPacketSize, server, frontend, socketKey, translationSpace, registry);
+		super(token, maxPacketSize, server, frontend, socketKey, translationScope, registry);
 
 		this.initialized = true;
 	}
@@ -46,7 +46,7 @@ public class KMLGetClientSessionManager extends HTTPGetClientSessionManager
 	@Override
 	protected void translateResponseMessageToStringBufferContents(RequestMessage requestMessage,
 			ResponseMessage responseMessage, StringBuilder outgoingMessageBuf)
-			throws XMLTranslationException
+			throws SIMPLTranslationException
 	{
 		outgoingMessageBuf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
 		((KmlResponse) responseMessage).getKml().serialize(outgoingMessageBuf);
@@ -55,7 +55,7 @@ public class KMLGetClientSessionManager extends HTTPGetClientSessionManager
 
 	@Override
 	protected RequestMessage translateStringToRequestMessage(CharSequence messageSequence)
-			throws XMLTranslationException, UnsupportedEncodingException
+			throws SIMPLTranslationException, UnsupportedEncodingException
 	{
 		return KmlRequest.STATIC_INSTANCE;
 	}
