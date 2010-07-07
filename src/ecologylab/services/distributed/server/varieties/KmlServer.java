@@ -15,7 +15,6 @@ import ecologylab.services.distributed.server.contextmanager.KMLGetClientSession
 import ecologylab.services.messages.DefaultServicesTranslations;
 import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
-import ecologylab.xml.ElementState;
 import ecologylab.xml.TranslationScope;
 import ecologylab.xml.SIMPLTranslationException;
 import ecologylab.xml.library.kml.KMLTranslations;
@@ -98,7 +97,7 @@ public class KmlServer extends HttpGetServer
 	{
 		TranslationScope serverTranslations = DefaultServicesTranslations.get();
 
-		Kml kmlData = (Kml) ElementState.translateFromXMLCharSequence(someKml, KMLTranslations.get());
+		Kml kmlData = (Kml) TranslationScope.translateFromXMLCharSequence(someKml, KMLTranslations.get());
 
 		KmlServer s = new KmlServer(8080, NetTools.getAllInetAddressesForLocalhost(),
 				serverTranslations, new Scope(), 1000000, 1000000, kmlData);

@@ -10,7 +10,6 @@ import ecologylab.sensor.BaseSensorTranslations;
 import ecologylab.services.logging.Logging;
 import ecologylab.services.logging.WiFiGPSStatusOp;
 import ecologylab.services.logging.translationScope.LoggingTranslationsProvider;
-import ecologylab.xml.ElementState;
 import ecologylab.xml.TranslationScope;
 import ecologylab.xml.SIMPLTranslationException;
 
@@ -39,7 +38,7 @@ public class DemoLogUse
 				"gps wifi log translations", spacesToCompose);
 
 		// translate the file from XML into a Logging of type WiFiGPSStatusOp
-		Logging<WiFiGPSStatusOp> ops = (Logging<WiFiGPSStatusOp>) ElementState
+		Logging<WiFiGPSStatusOp> ops = (Logging<WiFiGPSStatusOp>) TranslationScope
 				.translateFromXML(f, translations);
 
 		// extract the sequence of operations

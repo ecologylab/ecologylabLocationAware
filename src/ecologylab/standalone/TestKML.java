@@ -5,6 +5,7 @@ package ecologylab.standalone;
 
 import ecologylab.xml.ElementState;
 import ecologylab.xml.SIMPLTranslationException;
+import ecologylab.xml.TranslationScope;
 import ecologylab.xml.library.kml.KMLTranslations;
 
 /**
@@ -34,7 +35,7 @@ public class TestKML
 	 */
 	public static void main(String[] args) throws SIMPLTranslationException
 	{
-		ElementState k =  ElementState.translateFromXMLCharSequence(someKml, KMLTranslations.get());
+		ElementState k =  TranslationScope.translateFromXMLCharSequence(someKml, KMLTranslations.get());
 		
 		k.serialize(System.out);
 	}
