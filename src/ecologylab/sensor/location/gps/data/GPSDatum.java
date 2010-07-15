@@ -4,6 +4,7 @@
 package ecologylab.sensor.location.gps.data;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -119,8 +120,8 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	/**
 	 * References to data about the currently-tracked satellites (space vehicles, SVs).
 	 */
-	@simpl_composite
-	private SVData[]										trackedSVs;
+	@simpl_collection("sv")
+	private ArrayList<SVData>										trackedSVs;
 
 	private Calendar										utcTime = Calendar.getInstance();
 	
@@ -627,8 +628,13 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 			allSVsLocal.put(index, currentData);
 		}
 
-		SVData[] trackedSVsLocal = this.trackedSVs();
-		trackedSVsLocal[i] = currentData;
+	  ArrayList<SVData> trackedSVsLocal = this.trackedSVs();
+	  while(trackedSVsLocal.size() <= i)
+	  {
+	  	trackedSVsLocal.add(null);
+	  }
+	  
+		trackedSVsLocal.set(i, currentData);
 	}
 
 	/**
@@ -782,11 +788,11 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 		return this.allSVs;
 	}
 
-	protected SVData[] trackedSVs()
+	protected ArrayList<SVData> trackedSVs()
 	{
 		if (this.trackedSVs == null)
 		{
-			this.trackedSVs = new SVData[12];
+			this.trackedSVs = new ArrayList<SVData>(12);
 		}
 
 		return this.trackedSVs;
@@ -933,7 +939,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	/**
 	 * @return the trackedSVs
 	 */
-	public SVData[] getTrackedSVs()
+	public ArrayList<SVData> getTrackedSVs()
 	{
 		return trackedSVs;
 	}

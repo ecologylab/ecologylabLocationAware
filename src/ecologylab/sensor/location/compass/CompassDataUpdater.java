@@ -6,13 +6,7 @@ import ecologylab.sensor.location.NMEAStringListener;
 
 public class CompassDataUpdater implements NMEAStringListener
 {
-	private float heading 					= 0;
-	
-	private float pitch 						= 0;
-	
-	private float roll						= 0;
-	
-	private float temp 						= 0;
+	private CompassDatum cData = new CompassDatum(0,0,0,0);
 
 	private char[]	tempDataStore;
 	
@@ -28,14 +22,14 @@ public class CompassDataUpdater implements NMEAStringListener
 			int tIndex = gpsDataString.indexOf('T');
 			int asteriskIndex = gpsDataString.indexOf('*');
 			
-			heading = Float.parseFloat(gpsDataString.substring(cIndex +  1, pIndex));
-			pitch = Float.parseFloat(gpsDataString.substring(pIndex +  1, rIndex));;
-			roll = Float.parseFloat(gpsDataString.substring(rIndex +  1, tIndex));
-			temp = Float.parseFloat(gpsDataString.substring(tIndex + 1, asteriskIndex));
+			cData.setHeading(Float.parseFloat(gpsDataString.substring(cIndex +  1, pIndex)));
+			cData.setPitch(Float.parseFloat(gpsDataString.substring(pIndex +  1, rIndex)));
+			cData.setRoll(Float.parseFloat(gpsDataString.substring(rIndex +  1, tIndex)));
+			cData.setTemp(Float.parseFloat(gpsDataString.substring(tIndex + 1, asteriskIndex)));
 			
 			for(CompassDataListener listener:listeners)
 			{
-				listener.compassDataUpdated(heading, pitch, roll, temp);
+				listener.compassDataUpdated(cData);
 			}
 		}
 	}
