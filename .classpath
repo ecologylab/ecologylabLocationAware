@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="lib/jenie.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ecologylabGraphics"/>
 	<classpathentry kind="lib" path="lib/RXTXcomm.jar"/>
-	<classpathentry kind="lib" path="mExifer.jar"/>
+	<classpathentry kind="lib" path="lib/mExifer.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
