@@ -48,4 +48,20 @@ public abstract class AngularCoord extends ElementState
 			return Math.abs(origCoord);
 		}
 	}
+	
+	public static char characterForSignLat(double coord)
+	{
+		if(coord < 0)
+			return 'S';
+		else
+			return 'N';
+	}
+	
+	public static char characterForSignLon(double coord)
+	{
+		if(coord < 0)
+			return 'W';
+		else
+			return 'E';
+	}
 }

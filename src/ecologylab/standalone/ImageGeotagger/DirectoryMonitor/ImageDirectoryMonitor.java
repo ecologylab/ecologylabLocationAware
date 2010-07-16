@@ -9,7 +9,7 @@ import java.util.Set;
 import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion.Static;
 
 import ecologylab.generic.StartAndStoppable;
-import ecologylab.standalone.ImageGeotagger.ImageProcessor.ImageProcessor;
+import ecologylab.standalone.ImageGeotagger.ImageProcessor;
 
 public class ImageDirectoryMonitor implements Runnable, StartAndStoppable
 {
@@ -122,7 +122,7 @@ public class ImageDirectoryMonitor implements Runnable, StartAndStoppable
 
 	private void processFile(File file)
 	{
-		ImageProcessor processor = new ImageProcessor(file);
+		ImageProcessor processor = new ImageProcessor(file, null, null);
 		
 		processor.processImage();
 	}
