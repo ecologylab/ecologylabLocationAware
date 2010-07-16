@@ -30,14 +30,8 @@ import org.apache.sanselan.formats.tiff.write.TiffOutputDirectory;
 import org.apache.sanselan.formats.tiff.write.TiffOutputField;
 import org.apache.sanselan.formats.tiff.write.TiffOutputSet;
 
-import de.micasa.image.ifd.IFDReader;
-import de.micasa.image.ifd.IFDTag;
-import de.micasa.image.ifd.IFDWriter;
-import de.micasa.image.ifd.ImageFileDirectory;
-
 import ecologylab.oodss.logging.playback.ExtensionFilter;
 import ecologylab.sensor.location.compass.CompassDatum;
-import ecologylab.sensor.location.gps.data.AngularCoord;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 
 public class ImageProcessor implements Runnable {
