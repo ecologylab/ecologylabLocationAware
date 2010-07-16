@@ -1,0 +1,7 @@
+<pref_set>
+  <pref_string name="GPS_PORT" value="COM40" />
+  <pref_string name="COMPASS_PORT" value="COM6" />
+  <pref_int name="GPS_BAUD" value ="9600" />
+  <pref_int name="COMPASS_BAUD" value = "9600" />
+  <pref_int name="SERVICE_PORT" value = "8080" />
+</pref_set>
