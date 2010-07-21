@@ -164,9 +164,9 @@ public class Coordinates extends ElementState
 	 * coordinateList; called automatically immediately after translating FROM
 	 * KML.
 	 */
-	@Override protected void postTranslationProcessingHook()
+	@Override protected void postDeserializationHook()
 	{
-		super.postTranslationProcessingHook();
+		super.postDeserializationHook();
 
 		this.appendStringRepresentation(this.getCoords());
 	}
@@ -175,9 +175,9 @@ public class Coordinates extends ElementState
 	 * Loads coords with the current values from coordinateList; called
 	 * automatically immediately before translating this TO KML.
 	 */
-	@Override protected void preTranslationProcessingHook()
+	@Override protected void preSerializationHook()
 	{
-		super.preTranslationProcessingHook();
+		super.preSerializationHook();
 
 		this.loadCoordsFromCoordinateList();
 	}
