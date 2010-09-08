@@ -23,26 +23,26 @@ public class GeoServer extends DoubleThreadedNIOServer implements LocationUpdate
 	private CompassDatum compassData = new CompassDatum();
 	
 	public static final String GPS_DATUM = "GPS_DATUM";
-	private GPSDatum GPSData = new GPSDatum();
+	private GPSDatum gpsData = new GPSDatum();
 	
 	private static EnumSet<GPSUpdateInterest> interestSet;
 	
 	public static Class[] LOCATION_MESSAGE_CLASSES = {LocationDataRequest.class, LocationDataResponse.class};
 	
 	public GeoServer(int portNumber, Scope objectRegistry,
-			boolean useCompression, GPSDatum gData, CompassDatum cData) throws BindException, IOException
+			boolean useCompression) throws BindException, IOException
 	{
 		
 		super(portNumber, LocationTranslations.get(),
 				objectRegistry);
 
-		objectRegistry.put(GPS_DATUM, gData);
+		this.gpsData = new GPSDatum();
 
-		objectRegistry.put(COMPASS_DATUM, cData);
+		this.compassData = new CompassDatum(0,0,0,0);
+		
+		objectRegistry.put(GPS_DATUM, this.gpsData);
 
-		this.GPSData = gData;
-
-		this.compassData = cData;
+		objectRegistry.put(COMPASS_DATUM, this.compassData);
 	}
 
 	@Override
@@ -60,13 +60,21 @@ public class GeoServer extends DoubleThreadedNIOServer implements LocationUpdate
 	@Override
 	public void gpsDatumUpdated(GPSDatum datum)
 	{
-		/* Should be using the same gps data */
+		if(this.gpsData != datum)
+		{
+			this.gpsData = datum;
+			this.applicationObjectScope.put(GPS_DATUM, this.gpsData);
+		}
 	}
 
 	@Override
 	public void compassDataUpdated(CompassDatum data)
 	{
-		this.compassData.conformTo(data);
+		if(this.compassData != data)
+		{
+			this.compassData = data;
+			this.applicationObjectScope.put(COMPASS_DATUM, this.compassData);
+		}
 	}
 
 }

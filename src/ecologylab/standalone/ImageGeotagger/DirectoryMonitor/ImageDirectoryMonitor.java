@@ -9,6 +9,7 @@ import java.util.Set;
 import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion.Static;
 
 import ecologylab.generic.StartAndStoppable;
+import ecologylab.standalone.GeoClient;
 import ecologylab.standalone.ImageGeotagger.ImageProcessor;
 
 public class ImageDirectoryMonitor implements Runnable, StartAndStoppable
@@ -22,6 +23,14 @@ public class ImageDirectoryMonitor implements Runnable, StartAndStoppable
 		{
 			if(name.length() >= 4)
 			{
+				if(name.length() >= 5)
+				{
+					String extension5 = name.substring(name.length()-5, name.length());
+					if(extension5.equalsIgnoreCase(".jpeg"))
+					{
+						return true;
+					}
+				}
 				String extension = name.substring(name.length()-4, name.length());
 				return extension.equalsIgnoreCase(".jpg");
 			}
@@ -31,6 +40,8 @@ public class ImageDirectoryMonitor implements Runnable, StartAndStoppable
 	}
 	
 	private File directoryToMonitor;
+	
+	private GeoClient client;
 	
 	/**
 	 * Interval at which the directory is polled for new files.
@@ -45,7 +56,7 @@ public class ImageDirectoryMonitor implements Runnable, StartAndStoppable
 	
 	private boolean running = false;
 	
-	public ImageDirectoryMonitor(File directory) throws Exception
+	public ImageDirectoryMonitor(File directory, GeoClient client) throws Exception
 	{
 		if(!directory.isDirectory())
 		{
@@ -55,6 +66,8 @@ public class ImageDirectoryMonitor implements Runnable, StartAndStoppable
 		this.directoryToMonitor = directory;
 		
 		seedProcessedFiles();
+		
+		this.client = client;
 	}
 
 	private void seedProcessedFiles()
@@ -83,7 +96,7 @@ public class ImageDirectoryMonitor implements Runnable, StartAndStoppable
 					newFiles.add(file);
 				}
 			}
-			
+						
 			if(!newFiles.isEmpty())
 			{
 				return newFiles;
@@ -122,7 +135,7 @@ public class ImageDirectoryMonitor implements Runnable, StartAndStoppable
 
 	private void processFile(File file)
 	{
-		ImageProcessor processor = new ImageProcessor(file, null, null);
+		ImageProcessor processor = new ImageProcessor(file, client);
 		
 		processor.processImage();
 	}

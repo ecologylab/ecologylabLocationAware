@@ -33,20 +33,29 @@ import org.apache.sanselan.formats.tiff.write.TiffOutputSet;
 import ecologylab.oodss.logging.playback.ExtensionFilter;
 import ecologylab.sensor.location.compass.CompassDatum;
 import ecologylab.sensor.location.gps.data.GPSDatum;
+import ecologylab.services.messages.LocationDataResponse;
+import ecologylab.standalone.GeoClient;
 
 public class ImageProcessor implements Runnable {
 	protected File imageFile;
 	private Thread t;
 
+	private GeoClient client;
 	private GPSDatum gpsData;
-	private CompassDatum cData;
+	private CompassDatum compassData;
 
-	public ImageProcessor(File image, GPSDatum gData, CompassDatum cData) {
+	public ImageProcessor(File image, GeoClient client) {
 		this.imageFile = image;
-		gpsData = gData;
-		this.cData = cData;
+		this.client = client;
 	}
 
+	public ImageProcessor(File image, GPSDatum gpsData, CompassDatum compassData)
+	{
+		this.imageFile = image;
+		this.gpsData = gpsData;
+		this.compassData = compassData;
+	}
+	
 	public void processImage() {
 		t = new Thread(this);
 		t.start();
@@ -56,9 +65,26 @@ public class ImageProcessor implements Runnable {
 	public void run() {
 		System.out.println("Processing file: " + imageFile.getName());
 
+		if (client != null)
+		{
+			System.out.println("Getting location from service.");
+			if (client.connected())
+			{
+				LocationDataResponse locationData = client.updateLocation();
+				gpsData = locationData.gpsData;
+				compassData = locationData.compassData;
+			}
+			else
+			{
+				System.out.println("Client isn't connected!");
+				return;
+			}
+		}
+		
 		/* Read metadata from image file */
 		IImageMetadata metadata = null;
 
+		/* Initialize metadata from existing image metadata */
 		try {
 			metadata = Sanselan.getMetadata(imageFile);
 		} catch (ImageReadException e) {
@@ -87,10 +113,17 @@ public class ImageProcessor implements Runnable {
 			return;
 		}
 
+		/* Write location metadata to the existing metadata */
 		if (outputSet != null) {
 			try {
-				outputSet.setGPSInDegrees(gpsData.getLon(), gpsData.getLat());
-				setCompassData(outputSet);
+				if(gpsData != null)
+				{
+					outputSet.setGPSInDegrees(gpsData.getLon(), gpsData.getLat());
+				}
+				if(compassData != null)
+				{
+					setCompassData(outputSet);
+				}
 			} catch (ImageWriteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -112,8 +145,7 @@ public class ImageProcessor implements Runnable {
 			return;
 		}
 
-		// write/update EXIF metadata to output stream
-
+		// write/update EXIF metadata to output stream of temp file
 		try {
 			new ExifRewriter().updateExifMetadataLossless(imageFile, os,
 					outputSet);
@@ -138,7 +170,7 @@ public class ImageProcessor implements Runnable {
 			}
 		}
 
-		// finally copy the temp to original
+		// finally copy the temp file to original
 		try {
 			copyFile(dst, imageFile);
 		} catch (IOException e) {
@@ -152,7 +184,7 @@ public class ImageProcessor implements Runnable {
 
 		/* create heading data */
 		ByteBuffer rationalBuffer = ByteBuffer.allocate(8);
-		rationalBuffer.put(intToUnsignedByteArray((long) (cData
+		rationalBuffer.put(intToUnsignedByteArray((long) (compassData
 				.getHeading() * 100)));
 		rationalBuffer.put(intToUnsignedByteArray(100));
 		rationalBuffer.flip();
@@ -165,7 +197,7 @@ public class ImageProcessor implements Runnable {
 				TiffFieldTypeConstants.FIELD_TYPE_RATIONAL, 1,
 				buf);
 		
-		/* Remove Previous Data if Necessairy */
+		/* Remove Previous Data if Necessary */
 		TiffOutputField imageDirPre = outputSet
 				.findField(GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
 		if (imageDirPre != null) {
@@ -206,6 +238,7 @@ public class ImageProcessor implements Runnable {
 		}
 	}
 
+	/* Converts a long into a byte array representing a 32 bit unsigned integer */
 	public byte[] intToUnsignedByteArray(long x) {
 		Long anUnsignedInt = x;
 

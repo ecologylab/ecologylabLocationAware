@@ -7,5 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/ecologylabGraphics"/>
 	<classpathentry kind="lib" path="lib/RXTXcomm.jar"/>
 	<classpathentry kind="lib" path="lib/sanselan-0.97-incubator.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/GeoTools"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

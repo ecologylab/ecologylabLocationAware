@@ -16,6 +16,11 @@ public class LocationDataResponse extends ResponseMessage
 	@simpl_composite
 	public GPSDatum gpsData;
 	
+	public LocationDataResponse()
+	{
+		
+	}
+	
 	public LocationDataResponse(CompassDatum cData, GPSDatum gpsData)
 	{
 		this.compassData = cData;

@@ -155,7 +155,7 @@ public class GeoService extends ApplicationEnvironment
 		
 		Scope scope = new Scope();
 		
-		server = new GeoServer(SERVICE_PORT, scope, true, null, null);
+		server = new GeoServer(SERVICE_PORT, scope, true);
 		
 		connectCompass();
 		connectGPS();
