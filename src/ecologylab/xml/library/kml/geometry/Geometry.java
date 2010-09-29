@@ -28,18 +28,18 @@ public abstract class Geometry extends KmlObject
 		this.setCoordinates(coordinates);
 	}
 
-	@Override protected void postTranslationProcessingHook()
+	@Override protected void deserializationPostHook()
 	{
-		super.postTranslationProcessingHook();
+		super.deserializationPostHook();
 		
-		this.coordinates.postTranslationProcessingHook();
+		this.coordinates.deserializationPostHook();
 	}
 
-	@Override protected void preTranslationProcessingHook()
+	@Override protected void serializationPreHook()
 	{
-		super.preTranslationProcessingHook();
+		super.serializationPreHook();
 		
-		this.coordinates.preTranslationProcessingHook();
+		this.coordinates.serializationPreHook();
 	}
 	
 	public void setCoordinates(Coordinates coordinates)
