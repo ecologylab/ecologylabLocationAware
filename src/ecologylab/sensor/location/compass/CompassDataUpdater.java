@@ -6,11 +6,21 @@ import ecologylab.sensor.location.NMEAStringListener;
 
 public class CompassDataUpdater implements NMEAStringListener
 {
-	private CompassDatum cData = new CompassDatum(0,0,0,0);
+	private CompassDatum cData;
 
 	private char[]	tempDataStore;
 	
 	private ArrayList<CompassDataListener> listeners = new ArrayList<CompassDataListener>();
+	
+	//public CompassDataUpdater(CompassDatum datum){
+	//	
+	//	this.cData = datum;
+	//}
+	
+	public CompassDataUpdater(CompassDatum cDatum)
+	{
+		cData = cDatum;
+	}
 	
 	public void processIncomingNMEAString(String gpsDataString)
 	{
