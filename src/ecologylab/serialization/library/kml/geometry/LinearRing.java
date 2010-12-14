@@ -17,10 +17,4 @@ import ecologylab.serialization.simpl_inherit;
 	{
 		super();
 	}
-	
-	public LinearRing(Coordinates coordinates)
-	{
-		super(coordinates);
-	}
-
 }

@@ -3,6 +3,7 @@
  */
 package ecologylab.serialization.library.kml.geometry;
 
+import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.serialization.ElementState.xml_tag;
 import ecologylab.serialization.Hint;
 import ecologylab.serialization.simpl_inherit;
@@ -25,8 +26,13 @@ public class Point extends Geometry
 	{
 	}
 	
-	public Point(Coordinates coordinates)
+	public Point(GeoCoordinate coordinates)
 	{
 		super(coordinates);
+	}
+	
+	public void setCoordinate(GeoCoordinate coordinates)
+	{
+		super.setCoordinate(coordinates);
 	}
 }

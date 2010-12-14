@@ -13,13 +13,21 @@ import ecologylab.serialization.library.kml.geometry.Polygon;
  * @author Zach
  * 
  */
-@simpl_inherit @xml_tag("Placemark") public class Placemark extends KmlFeature
+@simpl_inherit
+@xml_tag("Placemark")
+public class Placemark extends KmlFeature
 {
-	@simpl_composite @xml_tag("Point") Point					point			= null;
+	@simpl_composite
+	@xml_tag("Point")
+	Point				point				= null;
 
-	@simpl_composite @xml_tag("LineString") LineString	lineString	= null;
-	
-	@simpl_composite @xml_tag("Polygon") Polygon			polygon		=	null;
+	@simpl_composite
+	@xml_tag("LineString")
+	LineString	lineString	= null;
+
+	@simpl_composite
+	@xml_tag("Polygon")
+	Polygon			polygon			= null;
 
 	// TODO LinearRing, Polygon, MultiGeometry, Model
 
@@ -29,7 +37,7 @@ import ecologylab.serialization.library.kml.geometry.Polygon;
 	public Placemark()
 	{
 	}
-	
+
 	public Placemark(String name, String description, String styleUrl)
 	{
 		super(name, description, styleUrl);
@@ -60,16 +68,16 @@ import ecologylab.serialization.library.kml.geometry.Polygon;
 		this.point = null;
 		this.polygon = null;
 	}
-	
+
 	public Polygon getPolygon()
 	{
 		return polygon;
 	}
-	
+
 	public void setPolygon(Polygon polygon)
 	{
 		this.polygon = polygon;
-		
+
 		this.point = null;
 		this.lineString = null;
 	}

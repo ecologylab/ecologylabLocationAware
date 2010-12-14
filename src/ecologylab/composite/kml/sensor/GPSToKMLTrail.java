@@ -13,26 +13,25 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 /**
- * Repeats the coordinates from a GPS to a KML Geometry's object. This object
- * can then be placed into a Kml object's child to send to Google Earth.
+ * Repeats the coordinates from a GPS to a KML Geometry's object. This object can then be placed
+ * into a Kml object's child to send to Google Earth.
  * 
  * @author Zach
  */
-public class GPSToKMLTrail extends GPSDataUpdater implements
-		GPSDataUpdatedListener
+public class GPSToKMLTrail extends GPSDataUpdater implements GPSDataUpdatedListener
 {
-	Geometry										kmlGeographyTarget;
+	Geometry														kmlGeographyTarget;
 
-	int											trailLength;
+	int																	trailLength;
 
-	int											sampleRate;
+	int																	sampleRate;
 
-	int											currentSample;
+	int																	currentSample;
 
 	/**
-	 * The list of coordinates inside the kmlGeometryTarget. Automatically set
-	 * when the kmlGeographyTarget is set. kmlGeographyTarget is automatically
-	 * update with this object whenever it is changed by new GPS data.
+	 * The list of coordinates inside the kmlGeometryTarget. Automatically set when the
+	 * kmlGeographyTarget is set. kmlGeographyTarget is automatically update with this object whenever
+	 * it is changed by new GPS data.
 	 */
 	protected ArrayList<GeoCoordinate>	coordinateList;
 
@@ -40,20 +39,17 @@ public class GPSToKMLTrail extends GPSDataUpdater implements
 	 * 
 	 * @param kmlGeographyTarget
 	 * @param trailLength
-	 * @param sampleRate -
-	 *           the number of times the GPS data has to be updated before it
-	 *           appears in the KML list
+	 * @param sampleRate
+	 *          - the number of times the GPS data has to be updated before it appears in the KML list
 	 */
-	public GPSToKMLTrail(Geometry kmlGeographyTarget, int trailLength,
-			int sampleRate)
+	public GPSToKMLTrail(Geometry kmlGeographyTarget, int trailLength, int sampleRate)
 	{
 		this.kmlGeographyTarget = kmlGeographyTarget;
 		this.trailLength = trailLength;
 
 		this.sampleRate = sampleRate;
 
-		this.coordinateList = kmlGeographyTarget.getCoordinates()
-				.getCoordinateList();
+		this.coordinateList = kmlGeographyTarget.getCoordinateList();
 
 		this.addDataUpdatedListener(this);
 	}
@@ -69,19 +65,16 @@ public class GPSToKMLTrail extends GPSDataUpdater implements
 				coordinateList.remove(0);
 			}
 
-			coordinateList.add(new GeoCoordinate(this.datum.getLat(), this.datum
-					.getLon(), 0));
+			coordinateList.add(new GeoCoordinate(this.datum.getLat(), this.datum.getLon(), 0));
 
 			currentSample = 0;
 		}
 	}
 
 	/**
-	 * Indicates which GPS update operations this is interested in; in this case,
-	 * all of them.
+	 * Indicates which GPS update operations this is interested in; in this case, all of them.
 	 */
-	private static EnumSet<GPSUpdateInterest>	interestSet	= EnumSet
-																					.of(GPSUpdateInterest.LAT_LON);
+	private static EnumSet<GPSUpdateInterest>	interestSet	= EnumSet.of(GPSUpdateInterest.LAT_LON);
 
 	public EnumSet<GPSUpdateInterest> getInterestSet()
 	{

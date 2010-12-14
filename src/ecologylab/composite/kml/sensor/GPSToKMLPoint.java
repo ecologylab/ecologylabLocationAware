@@ -7,7 +7,6 @@ import ecologylab.sensor.location.NMEAStringListener;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
-import ecologylab.serialization.library.kml.geometry.Coordinates;
 import ecologylab.serialization.library.kml.geometry.Point;
 
 /**
@@ -32,8 +31,8 @@ public class GPSToKMLPoint implements NMEAStringListener
 	{
 		this.data.processIncomingNMEAString(gpsDataString);
 
-		this.controlledPoint.setCoordinates(new Coordinates(new GeoCoordinate(
+		this.controlledPoint.setCoordinate(new GeoCoordinate(
 				data.getDatum().getLat(), data.getDatum().getLon(), data.getDatum()
-						.getAlt())));
+						.getAlt()));
 	}
 }
