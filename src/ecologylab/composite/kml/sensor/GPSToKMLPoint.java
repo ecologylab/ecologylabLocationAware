@@ -7,8 +7,8 @@ import ecologylab.sensor.location.NMEAStringListener;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
-import ecologylab.xml.library.kml.geometry.Coordinates;
-import ecologylab.xml.library.kml.geometry.Point;
+import ecologylab.serialization.library.kml.geometry.Coordinates;
+import ecologylab.serialization.library.kml.geometry.Point;
 
 /**
  * @author Administrator

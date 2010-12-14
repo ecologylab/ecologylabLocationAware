@@ -4,7 +4,7 @@
 package ecologylab.services.messages;
 
 import ecologylab.oodss.messages.ResponseMessage;
-import ecologylab.xml.library.kml.Kml;
+import ecologylab.serialization.library.kml.Kml;
 
 /**
  * @author Zach

@@ -3,16 +3,16 @@
  */
 package ecologylab.composite.kml.sensor;
 
-import java.awt.Color;
-
 import ecologylab.generic.Debug;
 import ecologylab.rendering.tweener.ColorTweener;
 import ecologylab.sensor.network.wireless.WiFiAdapter;
 import ecologylab.sensor.network.wireless.data.WiFiAdapterStatus;
 import ecologylab.sensor.network.wireless.data.WiFiSource;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
-import ecologylab.xml.library.kml.style.Icon;
-import ecologylab.xml.library.kml.style.IconStyle;
+import ecologylab.serialization.library.kml.style.Icon;
+import ecologylab.serialization.library.kml.style.IconStyle;
+
+import java.awt.Color;
 
 /**
  * Provides an IconStyle for use in KML, whose color is based on the current

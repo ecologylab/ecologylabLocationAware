@@ -6,7 +6,7 @@ package ecologylab.standalone;
 import ecologylab.serialization.ElementState;
 import ecologylab.serialization.SIMPLTranslationException;
 import ecologylab.serialization.TranslationScope;
-import ecologylab.xml.library.kml.KMLTranslations;
+import ecologylab.serialization.library.kml.KMLTranslations;
 
 /**
  * @author Zach

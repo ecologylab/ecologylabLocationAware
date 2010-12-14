@@ -3,14 +3,14 @@
  */
 package ecologylab.composite.kml.sensor;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
-import ecologylab.xml.library.kml.geometry.Geometry;
+import ecologylab.serialization.library.kml.geometry.Geometry;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
 
 /**
  * Repeats the coordinates from a GPS to a KML Geometry's object. This object

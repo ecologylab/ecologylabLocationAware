@@ -15,11 +15,11 @@ import ecologylab.oodss.distributed.server.varieties.HttpGetServer;
 import ecologylab.oodss.messages.DefaultServicesTranslations;
 import ecologylab.serialization.SIMPLTranslationException;
 import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.library.kml.KMLTranslations;
+import ecologylab.serialization.library.kml.Kml;
 import ecologylab.services.distributed.server.contextmanager.KMLGetClientSessionManager;
 import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
-import ecologylab.xml.library.kml.KMLTranslations;
-import ecologylab.xml.library.kml.Kml;
 
 /**
  * @author Zachary O. Toups (zach@ecologylab.net)
