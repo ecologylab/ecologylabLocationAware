@@ -87,28 +87,28 @@ public class KMLGetClientSessionManager extends HTTPGetClientSessionManager
 	}
 
 	@Override
-	protected RequestMessage translateGetRequest(CharSequence messageCharSequence)
+	protected RequestMessage translateGetRequest(CharSequence messageCharSequence, String startLineString)
 			throws SIMPLTranslationException
 	{
 		return KmlRequest.STATIC_INSTANCE;
 	}
 
 	@Override
-	protected RequestMessage translateOODSSRequest(CharSequence messageCharSequence)
+	protected RequestMessage translateOODSSRequest(CharSequence messageCharSequence, String startLineString)
 			throws SIMPLTranslationException
 	{
 		return KmlRequest.STATIC_INSTANCE;
 	}
 
 	@Override
-	protected RequestMessage translatePostRequest(CharSequence messageCharSequence)
+	protected RequestMessage translatePostRequest(CharSequence messageCharSequence, String startLineString)
 			throws SIMPLTranslationException
 	{
 		return KmlRequest.STATIC_INSTANCE;
 	}
 
 	@Override
-	protected RequestMessage translateOtherRequest(CharSequence messageCharSequence)
+	protected RequestMessage translateOtherRequest(CharSequence messageCharSequence, String startLineString)
 			throws SIMPLTranslationException
 	{
 		return KmlRequest.STATIC_INSTANCE;

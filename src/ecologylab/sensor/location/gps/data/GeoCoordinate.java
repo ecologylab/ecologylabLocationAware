@@ -9,28 +9,32 @@ import ecologylab.sensor.location.Location;
 import ecologylab.serialization.simpl_inherit;
 
 /**
- * An object for representing a set of 3d coordinates on the earth's surface:
- * latitude, longitude, and altitude.
+ * An object for representing a set of 3d coordinates on the earth's surface: latitude, longitude,
+ * and altitude.
  * 
  * @author Zachary O. Toups (zach@ecologylab.net)
  */
-@simpl_inherit public class GeoCoordinate extends Location
+@simpl_inherit
+public class GeoCoordinate extends Location
 {
 	/** The latitude, expressed in degrees in double-precision degrees. */
-	@simpl_scalar double	lat;
+	@simpl_scalar
+	double										lat;
 
 	/** The longitude, expressed in degrees in double-precision degrees. */
-	@simpl_scalar double	lon;
+	@simpl_scalar
+	double										lon;
 
 	/** The altitude, expressed in meters. */
-	@simpl_scalar double			alt;
+	@simpl_scalar
+	double										alt;
 
 	/**
 	 * A Point2D.Double representation of this's latitude and longitude, instantiated and filled
 	 * through lazy evaluation, when needed.
 	 */
-	protected Point2D.Double								pointRepresentation							= null;
-	
+	protected Point2D.Double	pointRepresentation	= null;
+
 	/**
 	 * 
 	 */
@@ -82,8 +86,7 @@ import ecologylab.serialization.simpl_inherit;
 	}
 
 	/**
-	 * A String reprsenting the current data for KML; cached for re-use and
-	 * computed only when needed.
+	 * A String reprsenting the current data for KML; cached for re-use and computed only when needed.
 	 */
 	String	kMLCommaDelimited	= null;
 
@@ -96,16 +99,15 @@ import ecologylab.serialization.simpl_inherit;
 	{
 		if (kMLCommaDelimited == null)
 		{
-			kMLCommaDelimited = this.lon + "," + this.lat
-					+ "," + this.alt;
+			kMLCommaDelimited = this.lon + "," + this.lat + "," + this.alt;
 		}
 
 		return kMLCommaDelimited;
 	}
-	
+
 	public Point2D.Double getPointRepresentation()
 	{
-		if(pointRepresentation == null)
+		if (pointRepresentation == null)
 			pointRepresentation = new Point2D.Double(lon, lat);
 		else
 			pointRepresentation.setLocation(lon, lat);
@@ -131,7 +133,7 @@ import ecologylab.serialization.simpl_inherit;
 	public double compareEW(GeoCoordinate that)
 	{
 		double diff = getLon() - that.getLon();
-	
+
 		if (diff > 180)
 		{
 			return diff - 360;

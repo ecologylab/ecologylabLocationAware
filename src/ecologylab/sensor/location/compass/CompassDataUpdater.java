@@ -8,7 +8,7 @@ public class CompassDataUpdater implements NMEAStringListener
 {
 	private CompassDatum										cData;
 
-	private char[]													tempDataStore;
+	// private char[] tempDataStore;
 
 	private ArrayList<CompassDataListener>	listeners	= new ArrayList<CompassDataListener>();
 
@@ -59,7 +59,7 @@ public class CompassDataUpdater implements NMEAStringListener
 
 	private boolean checkCheckSum(String gpsData)
 	{
-		char[] tempData = tempDataStore();
+//		char[] tempData = tempDataStore();
 
 		if (gpsData.length() < 3)
 			return false;
@@ -89,14 +89,14 @@ public class CompassDataUpdater implements NMEAStringListener
 	 * 
 	 * @return
 	 */
-	private synchronized char[] tempDataStore()
-	{
-		if (tempDataStore == null)
-		{
-			tempDataStore = new char[80];
-		}
-
-		return tempDataStore;
-	}
+//	private synchronized char[] tempDataStore()
+//	{
+//		if (tempDataStore == null)
+//		{
+//			tempDataStore = new char[80];
+//		}
+//
+//		return tempDataStore;
+//	}
 
 }
