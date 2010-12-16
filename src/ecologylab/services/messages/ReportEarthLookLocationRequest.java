@@ -46,13 +46,13 @@ public class ReportEarthLookLocationRequest extends RequestMessage
 	 */
 	public ReportEarthLookLocationRequest(String getRequestFromEarth)
 	{
-		debug(getRequestFromEarth);
+//		debug(getRequestFromEarth);
 		Matcher m = EARTH_GET_PATTERN.matcher(getRequestFromEarth);
 		m.find();
 
-		debug("lat: " + m.group(1));
+//		debug("lat: " + m.group(1));
 		lat = Float.parseFloat(m.group(1));
-		debug("lon: " + m.group(2));
+//		debug("lon: " + m.group(2));
 		lon = Float.parseFloat(m.group(2));
 		heading = Float.parseFloat(m.group(3));
 		tilt = Float.parseFloat(m.group(4));

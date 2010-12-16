@@ -28,16 +28,16 @@ public class NMEAReader extends Debug implements Runnable
 {
 	private CommPortIdentifier							portId;
 
-	private SerialPort											port									= null;
+	private SerialPort											port			= null;
 
 	private int															baud;
 
-	private BufferedReader											portIn							= null;
+	private BufferedReader									portIn		= null;
 
-	private LinkedList<NMEAStringListener>	listeners						= new LinkedList<NMEAStringListener>();
+	private LinkedList<NMEAStringListener>	listeners	= new LinkedList<NMEAStringListener>();
 
 	private Thread													t;
-	
+
 	/**
 	 * Instantiate a GPS device on a given port and baud rate.
 	 * 
@@ -119,28 +119,29 @@ public class NMEAReader extends Debug implements Runnable
 		port.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
 		// port.setDTR(true);
 		port.setRTS(true);
-		
-		if(port.isReceiveFramingEnabled())
+
+		if (port.isReceiveFramingEnabled())
 		{
 			debug("Using framing!");
 			port.enableReceiveFraming('\n');
-		} else {
+		}
+		else
+		{
 			debug("Not using framing!");
 			port.enableReceiveTimeout(5000);
 			port.enableReceiveThreshold(1);
 		}
 
-		//port.addEventListener(this);
-		//port.notifyOnDataAvailable(true);
-		
-		
-		
+		// port.addEventListener(this);
+		// port.notifyOnDataAvailable(true);
+
 		portIn = new BufferedReader(new InputStreamReader(port.getInputStream(), "US-ASCII"));
 
 		if (connected())
 		{
 			debug("...successful.");
-			t = new Thread(this, "NMEA Reader Thread on " + portId.toString() + " @ " + port.getBaudRate() + "bps");
+			t = new Thread(this, "NMEA Reader Thread on " + portId.toString() + " @ "
+					+ port.getBaudRate() + "bps");
 			t.start();
 		}
 		else
@@ -183,28 +184,33 @@ public class NMEAReader extends Debug implements Runnable
 
 	public void run()
 	{
-			String nmeaLine = null;
-			
-			try{
-				portIn.readLine();
+		String nmeaLine = null;
+
+		try
+		{
+			portIn.readLine();
+			portIn.skip(1);
+			nmeaLine = portIn.readLine();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		while (nmeaLine != null)
+		{
+			this.fireGPSDataString(nmeaLine);
+
+			try
+			{
 				portIn.skip(1);
 				nmeaLine = portIn.readLine();
-			} catch (IOException e)
-			{
-				e.printStackTrace();
 			}
-			
-			while(nmeaLine != null)
+			catch (IOException ioe)
 			{
-				this.fireGPSDataString(nmeaLine);
-				
-				try {
-					portIn.skip(1);
-					nmeaLine = portIn.readLine();
-				} catch (IOException ioe) {
-					ioe.printStackTrace();
-				}
-			}		
+				ioe.printStackTrace();
+			}
+		}
 	}
 
 	public void addGPSDataListener(NMEAStringListener l)
@@ -244,8 +250,8 @@ public class NMEAReader extends Debug implements Runnable
 
 	protected void fireGPSDataString(String gpsDataString)
 	{
-		//debug("firing for: "+gpsDataString);
-		
+		// debug("firing for: "+gpsDataString);
+
 		for (NMEAStringListener l : listeners)
 		{
 			l.processIncomingNMEAString(gpsDataString);

@@ -156,7 +156,7 @@ public class SimGPS extends NMEAReader implements ActionListener
 	}
 
 	/**
-	 * Calls start with a 250ms delay.
+	 * Calls start with a 50ms delay.
 	 */
 	@Override
 	public boolean connect() throws PortInUseException, UnsupportedCommOperationException,

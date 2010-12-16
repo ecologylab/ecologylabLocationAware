@@ -7,6 +7,6 @@
     <refreshInterval>1</refreshInterval>
     <viewRefreshMode>onStop</viewRefreshMode>
     <viewRefreshTime>1</viewRefreshTime>
-    <viewFormat>CAMERA=[lookatLat],[lookatLon],[lookatTilt],[lookatHeading]</viewFormat>
+    <viewFormat>CAMERA=[lookatLat],[lookatLon],[lookatHeading],[lookatTilt]</viewFormat>
   </Link>
 </NetworkLink> 
