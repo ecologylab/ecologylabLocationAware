@@ -3,6 +3,8 @@
  */
 package ecologylab.sensor.location;
 
+import ecologylab.sensor.location.gps.data.GeoCoordinate;
+
 /**
  * @author Anthony Fleshner
  * 
@@ -20,5 +22,4 @@ public interface EarthData
 
 	/** Radius of earth, in meters. */
 	public static final double	RADIUS_EARTH_METERS		= RADIUS_EARTH_K_METERS * 1000.0;
-
 }

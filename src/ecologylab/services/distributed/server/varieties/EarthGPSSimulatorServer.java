@@ -56,6 +56,12 @@ public class EarthGPSSimulatorServer extends HttpGetServer
 	public static final String	COMPASS_DATUM					= "COMPASS_DATUM";
 
 	/**
+	 * The last time that the server was updated by Google Earth; used for calculating simulated
+	 * ground speed.
+	 */
+	public static final String	LAST_TIME_POINT				= "LAST_TIME_POINT";
+
+	/**
 	 * @param portNumber
 	 * @param inetAddresses
 	 * @param requestTranslationSpace
@@ -80,6 +86,7 @@ public class EarthGPSSimulatorServer extends HttpGetServer
 
 		this.applicationObjectScope.put(GPS_DATUM, gpsDatum);
 		this.applicationObjectScope.put(COMPASS_DATUM, compassDatum);
+		this.applicationObjectScope.put(LAST_TIME_POINT, 0l);
 
 		// this.applicationObjectScope.put(KmlRequest.KML_DATA, kmlData);
 	}

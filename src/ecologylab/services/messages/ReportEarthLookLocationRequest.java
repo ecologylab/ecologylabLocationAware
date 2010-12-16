@@ -41,20 +41,30 @@ public class ReportEarthLookLocationRequest extends RequestMessage
 	final static Pattern	EARTH_GET_PATTERN	= Pattern
 																							.compile("GET /\\?CAMERA=([-\\.\\p{Digit}]*),([-\\.\\p{Digit}]*),([-\\.\\p{Digit}]*),([-\\.\\p{Digit}]*) HTTP/1\\.1");
 
+	long									timePoint;
+
 	/**
 	 * 
 	 */
 	public ReportEarthLookLocationRequest(String getRequestFromEarth)
 	{
-//		debug(getRequestFromEarth);
+		timePoint = System.currentTimeMillis();
+
+		// debug(getRequestFromEarth);
 		Matcher m = EARTH_GET_PATTERN.matcher(getRequestFromEarth);
 		m.find();
 
-//		debug("lat: " + m.group(1));
+		// debug("lat: " + m.group(1));
 		lat = Float.parseFloat(m.group(1));
-//		debug("lon: " + m.group(2));
+		// debug("lon: " + m.group(2));
 		lon = Float.parseFloat(m.group(2));
+		debug("heading: " + m.group(3));
 		heading = Float.parseFloat(m.group(3));
+
+		if (heading < 0)
+			heading += 360.0; // correct for misinformation at
+												// http://code.google.com/apis/kml/documentation/kmlreference.html#headingdiagram
+
 		tilt = Float.parseFloat(m.group(4));
 	}
 
@@ -69,6 +79,13 @@ public class ReportEarthLookLocationRequest extends RequestMessage
 		if (gpsDatum == null)
 			gpsDatum = new GPSDatum();
 
+		long lastTimePoint = (Long) objectRegistry.get(EarthGPSSimulatorServer.LAST_TIME_POINT);
+
+		if (lastTimePoint != 0)
+			gpsDatum.setGrndSpd(gpsDatum.distanceTo(lat, lon) / ((timePoint - lastTimePoint) / 1000.0));
+
+		objectRegistry.put(EarthGPSSimulatorServer.LAST_TIME_POINT, timePoint);
+		
 		gpsDatum.setLat(lat);
 		gpsDatum.setLon(lon);
 
@@ -96,6 +113,8 @@ public class ReportEarthLookLocationRequest extends RequestMessage
 		currentLookPointKML.setPlacemark(currentLookPoint);
 
 		KmlResponse resp = new KmlResponse(currentLookPointKML);
+
+		debug("Ground speed: " + gpsDatum.getSpeed());
 
 		return resp;
 	}

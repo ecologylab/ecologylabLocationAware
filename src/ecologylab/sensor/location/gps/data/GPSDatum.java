@@ -1047,4 +1047,9 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	{
 		return this.hdop * this.HDOPMultiplier;
 	}
+
+	public void setGrndSpd(double grndSpd)
+	{
+		this.grndSpd = grndSpd;
+	}
 }

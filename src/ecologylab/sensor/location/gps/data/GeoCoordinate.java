@@ -3,10 +3,11 @@
  */
 package ecologylab.sensor.location.gps.data;
 
-import java.awt.geom.Point2D;
-
+import ecologylab.sensor.location.EarthData;
 import ecologylab.sensor.location.Location;
 import ecologylab.serialization.simpl_inherit;
+
+import java.awt.geom.Point2D;
 
 /**
  * An object for representing a set of 3d coordinates on the earth's surface: latitude, longitude,
@@ -15,7 +16,7 @@ import ecologylab.serialization.simpl_inherit;
  * @author Zachary O. Toups (zach@ecologylab.net)
  */
 @simpl_inherit
-public class GeoCoordinate extends Location
+public class GeoCoordinate extends Location implements EarthData
 {
 	/** The latitude, expressed in degrees in double-precision degrees. */
 	@simpl_scalar
@@ -146,5 +147,46 @@ public class GeoCoordinate extends Location
 		{
 			return diff;
 		}
+	}
+
+	/**
+	 * Uses the haversine formula to compute the great-circle direct distance from this to the other
+	 * point. Does not take into account altitude.
+	 * 
+	 * Result is given in meters.
+	 * 
+	 * Formula used from http://www.movable-type.co.uk/scripts/latlong.html.
+	 * 
+	 * @param other
+	 * @return great-circle distance between this and other, in meters.
+	 */
+	public double distanceTo(GeoCoordinate other)
+	{
+		return this.distanceTo(other.getLat(), other.getLon());
+	}
+
+	/**
+	 * Uses the haversine formula to compute the great-circle direct distance from this to the other
+	 * point. Does not take into account altitude.
+	 * 
+	 * Result is given in meters.
+	 * 
+	 * Formula used from http://www.movable-type.co.uk/scripts/latlong.html.
+	 * 
+	 * @param otherLat
+	 * @param otherLon
+	 * @return great-circle distance between this and other, in meters.
+	 */
+	public double distanceTo(double otherLat, double otherLon)
+	{
+		double deltaLat = Math.toRadians(otherLat - this.getLat());
+		double deltaLon = Math.toRadians(otherLon - this.getLon());
+
+		double a = (Math.sin(deltaLat / 2.0) * Math.sin(deltaLat / 2.0))
+				+ (Math.cos(Math.toRadians(this.getLat())) * Math.cos(Math.toRadians(otherLat))
+						* Math.sin(deltaLon / 2.0) * Math.sin(deltaLon / 2.0));
+		double c = 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
+
+		return c * RADIUS_EARTH_METERS;
 	}
 }
