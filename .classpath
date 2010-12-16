@@ -8,5 +8,7 @@
 	<classpathentry kind="lib" path="lib/RXTXcomm.jar"/>
 	<classpathentry kind="lib" path="lib/sanselan-0.97-incubator.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/GeoTools"/>
+	<classpathentry kind="lib" path="/GeoTools/lib/gt-coverage-2.7-M2.jar"/>
+	<classpathentry kind="lib" path="/GeoTools/lib/gt-geotiff-2.7-M2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
