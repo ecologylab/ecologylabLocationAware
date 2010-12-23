@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
@@ -12,6 +13,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.map.MapContext;
+import org.geotools.renderer.GTRenderer;
+import org.geotools.renderer.RenderListener;
+import org.geotools.renderer.lite.StreamingRenderer;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.geometry.Envelope;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -19,7 +28,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import ecologylab.generic.ResourcePool;
 
-public class GTTiledMap extends JPanel 
+public class GTTiledMap extends JPanel implements RenderListener
 {
 	private int tileDimension;
 	
@@ -34,6 +43,10 @@ public class GTTiledMap extends JPanel
 	private float radius;
 	
 	private TileContextPool tilePool;
+	
+	private MapContext map;
+	
+	private GTRenderer gRender;
 	
 	public class rotateListener implements MouseWheelListener
 	{
@@ -74,20 +87,20 @@ public class GTTiledMap extends JPanel
 			switch(arg0.getKeyChar())
 			{
 				case 's':
-					dy = 1;
+					dy = -1;
 					dx = 0;
 					break;
 				case 'w':
-					dy = -1;
+					dy = 1;
 					dx = 0;
 					break;
 				case 'a':
 					dy = 0;
-				dx = 1;
+				dx = -1;
 				break;
 			case 'd':
 				dy = 0;
-				dx = -1;
+				dx = 1;
 				break;
 			default:
 				return;
@@ -95,13 +108,13 @@ public class GTTiledMap extends JPanel
 			
 			Point2D.Double pnt = new Point2D.Double(dx, dy);
 			
-			AffineTransform t = AffineTransform.getRotateInstance(-rotation / 180 * Math.PI);
+			AffineTransform t = AffineTransform.getRotateInstance(rotation / 180 * Math.PI);
 			
 			t.transform(pnt,pnt);
 			
 			Coordinate coord = new Coordinate();
-			coord.x = center.x + pnt.x * 10;
-			coord.y = center.y + pnt.y * 10;
+			coord.x = center.x + pnt.x * 10 / worldToScreenScale;
+			coord.y = center.y + pnt.y * 10 / worldToScreenScale;
 			
 			setCenter(coord);
 			
@@ -109,7 +122,7 @@ public class GTTiledMap extends JPanel
 		
 	}
 	
-	public GTTiledMap(Coordinate center, float worldToScreenScale, int tileDimension)
+	public GTTiledMap(Coordinate center, MapContext map, float worldToScreenScale, int tileDimension)
 	{
 		super();
 		
@@ -125,6 +138,15 @@ public class GTTiledMap extends JPanel
 		
 		this.addMouseWheelListener(new rotateListener());
 		
+		this.map = map;
+		
+		gRender = new StreamingRenderer();
+		gRender.setContext(map);
+		gRender.addRenderListener(this);
+
+    RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+    gRender.setJava2DHints(hints);
+		
 		this.addKeyListener(new moveListener());
 		this.setFocusable(true);
 		
@@ -139,6 +161,19 @@ public class GTTiledMap extends JPanel
 	private void render(TileContext cntx)
 	{
 		cntx.done = true;
+		
+		Graphics2D g2 = cntx.getGraphics();
+		
+		double x1 = cntx.center.x - this.tileDimension / 2.0 / worldToScreenScale;
+		double x2 = cntx.center.x + this.tileDimension / 2.0 / worldToScreenScale;
+		double y1 = cntx.center.y - this.tileDimension / 2.0 / worldToScreenScale;
+		double y2 = cntx.center.y + this.tileDimension / 2.0 / worldToScreenScale;
+		
+		ReferencedEnvelope env = new ReferencedEnvelope(x1, x2, y1, y2, map.getCoordinateReferenceSystem());
+
+		
+		
+		gRender.paint(g2, new Rectangle(0,0,tileDimension,tileDimension), env);
 	}
 	
 	public void setCenter(Coordinate newCenter)
@@ -148,7 +183,7 @@ public class GTTiledMap extends JPanel
 		double difY = (newCenter.y - middle.center.y) * worldToScreenScale;
 		
 		double dxf = (-difX / tileDimension);
-		double dyf = (-difY / tileDimension);
+		double dyf = (difY / tileDimension);
 		 
 		dxf = Math.round(Math.abs(dxf)) * Math.signum(dxf);
 		dyf = Math.round(Math.abs(dyf)) * Math.signum(dyf);
@@ -206,7 +241,7 @@ public class GTTiledMap extends JPanel
 				{
 					tileMatrix[x][y] = tilePool.acquire();
 					tileMatrix[x][y].center.x = tile.center.x - (dx * tileDimension / worldToScreenScale);
-					tileMatrix[x][y].center.y = tile.center.y - (dy * tileDimension / worldToScreenScale);
+					tileMatrix[x][y].center.y = tile.center.y + (dy * tileDimension / worldToScreenScale);
 					render(tileMatrix[x][y]);
 				}
 				
@@ -220,9 +255,9 @@ public class GTTiledMap extends JPanel
 		this.repaint();
 	}
 	
-	public GTTiledMap(Coordinate center, float worldToScreenScale)
+	public GTTiledMap(Coordinate center, MapContext map, float worldToScreenScale)
 	{
-		this(center, worldToScreenScale, 256);
+		this(center, map, worldToScreenScale, 256);
 	}
 	
 	/**
@@ -268,7 +303,7 @@ public class GTTiledMap extends JPanel
 				TileContext tile = tilePool.acquire();
 				tileMatrix[x][y] = tile;
 				tile.center.x = this.center.x + (x - tileMatrix.length / 2) * tileDimension / worldToScreenScale;
-				tile.center.y = this.center.y + (y - tileMatrix[x].length / 2) * tileDimension / worldToScreenScale;
+				tile.center.y = this.center.y - (y - tileMatrix[x].length / 2) * tileDimension / worldToScreenScale;
 				render(tileMatrix[x][y]);
 			}
 		}
@@ -313,13 +348,20 @@ public class GTTiledMap extends JPanel
 		
 		g2.translate(this.getSize().width / 2.0, this.getSize().height / 2.0);
 		
-		g2.rotate(rotation / 180 * Math.PI);
+		g2.scale(0.25f, 0.25f);
 		
-		g2.translate(difX, difY);
+		AffineTransform save = g2.getTransform();
+		
+		g2.rotate(rotation / 180 * Math.PI);
+			
+		
+		g2.translate(difX, -difY);
 		
 		//g2.scale(0.25f, 0.25f);
 		
 		AffineTransform afterRotation = g2.getTransform();
+		
+		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		
 		for(int x = 0; x < tileMatrix.length; x++)
 		{
@@ -328,12 +370,19 @@ public class GTTiledMap extends JPanel
 				int dX = (x - midCoord) * tileDimension;
 				int dY = (y - midCoord) * tileDimension;
 				
+				g2.drawImage(tileMatrix[x][y].getTile(), -tileDimension / 2 + dX, -tileDimension / 2 + dY, this);
+				
 				g2.drawRect(-tileDimension / 2 + dX, -tileDimension / 2 + dY,
 										tileDimension, tileDimension);
+				/*
+				g2.drawString(tileMatrix[x][y].myCount + "", dX, dY);*/
 				
-				g2.drawString(tileMatrix[x][y].myCount + "", dX, dY);
 			}
 		}
+		
+		g2.setTransform(save);
+		
+		g2.drawRect(-this.getWidth()/2, -this.getHeight() / 2, this.getWidth(), this.getHeight());
 		
 		g2.setTransform(starting);
 	}
@@ -352,10 +401,23 @@ public class GTTiledMap extends JPanel
 		JFrame testFrame = new JFrame("Test");
 		testFrame.setSize(500, 500);
 		
-		testFrame.add(new GTTiledMap(new Coordinate(), 1));
+		testFrame.add(new GTTiledMap(new Coordinate(), null, 1));
 		
 		testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		testFrame.setVisible(true);
+	}
+
+	@Override
+	public void errorOccurred(Exception arg0)
+	{
+		System.out.println("Couldn't render completely: " + arg0.getLocalizedMessage());
+	}
+
+	@Override
+	public void featureRenderer(SimpleFeature arg0)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }
