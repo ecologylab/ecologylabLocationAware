@@ -37,13 +37,24 @@ public class CompassDataUpdater implements NMEAStringListener
 			int cIndex = 0;
 			int pIndex = gpsDataString.indexOf('P');
 			int rIndex = gpsDataString.indexOf('R');
-			int tIndex = gpsDataString.indexOf('T');
+			// int tIndex = gpsDataString.indexOf('T');
+
+			int totAIndex = gpsDataString.indexOf('A');
+			int aXIndex = gpsDataString.indexOf("Ax");
+			int aYIndex = gpsDataString.indexOf("Ay");
+			int aZIndex = gpsDataString.indexOf("Az");
+
 			int asteriskIndex = gpsDataString.indexOf('*');
 
 			cData.setHeading(Float.parseFloat(gpsDataString.substring(cIndex + 1, pIndex)));
 			cData.setPitch(Float.parseFloat(gpsDataString.substring(pIndex + 1, rIndex)));
-			cData.setRoll(Float.parseFloat(gpsDataString.substring(rIndex + 1, tIndex)));
-			cData.setTemp(Float.parseFloat(gpsDataString.substring(tIndex + 1, asteriskIndex)));
+			cData.setRoll(Float.parseFloat(gpsDataString.substring(rIndex + 1, totAIndex)));
+			cData.setTotAcc(Float.parseFloat(gpsDataString.substring(totAIndex + 1, aXIndex)));
+			cData.setAccX(Float.parseFloat(gpsDataString.substring(aXIndex + 2, aYIndex)));
+			cData.setAccY(Float.parseFloat(gpsDataString.substring(aYIndex + 2, aZIndex)));
+			cData.setAccZ(Float.parseFloat(gpsDataString.substring(aZIndex + 2, asteriskIndex)));
+
+			// cData.setTemp(Float.parseFloat(gpsDataString.substring(tIndex + 1, asteriskIndex)));
 
 			for (CompassDataListener listener : listeners)
 			{
@@ -59,7 +70,7 @@ public class CompassDataUpdater implements NMEAStringListener
 
 	private boolean checkCheckSum(String gpsData)
 	{
-//		char[] tempData = tempDataStore();
+		// char[] tempData = tempDataStore();
 
 		if (gpsData.length() < 3)
 			return false;
@@ -89,14 +100,14 @@ public class CompassDataUpdater implements NMEAStringListener
 	 * 
 	 * @return
 	 */
-//	private synchronized char[] tempDataStore()
-//	{
-//		if (tempDataStore == null)
-//		{
-//			tempDataStore = new char[80];
-//		}
-//
-//		return tempDataStore;
-//	}
+	// private synchronized char[] tempDataStore()
+	// {
+	// if (tempDataStore == null)
+	// {
+	// tempDataStore = new char[80];
+	// }
+	//
+	// return tempDataStore;
+	// }
 
 }
