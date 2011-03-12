@@ -241,7 +241,7 @@ public class GTTiledMap extends JPanel implements RenderListener
 	
 	public void setCenter(Coordinate newCenter)
 	{
-		System.out.println(newCenter.x + ", " + newCenter.y);
+		//System.out.println(newCenter.x + ", " + newCenter.y);
 		
 		TileContext middle = getCenterTile();
 		double difX = (newCenter.x - middle.center.x) * worldToScreenScale;
