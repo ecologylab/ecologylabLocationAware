@@ -409,8 +409,6 @@ public class GTTiledMap extends JPanel implements RenderListener
 		double difX = (middleCoordinate.x - this.center.x) * worldToScreenScale;
 		double difY = (middleCoordinate.y - this.center.y) * worldToScreenScale;
 		
-		Shape circle = new Arc2D.Double(this.bounds(), 45, 90, Arc2D.PIE);
-		g2.setClip(circle);
 		AffineTransform starting = g2.getTransform();
 		AffineTransform change = new AffineTransform();
 		
