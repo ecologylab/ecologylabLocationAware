@@ -56,6 +56,11 @@ class TileContext
 		cancle = true;
 	}
 	
+	public synchronized boolean isCancled()
+	{
+		return cancle;
+	}
+	
 	public Graphics2D getGraphics()
 	{
 		return (Graphics2D) image.getGraphics();

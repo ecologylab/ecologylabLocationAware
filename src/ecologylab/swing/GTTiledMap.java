@@ -5,13 +5,17 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapContext;
@@ -47,6 +51,44 @@ public class GTTiledMap extends JPanel implements RenderListener
 	private MapContext map;
 	
 	private GTRenderer gRender;
+	
+	private BlockingQueue<TileContext> queue = new LinkedBlockingQueue<TileContext>();
+	
+	class Consumer implements Runnable 
+	{
+	   
+	   public void run() {
+	     try {
+	       while (true) 
+	       { 
+	      	 if(queue.isEmpty())
+	      		 repaint();
+	      	 consume(queue.take());
+	       }
+	     } 
+	     catch (InterruptedException ex) 
+	     {
+	    	 
+	     }
+	   }
+	   
+	   void consume(TileContext x)
+	   {
+	  	 synchronized(x)
+	  	 {
+	  		 if(!x.isCancled())
+	  		 {
+	  			 render(x);
+	  			 x.markDone();
+	  		 }
+	  		 else
+	  		 {
+	  			 tilePool.release(x);
+	  		 }
+	  	 }
+	   }
+	 }
+
 	
 	public class rotateListener implements MouseWheelListener
 	{
@@ -150,6 +192,9 @@ public class GTTiledMap extends JPanel implements RenderListener
 		this.addKeyListener(new moveListener());
 		this.setFocusable(true);
 		
+		Thread t = new Thread(new Consumer());
+		t.start();
+		
 		completeReset();
 	}
 	
@@ -169,15 +214,35 @@ public class GTTiledMap extends JPanel implements RenderListener
 		double y1 = cntx.center.y - this.tileDimension / 2.0 / worldToScreenScale;
 		double y2 = cntx.center.y + this.tileDimension / 2.0 / worldToScreenScale;
 		
-		ReferencedEnvelope env = new ReferencedEnvelope(x1, x2, y1, y2, map.getCoordinateReferenceSystem());
-
-		
+		ReferencedEnvelope env = new ReferencedEnvelope(x1, x2, y1, y2, map.getCoordinateReferenceSystem());		
 		
 		gRender.paint(g2, new Rectangle(0,0,tileDimension,tileDimension), env);
 	}
 	
+	private void queueRender(TileContext cntx)
+	{
+		queue.offer(cntx);
+	}
+	
+	public void release(TileContext cntx)
+	{
+		synchronized(cntx)
+		{
+			if(!cntx.isDone())
+			{
+				cntx.cancle();
+			}
+			else
+			{
+				tilePool.release(cntx);
+			}
+		}
+	}
+	
 	public void setCenter(Coordinate newCenter)
 	{
+		System.out.println(newCenter.x + ", " + newCenter.y);
+		
 		TileContext middle = getCenterTile();
 		double difX = (newCenter.x - middle.center.x) * worldToScreenScale;
 		double difY = (newCenter.y - middle.center.y) * worldToScreenScale;
@@ -242,12 +307,12 @@ public class GTTiledMap extends JPanel implements RenderListener
 					tileMatrix[x][y] = tilePool.acquire();
 					tileMatrix[x][y].center.x = tile.center.x - (dx * tileDimension / worldToScreenScale);
 					tileMatrix[x][y].center.y = tile.center.y + (dy * tileDimension / worldToScreenScale);
-					render(tileMatrix[x][y]);
+					queueRender(tileMatrix[x][y]);
 				}
 				
 				if(release)
 				{
-					tilePool.release(tile);
+					release(tile);
 				}
 				
 			}
@@ -284,7 +349,7 @@ public class GTTiledMap extends JPanel implements RenderListener
 				{
 					if(tileMatrix[x][y] != null)
 					{
-						tilePool.release(tileMatrix[x][y]);
+						release(tileMatrix[x][y]);
 						tileMatrix[x][y] = null;
 					}
 				}
@@ -304,7 +369,7 @@ public class GTTiledMap extends JPanel implements RenderListener
 				tileMatrix[x][y] = tile;
 				tile.center.x = this.center.x + (x - tileMatrix.length / 2) * tileDimension / worldToScreenScale;
 				tile.center.y = this.center.y - (y - tileMatrix[x].length / 2) * tileDimension / worldToScreenScale;
-				render(tileMatrix[x][y]);
+				queueRender(tileMatrix[x][y]);
 			}
 		}
 		
@@ -317,9 +382,9 @@ public class GTTiledMap extends JPanel implements RenderListener
 	public void setBounds(int x, int y, int width, int height)
 	{
 		float newRadius = (float) Math.sqrt(width * width + height * height) / 2.0f;
-		if(newRadius > radius )
+		if(newRadius > radius + tileDimension )
 		{
-			radius = newRadius + tileDimension;
+			radius = newRadius;
 			completeReset();
 		}
 		else if(newRadius < radius - tileDimension)
@@ -344,24 +409,27 @@ public class GTTiledMap extends JPanel implements RenderListener
 		double difX = (middleCoordinate.x - this.center.x) * worldToScreenScale;
 		double difY = (middleCoordinate.y - this.center.y) * worldToScreenScale;
 		
+		Shape circle = new Arc2D.Double(this.bounds(), 45, 90, Arc2D.PIE);
+		g2.setClip(circle);
 		AffineTransform starting = g2.getTransform();
+		AffineTransform change = new AffineTransform();
 		
-		g2.translate(this.getSize().width / 2.0, this.getSize().height / 2.0);
-		
-		g2.scale(0.25f, 0.25f);
+		change.translate(this.getSize().width / 2.0, this.getSize().height / 2.0);
 		
 		AffineTransform save = g2.getTransform();
 		
-		g2.rotate(rotation / 180 * Math.PI);
+		change.rotate(rotation / 180 * Math.PI);
 			
+		change.translate(difX, -difY);
 		
-		g2.translate(difX, -difY);
-		
+		g2.transform(change);
 		//g2.scale(0.25f, 0.25f);
 		
-		AffineTransform afterRotation = g2.getTransform();
+		Shape clip = g2.getClip();
 		
 		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		
+		int count = 0;
 		
 		for(int x = 0; x < tileMatrix.length; x++)
 		{
@@ -370,19 +438,29 @@ public class GTTiledMap extends JPanel implements RenderListener
 				int dX = (x - midCoord) * tileDimension;
 				int dY = (y - midCoord) * tileDimension;
 				
-				g2.drawImage(tileMatrix[x][y].getTile(), -tileDimension / 2 + dX, -tileDimension / 2 + dY, this);
 				
-				g2.drawRect(-tileDimension / 2 + dX, -tileDimension / 2 + dY,
+				
+				int tileX = -tileDimension / 2 + dX;
+				int tileY = -tileDimension / 2 + dY;
+				
+				if(clip.intersects(tileX, tileY, tileDimension, tileDimension))
+				{
+					count++;
+					g2.drawImage(tileMatrix[x][y].getTile(), tileX, tileY, this);
+				}
+				
+				/*g2.drawRect(-tileDimension / 2 + dX, -tileDimension / 2 + dY,
 										tileDimension, tileDimension);
-				/*
+				
 				g2.drawString(tileMatrix[x][y].myCount + "", dX, dY);*/
 				
 			}
 		}
-		
+		//System.out.println(count + " of " + tileMatrix.length * tileMatrix[0].length + " drawn ");
 		g2.setTransform(save);
 		
-		g2.drawRect(-this.getWidth()/2, -this.getHeight() / 2, this.getWidth(), this.getHeight());
+		//g2.drawRect(-this.getWidth()/2, -this.getHeight() / 2, this.getWidth(), this.getHeight());
+		//g2.draw(circle);
 		
 		g2.setTransform(starting);
 	}
