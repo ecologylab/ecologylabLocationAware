@@ -1,5 +1,6 @@
 package ecologylab.standalone.MapTracker;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -14,6 +15,7 @@ import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import javax.measure.unit.BaseUnit;
@@ -29,6 +31,7 @@ import org.geotools.factory.Hints;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.geometry.GeneralDirectPosition;
 import org.geotools.referencing.crs.DefaultProjectedCRS;
+import org.opengis.geometry.DirectPosition;
 import org.opengis.geometry.Envelope;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.metadata.spatial.PixelOrientation;
@@ -36,11 +39,15 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.MathTransform2D;
 import org.opengis.referencing.operation.TransformException;
 
+import com.vividsolutions.jts.geom.Point;
+
 import ecologylab.oodss.logging.playback.ExtensionFilter;
 import ecologylab.sensor.location.compass.CompassDatum;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.services.messages.LocationDataResponse;
 import ecologylab.standalone.GeoClient;
+import ecologylab.standalone.ImageGeotagger.ImageGeotagger;
+import ecologylab.standalone.ImageGeotagger.DirectoryMonitor.ImageDirectoryMonitor;
 
 public class MapPanel extends JPanel
 {
@@ -56,6 +63,9 @@ public class MapPanel extends JPanel
 	
 	private Point2D gridLocation;
 	private Point2D.Double center;
+	
+	private ArrayList<CompassDatum> compassData;
+	private ArrayList<GPSDatum> gpsData;
 	
 	private BufferedImage mapImage;
 	
@@ -128,6 +138,36 @@ public class MapPanel extends JPanel
 	  this.heading = compassDatum.getHeading();
 	  
 	  this.repaint();
+	}
+	
+	private Point2D convertLatLonToGridPos(double lat, double lon)
+	{
+		GeneralDirectPosition latLonPos = new GeneralDirectPosition(lon, lat);
+		Point2D ret = null;
+		try
+		{
+			DirectPosition pos = projTrans.transform(latLonPos, null);
+			if (pos.getOrdinate(0) <= env.getMaximum(0)
+					&& pos.getOrdinate(0) >= env.getMinimum(0)
+					&& pos.getOrdinate(1) <= env.getMaximum(1)
+					&& pos.getOrdinate(1) >= env.getMinimum(1))
+			{
+				DirectPosition gridPos = geomTrans.transform(pos, null);
+				ret = new Point2D.Double(gridPos.getOrdinate(0), gridPos.getOrdinate(1));
+			}
+			
+		}
+		catch (MismatchedDimensionException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (TransformException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ret;
 	}
 	
 	private Point2D updateLocation(double lat, double lon, float hdop)
@@ -224,14 +264,46 @@ public class MapPanel extends JPanel
 		
 		g2.drawLine(cx, cy, (int)(cx - Math.cos(radHeading) * 50), (int)(cy - Math.sin(radHeading)*50));
 		
+		g2.setStroke(new BasicStroke(3));
+		
+		g2.setColor(Color.RED);
+		if(gpsData != null && compassData != null)
+		{
+			for(int x = 0; x < gpsData.size(); x++)
+			{
+				GPSDatum gdatum = gpsData.get(x);
+				CompassDatum cdatum = compassData.get(x);
+				
+				if(gdatum != null)
+				{
+					Point2D pnt = convertLatLonToGridPos(gdatum.getLat(), gdatum.getLon());
+					if(pnt != null)
+					{
+						int px = (int)(pnt.getX() - gridLocation.getX()) + cx;
+						int py = (int)(pnt.getY() - gridLocation.getY()) + cy;
+						//System.out.println(px + ", " + py);
+						g2.fillArc( px - 4, py - 4, 8, 8, 0, 360);
+						if(cdatum != null)
+						{
+							
+							double heading = Math.toRadians(cdatum.getHeading() + 90);
+							g2.drawLine(px, py, (int)(px - Math.cos(heading) * 20), (int)(py - Math.sin(heading)*20));
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public static void main (String [] args) throws IOException
 	{
+		
 		GeoClient client = new GeoClient();
 		
 		client.connect();
 		
+		ImageDirectoryMonitor monitor = ImageGeotagger.startMonitor(client);
+				
 		if(!client.connected())
 		{
 			return;
@@ -265,12 +337,17 @@ public class MapPanel extends JPanel
 		
 		//mapPanel.setGeoLocation(30.613672, -96.338842, 50);
 		
+		mapPanel.compassData = monitor.getCompassData();
+		mapPanel.gpsData = monitor.getGPSData();
+		
 		while(true)
 		{
 			LocationDataResponse resp = client.updateLocation();
 			
 			if(resp.gpsData != null && resp.compassData != null)
 			{
+				mapPanel.compassData = monitor.getCompassData();
+				mapPanel.gpsData = monitor.getGPSData();
 				mapPanel.setGeoLocation(resp.gpsData, resp.compassData);
 				//System.out.println("Heading: " + resp.compassData.getHeading());
 			}

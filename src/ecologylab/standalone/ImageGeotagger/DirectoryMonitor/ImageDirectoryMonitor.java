@@ -9,11 +9,16 @@ import java.util.Set;
 import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion.Static;
 
 import ecologylab.generic.StartAndStoppable;
+import ecologylab.sensor.location.compass.CompassDatum;
+import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.standalone.GeoClient;
 import ecologylab.standalone.ImageGeotagger.ImageProcessor;
 
 public class ImageDirectoryMonitor implements Runnable, StartAndStoppable
 {
+	
+	private ArrayList<CompassDatum> compassData = new ArrayList<CompassDatum>();
+	private ArrayList<GPSDatum> gpsData = new ArrayList<GPSDatum>();
 	
 	private static class JpegFilter implements FilenameFilter
 	{
@@ -80,6 +85,26 @@ public class ImageDirectoryMonitor implements Runnable, StartAndStoppable
 		}
 	}
 	
+	public void addGPSDatum(GPSDatum datum)
+	{
+		this.gpsData.add(datum);
+	}
+	
+	public void addCompassDatum(CompassDatum datum)
+	{
+		this.compassData.add(datum);
+	}
+	
+	public ArrayList<GPSDatum> getGPSData()
+	{
+		return this.gpsData;
+	}
+	
+	public ArrayList<CompassDatum> getCompassData()
+	{
+		return this.compassData;
+	}
+	
 	private Set<File> waitForNewImages() throws InterruptedException
 	{
 		Set<File> newFiles = new HashSet<File>();
@@ -135,7 +160,7 @@ public class ImageDirectoryMonitor implements Runnable, StartAndStoppable
 
 	private void processFile(File file)
 	{
-		ImageProcessor processor = new ImageProcessor(file, client);
+		ImageProcessor processor = new ImageProcessor(file, client, this);
 		
 		processor.processImage();
 	}

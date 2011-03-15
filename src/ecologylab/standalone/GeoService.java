@@ -96,6 +96,12 @@ public class GeoService extends ApplicationEnvironment
 		try
 		{
 			gps = new NMEAReader(Pref.lookupString(GPS_PORT), Pref.lookupInt(GPS_BAUD));
+
+			GPSDataUpdater gpsUpdater = new GPSDataUpdater();
+			
+			gps.addGPSDataListener(gpsUpdater);
+			
+			gpsUpdater.addDataUpdatedListener(server);
 		}
 		catch (NoSuchPortException e)
 		{
@@ -110,12 +116,6 @@ public class GeoService extends ApplicationEnvironment
 			gps = null;
 			return false;
 		}
-		
-		GPSDataUpdater gpsUpdater = new GPSDataUpdater();
-		
-		gps.addGPSDataListener(gpsUpdater);
-		
-		gpsUpdater.addDataUpdatedListener(server);
 		
 		try
 		{

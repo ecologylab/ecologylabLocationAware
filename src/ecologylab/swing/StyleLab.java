@@ -106,11 +106,12 @@ public class StyleLab
 		// Now display the map
     JFrame frame = new JFrame("Test");
     frame.setSize(1000, 1000);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// Now display the map
     Coordinate center = new Coordinate(1082644, 3112039);
     
-		GTTiledMap mapPanel = new GTTiledMap(center, map, 8f);
+		GTTiledMap mapPanel = new GTTiledDistanceMap(center, map, 100f);
 
 		frame.add(mapPanel);
 

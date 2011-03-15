@@ -34,25 +34,31 @@ import ecologylab.generic.ResourcePool;
 
 public class GTTiledMap extends JPanel implements RenderListener
 {
-	private int tileDimension;
+	protected int tileDimension;
 	
 	private TileContext tileMatrix[][];
 	
 	private Coordinate center;
 	
-	private float worldToScreenScale;
+	protected float worldToTileScale;
+	
+	protected float worldToScreenScale;
+	
+	protected float tileToScreenScale;
 	
 	private float rotation;
 	
-	private float radius;
+	protected float tileRadius;
 	
 	private TileContextPool tilePool;
 	
-	private MapContext map;
+	protected MapContext map;
 	
 	private GTRenderer gRender;
 	
 	private BlockingQueue<TileContext> queue = new LinkedBlockingQueue<TileContext>();
+	
+	private static final float rescaleThreshold = 1.5f;
 	
 	class Consumer implements Runnable 
 	{
@@ -61,9 +67,8 @@ public class GTTiledMap extends JPanel implements RenderListener
 	     try {
 	       while (true) 
 	       { 
-	      	 if(queue.isEmpty())
-	      		 repaint();
 	      	 consume(queue.take());
+	      	 repaint();
 	       }
 	     } 
 	     catch (InterruptedException ex) 
@@ -90,7 +95,24 @@ public class GTTiledMap extends JPanel implements RenderListener
 	 }
 
 	
-	public class rotateListener implements MouseWheelListener
+	protected class rotateListener implements MouseWheelListener
+	{
+
+		@Override
+		public void mouseWheelMoved(MouseWheelEvent arg0)
+		{
+			/*double rot = arg0.getWheelRotation() * 5.0;
+
+			rotation += rot;
+			repaint();*/
+			
+			float scale = (float) Math.pow(1.2f, -arg0.getWheelRotation());
+			setWorldToScreenScale(worldToScreenScale * scale);
+		}
+		
+	}
+	
+	protected class zoomListener implements MouseWheelListener
 	{
 
 		@Override
@@ -104,7 +126,7 @@ public class GTTiledMap extends JPanel implements RenderListener
 		
 	}
 	
-	public class moveListener implements KeyListener
+	protected class moveListener implements KeyListener
 	{
 
 		@Override
@@ -155,8 +177,8 @@ public class GTTiledMap extends JPanel implements RenderListener
 			t.transform(pnt,pnt);
 			
 			Coordinate coord = new Coordinate();
-			coord.x = center.x + pnt.x * 10 / worldToScreenScale;
-			coord.y = center.y + pnt.y * 10 / worldToScreenScale;
+			coord.x = center.x + pnt.x * 10 / worldToTileScale;
+			coord.y = center.y + pnt.y * 10 / worldToTileScale;
 			
 			setCenter(coord);
 			
@@ -164,7 +186,7 @@ public class GTTiledMap extends JPanel implements RenderListener
 		
 	}
 	
-	public GTTiledMap(Coordinate center, MapContext map, float worldToScreenScale, int tileDimension)
+	protected GTTiledMap(Coordinate center, MapContext map, int tileDimension)
 	{
 		super();
 		
@@ -174,11 +196,7 @@ public class GTTiledMap extends JPanel implements RenderListener
 		
 		tilePool = new TileContextPool(9, 9, tileDimension);
 		
-		this.radius = (float) (tileDimension * 1.5);
-		
-		this.worldToScreenScale = worldToScreenScale;
-		
-		this.addMouseWheelListener(new rotateListener());
+		this.tileRadius = (float) (tileDimension * 1.5);
 		
 		this.map = map;
 		
@@ -189,11 +207,24 @@ public class GTTiledMap extends JPanel implements RenderListener
     RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
     gRender.setJava2DHints(hints);
 		
-		this.addKeyListener(new moveListener());
 		this.setFocusable(true);
 		
 		Thread t = new Thread(new Consumer());
 		t.start();
+	}
+	
+	public GTTiledMap(Coordinate center, MapContext map, float worldToScreenScale, int tileDimension)
+	{
+		this(center, map, tileDimension);
+		
+		
+		this.addKeyListener(new moveListener());
+		this.addMouseWheelListener(new rotateListener());
+		
+		//setup initial scales
+		this.worldToScreenScale = worldToScreenScale;
+		this.worldToTileScale = worldToScreenScale;
+		this.tileToScreenScale = 1.0f;
 		
 		completeReset();
 	}
@@ -209,10 +240,10 @@ public class GTTiledMap extends JPanel implements RenderListener
 		
 		Graphics2D g2 = cntx.getGraphics();
 		
-		double x1 = cntx.center.x - this.tileDimension / 2.0 / worldToScreenScale;
-		double x2 = cntx.center.x + this.tileDimension / 2.0 / worldToScreenScale;
-		double y1 = cntx.center.y - this.tileDimension / 2.0 / worldToScreenScale;
-		double y2 = cntx.center.y + this.tileDimension / 2.0 / worldToScreenScale;
+		double x1 = cntx.center.x - this.tileDimension / 2.0 / worldToTileScale;
+		double x2 = cntx.center.x + this.tileDimension / 2.0 / worldToTileScale;
+		double y1 = cntx.center.y - this.tileDimension / 2.0 / worldToTileScale;
+		double y2 = cntx.center.y + this.tileDimension / 2.0 / worldToTileScale;
 		
 		ReferencedEnvelope env = new ReferencedEnvelope(x1, x2, y1, y2, map.getCoordinateReferenceSystem());		
 		
@@ -244,8 +275,8 @@ public class GTTiledMap extends JPanel implements RenderListener
 		//System.out.println(newCenter.x + ", " + newCenter.y);
 		
 		TileContext middle = getCenterTile();
-		double difX = (newCenter.x - middle.center.x) * worldToScreenScale;
-		double difY = (newCenter.y - middle.center.y) * worldToScreenScale;
+		double difX = (newCenter.x - middle.center.x) * worldToTileScale;
+		double difY = (newCenter.y - middle.center.y) * worldToTileScale;
 		
 		double dxf = (-difX / tileDimension);
 		double dyf = (difY / tileDimension);
@@ -305,8 +336,8 @@ public class GTTiledMap extends JPanel implements RenderListener
 				else
 				{
 					tileMatrix[x][y] = tilePool.acquire();
-					tileMatrix[x][y].center.x = tile.center.x - (dx * tileDimension / worldToScreenScale);
-					tileMatrix[x][y].center.y = tile.center.y + (dy * tileDimension / worldToScreenScale);
+					tileMatrix[x][y].center.x = tile.center.x - (dx * tileDimension / worldToTileScale);
+					tileMatrix[x][y].center.y = tile.center.y + (dy * tileDimension / worldToTileScale);
 					queueRender(tileMatrix[x][y]);
 				}
 				
@@ -328,9 +359,9 @@ public class GTTiledMap extends JPanel implements RenderListener
 	/**
 	 * Resets the imageMatrix buffer and rerenders all the tiles.
 	 */
-	private void completeReset()
+	protected void completeReset()
 	{
-		int tiles = (int) Math.ceil(radius * 2 / tileDimension);
+		int tiles = (int) Math.ceil(tileRadius * 2 / tileDimension) + 1;
 		
 		/* 
 		 * make sure we always have an odd number of tiles
@@ -361,18 +392,156 @@ public class GTTiledMap extends JPanel implements RenderListener
 			tileMatrix = new TileContext[tiles][tiles];
 		}	
 		
-		for(int x = 0; x < tileMatrix.length; x++)
+		int mid = tileMatrix.length / 2;
+		
+		int iterations = tileMatrix.length / 2;
+		
+		/*queue from the middle to get a nicer render fill in*/
+		for(int z = 0; z <= iterations; z++)
 		{
-			for(int y = 0; y < tileMatrix[x].length; y++)
+			for(int x = mid - z; x <= mid + z; x++)
 			{
-				TileContext tile = tilePool.acquire();
-				tileMatrix[x][y] = tile;
-				tile.center.x = this.center.x + (x - tileMatrix.length / 2) * tileDimension / worldToScreenScale;
-				tile.center.y = this.center.y - (y - tileMatrix[x].length / 2) * tileDimension / worldToScreenScale;
-				queueRender(tileMatrix[x][y]);
+				for(int y = mid - z; y <= mid + z; y++)
+				{
+					if(tileMatrix[x][y] == null)
+					{
+						TileContext tile = tilePool.acquire();
+						tileMatrix[x][y] = tile;
+						tile.center.x = this.center.x + (x - tileMatrix.length / 2) * tileDimension / worldToTileScale;
+						tile.center.y = this.center.y - (y - tileMatrix[x].length / 2) * tileDimension / worldToTileScale;
+						queueRender(tileMatrix[x][y]);
+					}
+				}
 			}
 		}
 		
+	}
+	
+	protected void resizeReset()
+	{
+		int tiles = (int) Math.ceil(tileRadius * 2 / tileDimension) + 1;
+		/* 
+		 * make sure we always have an odd number of tiles
+		 * that way we can make sure to have a center tile
+		 */
+		if(tiles % 2 == 0)
+		{
+			tiles++;
+		}
+		
+		int oldTiles = tileMatrix.length;
+		
+		if(tiles > oldTiles)
+		{
+			//adding more tiles
+			
+			TileContext[][] tmpTiles = new TileContext[tiles][tiles];
+			
+			int startOffset = (tiles - oldTiles) / 2;
+			
+			double centerX = getCenterTile().center.x;
+			double centerY = getCenterTile().center.y;
+			
+			for(int x = 0; x < tmpTiles.length; x++)
+			{
+				for(int y = 0; y < tmpTiles[x].length; y++)
+				{
+					int oldX = x - startOffset;
+					int oldY = y - startOffset;
+					
+					if(oldX >= 0 && oldX < tileMatrix.length && oldY >= 0 && oldY < tileMatrix[oldX].length)
+					{
+						//take tile from existing tile matrix
+						tmpTiles[x][y] = tileMatrix[oldX][oldY];
+					}
+					else
+					{
+						//tile around the edge we must render it....
+						TileContext tile = tilePool.acquire();
+						tmpTiles[x][y] = tile;
+						tile.center.x = centerX + (x - tmpTiles.length / 2) * tileDimension / worldToTileScale;
+						tile.center.y = centerY - (y - tmpTiles[x].length / 2) * tileDimension / worldToTileScale;
+						queueRender(tmpTiles[x][y]);
+					}
+				}
+			}
+			tileMatrix = tmpTiles;
+		}
+		
+		else if(tiles < oldTiles)
+		{
+			//removing tiles
+			TileContext[][] tmpTiles = new TileContext[tiles][tiles];
+			
+			
+			int startOffset = (oldTiles - tiles) / 2;
+			for(int x = startOffset; x < startOffset + tiles; x++)
+			{
+				for(int y = startOffset; y < startOffset + tiles; y++)
+				{
+					tmpTiles[x - startOffset][y - startOffset] = tileMatrix[x][y];
+					tileMatrix[x][y] = null;
+				}
+			}
+			
+			for(int x = 0; x < tileMatrix.length; x++)
+			{
+				for(int y = 0; y < tileMatrix[x].length; y++)
+				{
+					if(tileMatrix[x][y] != null)
+					{
+						release(tileMatrix[x][y]);
+						tileMatrix[x][y] = null;
+					}
+				}
+			}
+			tileMatrix = tmpTiles;
+		}	
+		
+		
+	}
+	
+	public void setWorldToScreenScale(float _worldToScreenScale)
+	{
+		double scaleRatio = _worldToScreenScale / worldToScreenScale;
+		
+		worldToScreenScale = _worldToScreenScale;
+		
+		tileToScreenScale *= scaleRatio;
+		
+		float newRadius = (float) Math.sqrt(this.getWidth() * this.getWidth() + this.getHeight() * this.getHeight()) / 2.0f;
+		
+		if(tileToScreenScale > rescaleThreshold || tileToScreenScale < 1.0f / rescaleThreshold)
+		{
+			//scale is too much or to small we need total reset
+			
+			tileToScreenScale = 1.0f;
+			worldToTileScale = worldToScreenScale;
+			
+			tileRadius = newRadius / tileToScreenScale;
+			
+			completeReset();
+		}
+		
+		else
+		{
+			//not too extreme just treat it like a resize of the map
+			worldToTileScale = worldToScreenScale / tileToScreenScale;
+			
+			newRadius /= tileToScreenScale;
+			
+			if(newRadius > tileRadius + tileDimension / 2 )
+			{
+				tileRadius = newRadius;
+				resizeReset();
+			}
+			else if(newRadius < tileRadius - tileDimension / 2)
+			{
+				tileRadius = newRadius ;
+				resizeReset();
+			}
+		}
+		repaint();
 	}
 	
 	/**
@@ -381,18 +550,24 @@ public class GTTiledMap extends JPanel implements RenderListener
 	@Override
 	public void setBounds(int x, int y, int width, int height)
 	{
-		float newRadius = (float) Math.sqrt(width * width + height * height) / 2.0f;
-		if(newRadius > radius + tileDimension )
-		{
-			radius = newRadius;
-			completeReset();
-		}
-		else if(newRadius < radius - tileDimension)
-		{
-			radius = newRadius;
-			completeReset();
-		}
+		resizeAuxillary(width, height);
 		super.setBounds(x, y, width, height);
+	}
+
+	protected void resizeAuxillary(int width, int height)
+	{
+		float newRadius = (float) Math.sqrt(width * width + height * height) / 2.0f / tileToScreenScale;
+		
+		if(newRadius > tileRadius + tileDimension / 2 )
+		{
+			tileRadius = newRadius;
+			resizeReset();
+		}
+		else if(newRadius < tileRadius - tileDimension / 2)
+		{
+			tileRadius = newRadius ;
+			resizeReset();
+		}
 	}
 	
 	@Override
@@ -406,8 +581,8 @@ public class GTTiledMap extends JPanel implements RenderListener
 		
 		Coordinate middleCoordinate = getCenterTile().center;
 		
-		double difX = (middleCoordinate.x - this.center.x) * worldToScreenScale;
-		double difY = (middleCoordinate.y - this.center.y) * worldToScreenScale;
+		double difX = (middleCoordinate.x - this.center.x) * worldToTileScale;
+		double difY = (middleCoordinate.y - this.center.y) * worldToTileScale;
 		
 		AffineTransform starting = g2.getTransform();
 		AffineTransform change = new AffineTransform();
@@ -418,10 +593,11 @@ public class GTTiledMap extends JPanel implements RenderListener
 		
 		change.rotate(rotation / 180 * Math.PI);
 			
+		change.scale(tileToScreenScale, tileToScreenScale);
+		
 		change.translate(difX, -difY);
 		
 		g2.transform(change);
-		//g2.scale(0.25f, 0.25f);
 		
 		Shape clip = g2.getClip();
 		
@@ -445,11 +621,11 @@ public class GTTiledMap extends JPanel implements RenderListener
 				{
 					count++;
 					g2.drawImage(tileMatrix[x][y].getTile(), tileX, tileY, this);
+					g2.drawRect(tileX, tileY,tileDimension, tileDimension);
 				}
 				
-				/*g2.drawRect(-tileDimension / 2 + dX, -tileDimension / 2 + dY,
-										tileDimension, tileDimension);
 				
+				/*
 				g2.drawString(tileMatrix[x][y].myCount + "", dX, dY);*/
 				
 			}

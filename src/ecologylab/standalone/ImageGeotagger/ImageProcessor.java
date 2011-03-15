@@ -35,6 +35,7 @@ import ecologylab.sensor.location.compass.CompassDatum;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.services.messages.LocationDataResponse;
 import ecologylab.standalone.GeoClient;
+import ecologylab.standalone.ImageGeotagger.DirectoryMonitor.ImageDirectoryMonitor;
 
 public class ImageProcessor implements Runnable {
 	protected File imageFile;
@@ -43,17 +44,22 @@ public class ImageProcessor implements Runnable {
 	private GeoClient client;
 	private GPSDatum gpsData;
 	private CompassDatum compassData;
+	private ImageDirectoryMonitor monitor;
 
-	public ImageProcessor(File image, GeoClient client) {
+	public ImageProcessor(File image, GeoClient client, ImageDirectoryMonitor monitor) {
 		this.imageFile = image;
 		this.client = client;
+		this.monitor = monitor;
 	}
 
-	public ImageProcessor(File image, GPSDatum gpsData, CompassDatum compassData)
+	public ImageProcessor(File image, GPSDatum gpsData, CompassDatum compassData, ImageDirectoryMonitor monitor)
 	{
 		this.imageFile = image;
 		this.gpsData = gpsData;
 		this.compassData = compassData;
+		
+		this.monitor = monitor;
+		
 	}
 	
 	public void processImage() {
@@ -95,6 +101,8 @@ public class ImageProcessor implements Runnable {
 			e.printStackTrace();
 		}
 
+		
+		
 		if (metadata == null || !(metadata instanceof JpegImageMetadata))
 			return;
 
@@ -171,11 +179,20 @@ public class ImageProcessor implements Runnable {
 		}
 
 		// finally copy the temp file to original
-		try {
+		try 
+		{
 			copyFile(dst, imageFile);
+			if(this.monitor != null)
+			{
+				this.monitor.addCompassDatum(compassData);
+				this.monitor.addGPSDatum(gpsData);
+			}
+			
 		} catch (IOException e) {
+			
 			e.printStackTrace();
 		}
+		
 	}
 
 	public void setCompassData(TiffOutputSet outputSet) 
@@ -269,7 +286,7 @@ public class ImageProcessor implements Runnable {
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			ImageProcessor proc = new ImageProcessor(chooser.getSelectedFile(),
-					gData, cData);
+					gData, cData, null);
 			proc.processImage();
 		}
 	}

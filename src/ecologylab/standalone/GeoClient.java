@@ -15,7 +15,7 @@ public class GeoClient
 	private NIOClient client;
 	private static final LocationDataRequest request = new LocationDataRequest();
 	
-	public LocationDataResponse updateLocation()
+	public synchronized LocationDataResponse updateLocation()
 	{
 		try
 		{
