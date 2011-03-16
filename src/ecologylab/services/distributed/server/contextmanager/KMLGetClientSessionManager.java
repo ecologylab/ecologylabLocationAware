@@ -54,13 +54,6 @@ public class KMLGetClientSessionManager extends HTTPGetClientSessionManager
 	}
 
 	@Override
-	protected RequestMessage translateStringToRequestMessage(CharSequence messageSequence)
-			throws SIMPLTranslationException, UnsupportedEncodingException
-	{
-		return KmlRequest.STATIC_INSTANCE;
-	}
-
-	@Override
 	protected void clearOutgoingMessageBuffer(StringBuilder outgoingMessageBuf)
 	{
 		outgoingMessageBuf.setLength(0);
@@ -94,8 +87,30 @@ public class KMLGetClientSessionManager extends HTTPGetClientSessionManager
 	}
 
 	@Override
-	protected void prepareBuffers(StringBuilder incomingMessageBuf, StringBuilder outgoingMessageBuf,
-			StringBuilder outgoingMessageHeaderBuf)
+	protected RequestMessage translateGetRequest(CharSequence messageCharSequence, String startLineString)
+			throws SIMPLTranslationException
 	{
+		return KmlRequest.STATIC_INSTANCE;
+	}
+
+	@Override
+	protected RequestMessage translateOODSSRequest(CharSequence messageCharSequence, String startLineString)
+			throws SIMPLTranslationException
+	{
+		return KmlRequest.STATIC_INSTANCE;
+	}
+
+	@Override
+	protected RequestMessage translatePostRequest(CharSequence messageCharSequence, String startLineString)
+			throws SIMPLTranslationException
+	{
+		return KmlRequest.STATIC_INSTANCE;
+	}
+
+	@Override
+	protected RequestMessage translateOtherRequest(CharSequence messageCharSequence, String startLineString)
+			throws SIMPLTranslationException
+	{
+		return KmlRequest.STATIC_INSTANCE;
 	}
 }

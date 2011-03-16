@@ -3,13 +3,13 @@
  */
 package ecologylab.composite.kml.sensor;
 
-import java.util.LinkedList;
-
 import ecologylab.sensor.network.wireless.WiFiAdapter;
 import ecologylab.sensor.network.wireless.data.WiFiAdapterStatus;
 import ecologylab.sensor.network.wireless.data.WiFiSource;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
-import ecologylab.xml.library.kml.feature.KmlFeature;
+import ecologylab.serialization.library.kml.feature.KmlFeature;
+
+import java.util.LinkedList;
 
 /**
  * Can modify the Description component of a KmlFeature to keep it updated with

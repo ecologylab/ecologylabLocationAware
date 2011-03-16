@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.TooManyListenersException;
 
 import ecologylab.sensor.location.NMEAReader;
+import ecologylab.sensor.location.compass.CompassDatum;
 import ecologylab.sensor.location.compass.CompassDataListener;
 import ecologylab.sensor.location.compass.CompassDataUpdater;
 import gnu.io.NoSuchPortException;
@@ -13,10 +14,12 @@ import gnu.io.UnsupportedCommOperationException;
 public class TestCompass implements CompassDataListener
 {
 
-	public void compassDataUpdated(float heading, float pitch, float roll,
-			float temp)
+	public void compassDataUpdated(CompassDatum data)
 	{
-		System.out.println("Heading: " + heading + "\tPitch: " + pitch + "\tRoll: " + roll + "\tTemp: " + temp);
+		System.out.println("Heading: " + data.getHeading() + 
+											 "\tPitch: " + data.getPitch() + 
+											 "\tRoll: " + data.getRoll() + 
+											 "\tTemp: " + data.getTemp());
 	}
 	
 	public static void main(String[] args) throws IOException

@@ -1,0 +1,6 @@
+<pref_set>
+<!--  <pref_string name="GPS_PORT" value="/dev/tty.usbmodemfa1410" />-->
+  <pref_string name="COMPASS_PORT" value="/dev/tty.SLAB_USBtoUART" />
+  <pref_int name="GPS_BAUD" value ="115200" />
+  <pref_int name="COMPASS_BAUD" value = "19200" />
+</pref_set>

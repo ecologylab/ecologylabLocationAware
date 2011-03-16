@@ -1,57 +1,196 @@
 package ecologylab.sensor.location.compass;
 
-import java.util.ArrayList;
-
+import ecologylab.generic.Debug;
 import ecologylab.sensor.location.NMEAStringListener;
+
+import java.util.ArrayList;
 
 public class CompassDataUpdater implements NMEAStringListener
 {
-	private float heading 					= 0;
-	
-	private float pitch 						= 0;
-	
-	private float roll						= 0;
-	
-	private float temp 						= 0;
+	private CompassDatum										cData;
 
-	private char[]	tempDataStore;
-	
-	private ArrayList<CompassDataListener> listeners = new ArrayList<CompassDataListener>();
-	
+	// private char[] tempDataStore;
+
+	private ArrayList<CompassDataListener>	listeners	= new ArrayList<CompassDataListener>();
+
+	// public CompassDataUpdater(CompassDatum datum){
+	//
+	// this.cData = datum;
+	// }
+
+	public CompassDataUpdater(CompassDatum cDatum)
+	{
+		cData = cDatum;
+	}
+
+	/**
+	 * Instantiates a CompassDatum object and initializes it to 0, 0, 0, 0
+	 */
+	public CompassDataUpdater()
+	{
+		cData = new CompassDatum(0, 0, 0, 0);
+	}
+
+	private static int nextNonNumber(String src, int start)
+	{
+		for (int i = start; i < src.length(); i++)
+			if (!Character.isDigit(src.charAt(i)) && src.charAt(i) != '.' && src.charAt(i) != '-')
+				return i;
+
+		return -1;
+	}
+
 	public void processIncomingNMEAString(String gpsDataString)
 	{
-		if(checkCheckSum(gpsDataString) && gpsDataString.charAt(0) == 'C')
+		if (checkCheckSum(gpsDataString) && gpsDataString.charAt(0) == 'C')
 		{
-			int cIndex = 0;
-			int pIndex = gpsDataString.indexOf('P');
-			int rIndex = gpsDataString.indexOf('R');
-			int tIndex = gpsDataString.indexOf('T');
-			int asteriskIndex = gpsDataString.indexOf('*');
+			int end;
 			
-			heading = Float.parseFloat(gpsDataString.substring(cIndex +  1, pIndex));
-			pitch = Float.parseFloat(gpsDataString.substring(pIndex +  1, rIndex));;
-			roll = Float.parseFloat(gpsDataString.substring(rIndex +  1, tIndex));
-			temp = Float.parseFloat(gpsDataString.substring(tIndex + 1, asteriskIndex));
-			
-			for(CompassDataListener listener:listeners)
+			for (int i = 0; i < gpsDataString.length(); i++)
 			{
-				listener.compassDataUpdated(heading, pitch, roll, temp);
+				char c = gpsDataString.charAt(i);
+				
+				switch (c)
+				{
+				case 'C':
+					end = nextNonNumber(gpsDataString, i+1);
+					if (end > -1)
+					{
+						cData.setHeading(Float.parseFloat(gpsDataString.substring(i+1, end)));
+						i = end-1;
+					} // should throw an exception, I guess the hardware is broken on the else
+					break;
+				case 'P':
+					end = nextNonNumber(gpsDataString, i+1);
+					if (end > -1)
+					{
+						try{
+						cData.setPitch(Float.parseFloat(gpsDataString.substring(i+1, end)));
+						}
+						catch (NumberFormatException e)
+						{							
+							e.printStackTrace();
+							Debug.println(gpsDataString.substring(i+1, end));
+						}
+						i = end-1;
+					} // should throw an exception, I guess the hardware is broken on the else
+					break;
+				case 'R':
+					end = nextNonNumber(gpsDataString, i+1);
+					if (end > -1)
+					{
+						cData.setRoll(Float.parseFloat(gpsDataString.substring(i+1, end)));
+						i = end-1;
+					} // should throw an exception, I guess the hardware is broken on the else
+					break;
+				case 'T': // ignore
+				case 'D': // ignore
+					end = nextNonNumber(gpsDataString, i+1);
+					if (end > -1)
+					{
+						i = end-1;
+					} // should throw an exception, I guess the hardware is broken on the else
+					break;
+				case 'M':
+					switch(gpsDataString.charAt(i+1))
+					{
+					case 'x': // ignore
+					case 'y': // ignore
+					case 'z': // ignore
+						end = nextNonNumber(gpsDataString, i+2);
+				
+						if (end > -1)
+						{
+							i = end - 1;
+						} // should throw an exception, I guess the hardware is broken on the else
+						break;
+					default: // ignore
+						end = nextNonNumber(gpsDataString, i+1);
+						
+						if (end > -1)
+						{
+							i = end - 1;
+						} // should throw an exception, I guess the hardware is broken on the else
+					}
+					break;
+				case 'A':
+					switch(gpsDataString.charAt(i+1))
+					{
+					case 'x': 
+						end = nextNonNumber(gpsDataString, i+2);
+						
+						if (end > -1)
+						{
+							cData.setAccX(Float.parseFloat(gpsDataString.substring(i+2, end)));
+							i = end - 1;
+						} // should throw an exception, I guess the hardware is broken on the else
+						break;
+					case 'y': 
+						end = nextNonNumber(gpsDataString, i+2);
+						
+						if (end > -1)
+						{
+							cData.setAccX(Float.parseFloat(gpsDataString.substring(i+2, end)));
+							i = end - 1;
+						} // should throw an exception, I guess the hardware is broken on the else
+						break;
+					case 'z': 
+						end = nextNonNumber(gpsDataString, i+2);
+						
+						if (end > -1)
+						{
+							cData.setAccX(Float.parseFloat(gpsDataString.substring(i+2, end)));
+							i = end - 1;
+						} // should throw an exception, I guess the hardware is broken on the else
+						break;
+					default:
+						end = nextNonNumber(gpsDataString, i+1);
+						
+						if (end > -1)
+						{
+							cData.setTotAcc(Float.parseFloat(gpsDataString.substring(i+1, end)));
+							i = end - 1;
+						} // should throw an exception, I guess the hardware is broken on the else
+					}
+					break;
+				case 'G':
+					switch(gpsDataString.charAt(i+1))
+					{
+					case 'x': // ignore
+					case 'y': // ignore
+						end = nextNonNumber(gpsDataString, i+2);
+				
+						if (end > -1)
+						{
+							i = end - 1;
+						} // should throw an exception, I guess the hardware is broken on the else
+						break;
+					}
+					break;
+				case '*':
+					for (CompassDataListener listener : listeners)
+					{
+						listener.compassDataUpdated(cData);
+					}
+
+					return;
+				}
 			}
 		}
 	}
-	
+
 	public void addCompassDataListener(CompassDataListener listener)
 	{
 		listeners.add(listener);
 	}
-	
+
 	private boolean checkCheckSum(String gpsData)
 	{
-		char[] tempData = tempDataStore();
-		
-		if(gpsData.length() < 3)
+		// char[] tempData = tempDataStore();
+
+		if (gpsData.length() < 3)
 			return false;
-		
+
 		// check the checksum before doing any processing
 		int checkSumSplit = gpsData.length() - 3;
 
@@ -66,10 +205,10 @@ public class CompassDataUpdater implements NMEAStringListener
 
 		String computedCheckSum = Integer.toHexString((checkSum & 0xF0) >>> 4)
 				+ Integer.toHexString(checkSum & 0x0F);
-		
+
 		return computedCheckSum.toUpperCase().equals(gpsData.substring(checkSumSplit + 1));
 	}
-	
+
 	/**
 	 * Ensure that tempDataStore is instantiated and clean, then return it. Used for lazy
 	 * instantiation; no need to instantiate it if this is a serialized set of data from somewhere
@@ -77,14 +216,14 @@ public class CompassDataUpdater implements NMEAStringListener
 	 * 
 	 * @return
 	 */
-	private synchronized char[] tempDataStore()
-	{
-		if (tempDataStore == null)
-		{
-			tempDataStore = new char[80];
-		}
-
-		return tempDataStore;
-	}
+	// private synchronized char[] tempDataStore()
+	// {
+	// if (tempDataStore == null)
+	// {
+	// tempDataStore = new char[80];
+	// }
+	//
+	// return tempDataStore;
+	// }
 
 }

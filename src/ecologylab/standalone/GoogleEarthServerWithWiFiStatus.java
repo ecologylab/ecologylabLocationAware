@@ -5,18 +5,19 @@ import ecologylab.composite.kml.sensor.WiFiColoredIcon;
 import ecologylab.composite.kml.sensor.WiFiDataComment;
 import ecologylab.net.NetTools;
 import ecologylab.oodss.messages.DefaultServicesTranslations;
+import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
 import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.library.kml.Kml;
+import ecologylab.serialization.library.kml.feature.Placemark;
+import ecologylab.serialization.library.kml.feature.container.Document;
+import ecologylab.serialization.library.kml.geometry.Point;
+import ecologylab.serialization.library.kml.style.LineStyle;
+import ecologylab.serialization.library.kml.style.PolyStyle;
+import ecologylab.serialization.library.kml.style.Style;
 import ecologylab.services.distributed.server.varieties.KmlServer;
-import ecologylab.xml.library.kml.Kml;
-import ecologylab.xml.library.kml.feature.Placemark;
-import ecologylab.xml.library.kml.feature.container.Document;
-import ecologylab.xml.library.kml.geometry.Coordinates;
-import ecologylab.xml.library.kml.geometry.Point;
-import ecologylab.xml.library.kml.style.LineStyle;
-import ecologylab.xml.library.kml.style.PolyStyle;
-import ecologylab.xml.library.kml.style.Style;
+
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
@@ -87,7 +88,7 @@ public class GoogleEarthServerWithWiFiStatus
 
 		Placemark head = new Placemark("point",
 				"", lineStyle.getId());
-		head.setPoint(new Point(new Coordinates("-95.6711667,29.960144444,0")));
+		head.setPoint(new Point(new GeoCoordinate(29.960144444,-95.6711667,0)));
 		
 		// register with the comment creator, so the comment matches the current wifi status
 		comments.registerKmlFeature(head);

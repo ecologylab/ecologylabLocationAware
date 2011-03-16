@@ -3,22 +3,22 @@
  */
 package ecologylab.standalone.wifiGpsControls;
 
-import java.awt.Color;
-
 import ecologylab.composite.kml.sensor.GPSToKMLPoint;
 import ecologylab.composite.kml.sensor.GPSToKMLTrail;
 import ecologylab.composite.kml.sensor.WiFiColoredIcon;
 import ecologylab.composite.kml.sensor.WiFiDataComment;
 import ecologylab.sensor.location.NMEAReader;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
-import ecologylab.xml.library.kml.Kml;
-import ecologylab.xml.library.kml.feature.Placemark;
-import ecologylab.xml.library.kml.feature.container.Document;
-import ecologylab.xml.library.kml.geometry.LineString;
-import ecologylab.xml.library.kml.geometry.Point;
-import ecologylab.xml.library.kml.style.LineStyle;
-import ecologylab.xml.library.kml.style.PolyStyle;
-import ecologylab.xml.library.kml.style.Style;
+import ecologylab.serialization.library.kml.Kml;
+import ecologylab.serialization.library.kml.feature.Placemark;
+import ecologylab.serialization.library.kml.feature.container.Document;
+import ecologylab.serialization.library.kml.geometry.LineString;
+import ecologylab.serialization.library.kml.geometry.Point;
+import ecologylab.serialization.library.kml.style.LineStyle;
+import ecologylab.serialization.library.kml.style.PolyStyle;
+import ecologylab.serialization.library.kml.style.Style;
+
+import java.awt.Color;
 
 /**
  * @author Administrator
