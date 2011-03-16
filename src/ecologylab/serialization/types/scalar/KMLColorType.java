@@ -3,11 +3,10 @@
  */
 package ecologylab.serialization.types.scalar;
 
-import ecologylab.serialization.ScalarUnmarshallingContext;
-import ecologylab.serialization.SerializationContext;
-import ecologylab.serialization.types.scalar.ScalarType;
-
 import java.lang.reflect.Field;
+
+import ecologylab.serialization.ScalarUnmarshallingContext;
+import ecologylab.serialization.TranslationContext;
 
 /**
  * Type system entry for java.awt.Color. Uses a hex string as initialization.
@@ -85,7 +84,7 @@ public class KMLColorType extends ScalarType<KMLColor>
 	 * @return
 	 */
 	@Override
-	public String marshall(KMLColor color, SerializationContext serializationContext)
+	public String marshall(KMLColor color, TranslationContext serializationContext)
 	{
 		String result;
 

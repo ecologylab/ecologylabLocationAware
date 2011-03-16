@@ -1,13 +1,12 @@
 package ecologylab.serialization.types.scalar;
 
-import java.lang.reflect.Field;
 import java.text.ParseException;
 
 import org.geotools.referencing.wkt.Parser;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import ecologylab.serialization.ScalarUnmarshallingContext;
-import ecologylab.serialization.SerializationContext;
+import ecologylab.serialization.TranslationContext;
 
 public class CoordinateReferenceSystemType extends ScalarType<CoordinateReferenceSystem>
 {
@@ -58,7 +57,7 @@ public class CoordinateReferenceSystemType extends ScalarType<CoordinateReferenc
 	 */
 	@Override
 	public String marshall(CoordinateReferenceSystem instance,
-			SerializationContext serializationContext)
+			TranslationContext serializationContext)
 	{
 		return instance.toWKT();
 	}
