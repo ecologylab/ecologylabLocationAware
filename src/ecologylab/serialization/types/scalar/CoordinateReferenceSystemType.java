@@ -74,4 +74,11 @@ public class CoordinateReferenceSystemType extends ScalarType<CoordinateReferenc
 		TypeRegistry.register(CoordinateReferenceSystemType.class);
 	}
 
+	@Override
+	public String getJavaType()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
