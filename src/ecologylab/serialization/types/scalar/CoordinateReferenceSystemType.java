@@ -14,23 +14,10 @@ public class CoordinateReferenceSystemType extends ScalarType<CoordinateReferenc
 	
 	protected CoordinateReferenceSystemType(Class<? extends CoordinateReferenceSystem> thatClass)
 	{
-		super(thatClass);
+		super(thatClass, thatClass.getSimpleName(), null, null, null);
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	public String getCSharptType()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getDbType()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public CoordinateReferenceSystem getInstance(String value, String[] formatStrings,
@@ -62,23 +49,10 @@ public class CoordinateReferenceSystemType extends ScalarType<CoordinateReferenc
 		return instance.toWKT();
 	}
 
-	@Override
-	public String getObjectiveCType()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	public static void register()
 	{
 		TypeRegistry.register(CoordinateReferenceSystemType.class);
-	}
-
-	@Override
-	public String getJavaType()
-	{
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
