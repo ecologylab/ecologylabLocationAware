@@ -6,7 +6,7 @@ package ecologylab.serialization.types.scalar;
 import java.awt.Color;
 import java.awt.color.ColorSpace;
 
-import ecologylab.serialization.types.scalar.TypeRegistry;
+import ecologylab.serialization.types.TypeRegistry;
 
 /**
  * @author Zach
@@ -18,7 +18,7 @@ public class KMLColor extends Color
 
 	static
 	{
-		TypeRegistry.register(KMLColorType.class);
+		TypeRegistry.registerScalarType(KMLColorType.class);
 	}
 	
 	public KMLColor(Color orig)

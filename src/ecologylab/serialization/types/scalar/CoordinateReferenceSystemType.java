@@ -7,6 +7,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import ecologylab.serialization.ScalarUnmarshallingContext;
 import ecologylab.serialization.TranslationContext;
+import ecologylab.serialization.types.ScalarType;
+import ecologylab.serialization.types.TypeRegistry;
 
 public class CoordinateReferenceSystemType extends ScalarType<CoordinateReferenceSystem>
 {
@@ -52,7 +54,7 @@ public class CoordinateReferenceSystemType extends ScalarType<CoordinateReferenc
 	
 	public static void register()
 	{
-		TypeRegistry.register(CoordinateReferenceSystemType.class);
+		TypeRegistry.registerScalarType(CoordinateReferenceSystemType.class);
 	}
 
 }

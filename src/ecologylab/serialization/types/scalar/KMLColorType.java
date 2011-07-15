@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 
 import ecologylab.serialization.ScalarUnmarshallingContext;
 import ecologylab.serialization.TranslationContext;
+import ecologylab.serialization.types.ScalarType;
 
 /**
  * Type system entry for java.awt.Color. Uses a hex string as initialization.
