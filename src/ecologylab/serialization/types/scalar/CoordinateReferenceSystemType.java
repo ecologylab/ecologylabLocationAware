@@ -14,10 +14,9 @@ public class CoordinateReferenceSystemType extends ScalarType<CoordinateReferenc
 {
 	private static final Parser WKT_PARSER = new Parser();
 	
-	protected CoordinateReferenceSystemType(Class<? extends CoordinateReferenceSystem> thatClass)
+	protected CoordinateReferenceSystemType()
 	{
-		super(thatClass, thatClass.getSimpleName(), null, null, null);
-		// TODO Auto-generated constructor stub
+		super(CoordinateReferenceSystem.class, null, null, null);
 	}
 
 
@@ -54,7 +53,8 @@ public class CoordinateReferenceSystemType extends ScalarType<CoordinateReferenc
 	
 	public static void register()
 	{
-		TypeRegistry.registerScalarType(CoordinateReferenceSystemType.class);
+		//TODO -- put this and KMLColorType into a class called LocationAwareTypes, and ensure its early initialization
+		new CoordinateReferenceSystemType();	
 	}
 
 }

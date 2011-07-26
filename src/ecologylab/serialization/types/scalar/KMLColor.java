@@ -6,7 +6,7 @@ package ecologylab.serialization.types.scalar;
 import java.awt.Color;
 import java.awt.color.ColorSpace;
 
-import ecologylab.serialization.types.TypeRegistry;
+import ecologylab.serialization.types.ScalarType;
 
 /**
  * @author Zach
@@ -15,12 +15,10 @@ import ecologylab.serialization.types.TypeRegistry;
 public class KMLColor extends Color
 {
 	private static final long	serialVersionUID	= 1L;
-
-	static
-	{
-		TypeRegistry.registerScalarType(KMLColorType.class);
-	}
 	
+	//TODO -- put this and CoordinateReferenceSystemType into a class called LocationAwareTypes, and ensure its early initialization
+	public static final ScalarType<KMLColor> KML_COLOR_TYPE	= new KMLColorType();
+
 	public KMLColor(Color orig)
 	{
 		this(orig.getRed(), orig.getGreen(), orig.getBlue(), orig.getAlpha());

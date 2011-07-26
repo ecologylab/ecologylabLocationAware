@@ -27,7 +27,7 @@ public class KMLColorType extends ScalarType<KMLColor>
 	 */
 	public KMLColorType()
 	{
-		super(KMLColor.class, null, null, null, null);
+		super(KMLColor.class, null, null, null);
 	}
 
 	/**
