@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 
 import ecologylab.serialization.ScalarUnmarshallingContext;
 import ecologylab.serialization.TranslationContext;
+import ecologylab.serialization.simpl_inherit;
 import ecologylab.serialization.types.ScalarType;
 
 /**
@@ -14,6 +15,7 @@ import ecologylab.serialization.types.ScalarType;
  * 
  * @author andruid
  */
+@simpl_inherit
 public class KMLColorType extends ScalarType<KMLColor>
 {
 
