@@ -16,8 +16,8 @@ import java.util.TooManyListenersException;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-import ecologylab.appframework.ApplicationEnvironment;
 import ecologylab.appframework.PropertiesAndDirectories;
+import ecologylab.appframework.SingletonApplicationEnvironment;
 import ecologylab.projection.PlateCarreeProjection;
 import ecologylab.projection.Projection;
 import ecologylab.projection.SameCoordinatesException;
@@ -40,7 +40,7 @@ import gnu.io.UnsupportedCommOperationException;
  * @author Zachary O. Toups (zach@ecologylab.net)
  * 
  */
-public class ProjectionVisualizer extends ApplicationEnvironment implements GPSDataUpdatedListener,
+public class ProjectionVisualizer extends SingletonApplicationEnvironment implements GPSDataUpdatedListener,
 		ActionListener, WindowListener, GPSController
 {
 	JFrame									mainFrame;

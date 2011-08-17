@@ -1,6 +1,10 @@
 package ecologylab.standalone;
 
-import ecologylab.appframework.ApplicationEnvironment;
+import java.io.IOException;
+import java.net.BindException;
+import java.util.TooManyListenersException;
+
+import ecologylab.appframework.SingletonApplicationEnvironment;
 import ecologylab.appframework.types.AppFrameworkTranslations;
 import ecologylab.appframework.types.prefs.Pref;
 import ecologylab.collections.Scope;
@@ -10,16 +14,11 @@ import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
 import ecologylab.serialization.SIMPLTranslationException;
 import ecologylab.serialization.TranslationScope;
 import ecologylab.services.distributed.server.varieties.GeoServer.GeoServer;
-
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 
-import java.io.IOException;
-import java.net.BindException;
-import java.util.TooManyListenersException;
-
-public class GeoService extends ApplicationEnvironment
+public class GeoService extends SingletonApplicationEnvironment
 {
 
 	/* Preferences */

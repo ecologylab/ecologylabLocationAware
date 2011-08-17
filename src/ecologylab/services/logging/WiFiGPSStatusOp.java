@@ -127,7 +127,7 @@ import gnu.io.UnsupportedCommOperationException;
 		wiFi.connect();
 		
 		Logging l = new Logging("c:\\wGLog.xml", true, 10,
-				Logging.LOG_TO_MEMORY_MAPPED_FILE, null, 0);
+				Logging.LOG_TO_MEMORY_MAPPED_FILE, null, 0, null);
 		
 		l.start();
 		

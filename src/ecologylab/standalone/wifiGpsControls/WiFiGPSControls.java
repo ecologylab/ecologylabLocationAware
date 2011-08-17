@@ -19,8 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import stec.jenie.NativeException;
-import ecologylab.appframework.ApplicationEnvironment;
 import ecologylab.appframework.PropertiesAndDirectories;
+import ecologylab.appframework.SingletonApplicationEnvironment;
 import ecologylab.collections.Scope;
 import ecologylab.net.NetTools;
 import ecologylab.oodss.logging.Logging;
@@ -52,8 +52,8 @@ import gnu.io.UnsupportedCommOperationException;
  * @author Zachary O. Toups (zach@ecologylab.net)
  * 
  */
-public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUpdatedListener,
-		ActionListener, WindowListener, GPSController, WiFiConnectionController
+public class WiFiGPSControls extends SingletonApplicationEnvironment implements
+		GPSDataUpdatedListener, ActionListener, WindowListener, GPSController, WiFiConnectionController
 {
 	JFrame									mainFrame;
 
@@ -66,7 +66,7 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 	/**
 	 * The GPS object will come from the GPS controls.
 	 */
-	NMEAReader											gps;
+	NMEAReader							gps;
 
 	GPSDataUpdater					updater		= new GPSDataUpdater();
 
@@ -113,8 +113,11 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public WiFiGPSControls(String applicationName, TranslationScope translationScope, String[] args,
-			float prefsAssetVersion) throws SIMPLTranslationException, NoSuchPortException, IOException
+	public WiFiGPSControls(	String applicationName,
+													TranslationScope translationScope,
+													String[] args,
+													float prefsAssetVersion) throws SIMPLTranslationException,
+			NoSuchPortException, IOException
 	{
 		super(applicationName, translationScope, (TranslationScope) null, args, prefsAssetVersion);
 
@@ -162,9 +165,12 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public WiFiGPSControls(Class baseClass, String applicationName,
-			TranslationScope translationScope, String[] args, float prefsAssetVersion)
-			throws SIMPLTranslationException, NoSuchPortException, IOException
+	public WiFiGPSControls(	Class baseClass,
+													String applicationName,
+													TranslationScope translationScope,
+													String[] args,
+													float prefsAssetVersion) throws SIMPLTranslationException,
+			NoSuchPortException, IOException
 	{
 		super(baseClass, applicationName, translationScope, args, prefsAssetVersion);
 
@@ -177,7 +183,7 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 		this.gps = new NMEAReader();
 		this.gps.addGPSDataListener(this.currentOp);
 		this.gps.addGPSDataListener(updater);
-		
+
 		debug("setting up gps printer");
 		GPSDataPrinter p = new GPSDataPrinter();
 		this.gps.addGPSDataListener(p);
@@ -192,8 +198,12 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 		this.wifi.addListener(this.currentOp);
 
 		debug("setting up logging");
-		this.logging = new Logging("GPSWiFiData " + System.currentTimeMillis() + ".xml", false, 10,
-				Logging.LOG_TO_MEMORY_MAPPED_FILE, null, 0);
+		this.logging = new Logging(	"GPSWiFiData " + System.currentTimeMillis() + ".xml",
+																false,
+																10,
+																Logging.LOG_TO_MEMORY_MAPPED_FILE,
+																null,
+																0, null);
 		this.logging.start();
 
 		debug("constructing KML data");
@@ -201,8 +211,13 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 
 		debug("launching KML server");
 		TranslationScope serverTranslations = DefaultServicesTranslations.get();
-		this.kmlServer = new KmlServer(8080, NetTools.getAllInetAddressesForLocalhost(),
-				serverTranslations, new Scope(), 1000000, 1000000, kmlData);
+		this.kmlServer = new KmlServer(	8080,
+																		NetTools.getAllInetAddressesForLocalhost(),
+																		serverTranslations,
+																		new Scope(),
+																		1000000,
+																		1000000,
+																		kmlData);
 		kmlServer.start();
 
 		debug("configuring visualizer");
@@ -398,9 +413,9 @@ public class WiFiGPSControls extends ApplicationEnvironment implements GPSDataUp
 	/**
 	 * Indicates which GPS update operations this is interested in; in this case, all of them.
 	 */
-	private static EnumSet<GPSUpdateInterest>	interestSet	= EnumSet.of(GPSUpdateInterest.LAT_LON,
-																														GPSUpdateInterest.ALT,
-																														GPSUpdateInterest.OTHERS);
+	private static EnumSet<GPSUpdateInterest>	interestSet	= EnumSet.of(	GPSUpdateInterest.LAT_LON,
+																																			GPSUpdateInterest.ALT,
+																																			GPSUpdateInterest.OTHERS);
 
 	private GPSArcConstellationMeter					gpsMeter;
 
