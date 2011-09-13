@@ -8,6 +8,7 @@ import ecologylab.net.NetTools;
 import ecologylab.oodss.distributed.server.clientsessionmanager.HTTPGetClientSessionManager;
 import ecologylab.oodss.distributed.server.varieties.HttpGetServer;
 import ecologylab.oodss.messages.DefaultServicesTranslations;
+import ecologylab.sensor.location.LocationUpdatedListener;
 import ecologylab.sensor.location.compass.CompassDatum;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.serialization.SIMPLTranslationException;
@@ -22,44 +23,46 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.InetAddress;
 import java.nio.channels.SelectionKey;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Acts as a simulated source of location data; acquires data from an instance of Google Earth.
  * 
  * @author Zachary O. Toups (zach@ecologylab.net)
  */
-public class EarthGPSSimulatorServer extends HttpGetServer
+public class EarthGPSSimulatorServer extends HttpGetServer implements LocationUpdateProvider
 {
-	public static final Class		KML_MESSAGE_CLASSES[]	=
-																										{ KmlRequest.class, KmlResponse.class };
+	public static final Class		KML_MESSAGE_CLASSES[]					=
+																														{ KmlRequest.class, KmlResponse.class };
 
-	public static String				someKml								= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
-																												+ "<kml xmlns=\"http://earth.google.com/kml/2.2\">\r\n"
-																												+ "<Document>\r\n"
-																												+ "  <name>BalloonStyle.kml</name>\r\n"
-																												+ "  <open>1</open>\r\n"
-																												+ "  <Placemark>\r\n"
-																												+ "    <name>BalloonStyle</name>\r\n"
-																												+ "    <description>An example of BalloonStyle</description>\r\n"
-																												+ "    <Point>\r\n"
-																												+ "      <coordinates>-122.370533,37.823842,0</coordinates>\r\n"
-																												+ "    </Point>\r\n"
-																												+ "  </Placemark>\r\n"
-																												+ "</Document>\r\n" + "</kml>";
+	public static String				someKml												= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
+																																+ "<kml xmlns=\"http://earth.google.com/kml/2.2\">\r\n"
+																																+ "<Document>\r\n"
+																																+ "  <name>BalloonStyle.kml</name>\r\n"
+																																+ "  <open>1</open>\r\n"
+																																+ "  <Placemark>\r\n"
+																																+ "    <name>BalloonStyle</name>\r\n"
+																																+ "    <description>An example of BalloonStyle</description>\r\n"
+																																+ "    <Point>\r\n"
+																																+ "      <coordinates>-122.370533,37.823842,0</coordinates>\r\n"
+																																+ "    </Point>\r\n"
+																																+ "  </Placemark>\r\n"
+																																+ "</Document>\r\n" + "</kml>";
 
 	/**
 	 * Application object scope object of type GPSDatum. Incoming Google Earth GET requests will
 	 * modify the GPSDatum through the ReportEarthLookLocationRequest message type.
 	 */
-	public static final String	GPS_DATUM							= "GPS_DATUM";
+	public static final String	GPS_DATUM											= "GPS_DATUM";
 
-	public static final String	COMPASS_DATUM					= "COMPASS_DATUM";
+	public static final String	COMPASS_DATUM									= "COMPASS_DATUM";
 
 	/**
 	 * The last time that the server was updated by Google Earth; used for calculating simulated
 	 * ground speed.
 	 */
-	public static final String	LAST_TIME_POINT				= "LAST_TIME_POINT";
+	public static final String	LAST_TIME_POINT								= "LAST_TIME_POINT";
 
 	/**
 	 * @param portNumber
@@ -87,6 +90,8 @@ public class EarthGPSSimulatorServer extends HttpGetServer
 		this.applicationObjectScope.put(GPS_DATUM, gpsDatum);
 		this.applicationObjectScope.put(COMPASS_DATUM, compassDatum);
 		this.applicationObjectScope.put(LAST_TIME_POINT, 0l);
+		this.applicationObjectScope.put(LOCATION_UPDATE_LISTENER_LIST,
+				new LinkedList<LocationUpdatedListener>());
 
 		// this.applicationObjectScope.put(KmlRequest.KML_DATA, kmlData);
 	}
@@ -117,5 +122,17 @@ public class EarthGPSSimulatorServer extends HttpGetServer
 	{
 		return new EarthGPSSimCSManager(token, this.maxMessageSize, this.getBackend(), this, sk,
 				translationScopeIn, registryIn);
+	}
+
+	/**
+	 * @see ecologylab.services.distributed.server.varieties.LocationUpdateProvider#addLocationUpdateListener(ecologylab.sensor.location.LocationUpdatedListener)
+	 */
+	@Override
+	public void addLocationUpdateListener(LocationUpdatedListener l)
+	{
+		List<LocationUpdatedListener> lUList = (List<LocationUpdatedListener>) this.applicationObjectScope
+				.get(LOCATION_UPDATE_LISTENER_LIST);
+
+		lUList.add(l);
 	}
 }
