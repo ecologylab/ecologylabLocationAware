@@ -4,7 +4,10 @@
 package ecologylab.serialization.library.kml.overlay;
 
 import ecologylab.serialization.ElementState;
-import ecologylab.serialization.Hint;
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
 
 /**
  * According to
@@ -40,20 +43,20 @@ public class ViewVolume extends ElementState
 	 * a power of 2. A tile size of 256 (the default) or 512 is recommended. The
 	 * original image is divided into tiles of this size, at varying resolutions.
 	 */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("tileSize") public int		tileSize;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("tileSize") public int		tileSize;
 
 	/** Width in pixels of the original image. */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("maxWidth") public int		maxWidth;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("maxWidth") public int		maxWidth;
 
 	/** Height in pixels of the original image. */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("maxHeight") public int	maxHeight;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("maxHeight") public int	maxHeight;
 
 	/**
 	 * Specifies where to begin numbering the tiles in each layer of the pyramid.
 	 * A value of lowerLeft specifies that row 1, column 1 of each layer is in
 	 * the bottom left corner of the grid.
 	 */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("gridOrigin") public int	gridOrigin;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("gridOrigin") public int	gridOrigin;
 
 	/**
 	 * 

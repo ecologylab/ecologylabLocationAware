@@ -3,8 +3,8 @@
  */
 package ecologylab.serialization.library.kml.feature.container;
 
-import ecologylab.serialization.simpl_inherit;
-import ecologylab.serialization.ElementState.xml_tag;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_tag;
 
 /**
  * From http://code.google.com/apis/kml/documentation/kml_tags_beta1.html#folder
@@ -16,7 +16,7 @@ import ecologylab.serialization.ElementState.xml_tag;
  * @author Zach
  * 
  */
-@simpl_inherit @xml_tag("Folder") public class Folder extends Container 
+@simpl_inherit @simpl_tag("Folder") public class Folder extends Container 
 {
 	/**
 	 * 

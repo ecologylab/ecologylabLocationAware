@@ -3,14 +3,17 @@
  */
 package ecologylab.serialization.library.kml.geometry;
 
-import ecologylab.sensor.location.gps.data.GeoCoordinate;
-import ecologylab.serialization.Hint;
-import ecologylab.serialization.simpl_inherit;
-import ecologylab.serialization.library.kml.KmlObject;
-
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import ecologylab.sensor.location.gps.data.GeoCoordinate;
+import ecologylab.serialization.TranslationContext;
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.library.kml.KmlObject;
 
 /**
  * @author Zach
@@ -135,9 +138,9 @@ public abstract class Geometry extends KmlObject
 	 * automatically immediately after translating FROM KML.
 	 */
 	@Override
-	protected void deserializationPostHook()
+	public void deserializationPostHook(TranslationContext translationContext, Object object )
 	{
-		super.deserializationPostHook();
+		super.deserializationPostHook( translationContext, object);
 
 		this.appendStringRepresentation(this.coordinates);
 	}
@@ -147,9 +150,9 @@ public abstract class Geometry extends KmlObject
 	 * before translating this TO KML.
 	 */
 	@Override
-	protected void serializationPreHook()
+	public void serializationPreHook(TranslationContext translationContext)
 	{
-		super.serializationPreHook();
+		super.serializationPreHook( translationContext);
 
 		this.loadCoordsFromCoordinateList();
 	}

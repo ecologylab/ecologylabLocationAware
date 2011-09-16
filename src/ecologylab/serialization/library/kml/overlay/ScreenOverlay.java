@@ -3,12 +3,12 @@
  */
 package ecologylab.serialization.library.kml.overlay;
 
-import ecologylab.serialization.ElementState.simpl_composite;
-import ecologylab.serialization.ElementState.simpl_hints;
-import ecologylab.serialization.ElementState.simpl_scalar;
-import ecologylab.serialization.ElementState.xml_tag;
-import ecologylab.serialization.Hint;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_composite;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
 import ecologylab.serialization.library.kml.style.StyleSelector;
 
 /**
@@ -43,7 +43,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
 	 * be a fraction. The origin of the coordinate system is in the lower left
 	 * corner of the image.
 	 */
-	@simpl_composite @xml_tag("overlayXY") protected Vec2	overlayXY;
+	@simpl_composite @simpl_tag("overlayXY") protected Vec2	overlayXY;
 
 	/**
 	 * Specifies a point relative to the screen origin that the overlay image is
@@ -54,10 +54,10 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
 	 * ways—for example, x can be in pixels and y can be a fraction. The origin
 	 * of the coordinate system is in the lower left corner of the screen.
 	 */
-	@simpl_composite @xml_tag("screenXY") protected Vec2		screenXY;
+	@simpl_composite @simpl_tag("screenXY") protected Vec2		screenXY;
 
 	/** Point relative to the screen about which the screen overlay is rotated. */
-	@simpl_composite @xml_tag("rotationXY") protected Vec2	rotationXY;
+	@simpl_composite @simpl_tag("rotationXY") protected Vec2	rotationXY;
 
 	/**
 	 * Specifies the size of the image for the screen overlay, as follows:

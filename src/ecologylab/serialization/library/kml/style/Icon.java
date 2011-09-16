@@ -4,7 +4,10 @@
 package ecologylab.serialization.library.kml.style;
 
 import ecologylab.serialization.ElementState;
-import ecologylab.serialization.Hint;
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
 import ecologylab.serialization.library.kml.overlay.Vec2;
 
 /**
@@ -43,10 +46,10 @@ public class Icon extends ElementState
 	 * RFC261b of the Hypertext Transfer Protocol - HTTP 1.1 for details on HTTP
 	 * header fields.)
 	 */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("refreshMode") private String		refreshMode;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("refreshMode") private String		refreshMode;
 
 	/** Indicates to refresh the file every n seconds. */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("refreshInterval") private float	refreshInterval;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("refreshInterval") private float	refreshInterval;
 
 	/**
 	 * Specifies how the link is refreshed when the "camera" changes. Can be one
@@ -64,13 +67,13 @@ public class Icon extends ElementState
 	 * 
 	 * onRegion - Refresh the file when the Region becomes active. See <Region>.
 	 */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("viewRefreshMode") private String	viewRefreshMode;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("viewRefreshMode") private String	viewRefreshMode;
 
 	/**
 	 * After camera movement stops, specifies the number of seconds to wait
 	 * before refreshing the view. (See <viewRefreshMode> and onStop above.)
 	 */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("viewRefreshTime") private float	viewRefreshTime;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("viewRefreshTime") private float	viewRefreshTime;
 
 	/**
 	 * Scales the BBOX parameters before sending them to the server. A value less
@@ -78,7 +81,7 @@ public class Icon extends ElementState
 	 * than 1 specifies to fetch an area that extends beyond the edges of the
 	 * current view.
 	 */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("viewBoundScale") private float		viewBoundScale;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("viewBoundScale") private float		viewBoundScale;
 
 	/**
 	 * Specifies the format of the query string that is appended to the Link's
@@ -119,7 +122,7 @@ public class Icon extends ElementState
 	 * 
 	 * 
 	 */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("viewFormat") private String			viewFormat;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("viewFormat") private String			viewFormat;
 
 	/**
 	 * Appends information to the query string, based on the parameters
@@ -134,7 +137,7 @@ public class Icon extends ElementState
 	 * 
 	 * [language]
 	 */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("httpQuery") private String			httpQuery;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("httpQuery") private String			httpQuery;
 
 	public Icon()
 	{

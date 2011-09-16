@@ -3,12 +3,13 @@
  */
 package ecologylab.serialization.library.kml.feature.container;
 
-import ecologylab.serialization.simpl_inherit;
+import java.util.ArrayList;
+
+import ecologylab.serialization.annotations.simpl_collection;
+import ecologylab.serialization.annotations.simpl_inherit;
 import ecologylab.serialization.library.kml.feature.KmlFeature;
 import ecologylab.serialization.library.kml.feature.Placemark;
 import ecologylab.serialization.library.kml.style.StyleSelector;
-
-import java.util.ArrayList;
 
 /**
  * @author Zach

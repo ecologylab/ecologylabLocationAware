@@ -3,19 +3,21 @@
  */
 package ecologylab.services.messages;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import ecologylab.collections.Scope;
 import ecologylab.oodss.messages.RequestMessage;
 import ecologylab.oodss.messages.ResponseMessage;
 import ecologylab.sensor.location.compass.CompassDatum;
 import ecologylab.sensor.location.gps.data.GPSDatum;
+import ecologylab.serialization.ClassDescriptor;
 import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.StringFormat;
 import ecologylab.serialization.library.kml.Kml;
 import ecologylab.serialization.library.kml.feature.Placemark;
 import ecologylab.serialization.library.kml.geometry.Point;
 import ecologylab.services.distributed.server.varieties.EarthGPSSimulatorServer;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * ReportEarthLookLocationRequest objects are generated automatically by an EarthGPSSimCSManager,
@@ -103,7 +105,7 @@ public class ReportEarthLookLocationRequest extends RequestMessage
 
 		try
 		{
-			debug(currentLookPoint.serialize());
+			debug(ClassDescriptor.serialize(currentLookPoint, StringFormat.XML));
 		}
 		catch (SIMPLTranslationException e)
 		{

@@ -3,9 +3,11 @@
  */
 package ecologylab.serialization.library.kml.geometry;
 
-import ecologylab.serialization.ElementState.xml_tag;
-import ecologylab.serialization.Hint;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
 
 /**
  * From
@@ -21,7 +23,7 @@ import ecologylab.serialization.simpl_inherit;
  * @author Zach
  * 
  */
-@simpl_inherit @xml_tag("LineString") public class LineString extends Geometry
+@simpl_inherit @simpl_tag("LineString") public class LineString extends Geometry
 {
 	/**
 	 * Boolean value (0 or 1). Specifies whether to connect the LineString to the
@@ -42,7 +44,7 @@ import ecologylab.serialization.simpl_inherit;
 	 */
 	@simpl_scalar @simpl_hints(Hint.XML_LEAF) int										tessellate;
 
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("altitudeMode") String	altitudeMode;	// enum values:
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("altitudeMode") String	altitudeMode;	// enum values:
 
 	// "clampToGround",
 	// "relativeToGround",

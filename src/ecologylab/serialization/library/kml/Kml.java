@@ -4,6 +4,9 @@
 package ecologylab.serialization.library.kml;
 
 import ecologylab.serialization.ElementState;
+import ecologylab.serialization.annotations.simpl_composite;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
 import ecologylab.serialization.library.kml.feature.Placemark;
 import ecologylab.serialization.library.kml.feature.container.Document;
 import ecologylab.serialization.library.kml.feature.container.Folder;
@@ -31,27 +34,27 @@ import ecologylab.serialization.library.kml.overlay.ScreenOverlay;
 public class Kml extends ElementState
 {
 	@simpl_composite
-	@xml_tag("Placemark")
+	@simpl_tag("Placemark")
 	Placemark			placemark			= null;
 
 	@simpl_composite
-	@xml_tag("Document")
+	@simpl_tag("Document")
 	Document			document			= null;
 
 	@simpl_composite
-	@xml_tag("Folder")
+	@simpl_tag("Folder")
 	Folder				folder				= null;
 
 	@simpl_composite
-	@xml_tag("GroundOverlay")
+	@simpl_tag("GroundOverlay")
 	GroundOverlay	groundOverlay	= null;
 
 	@simpl_composite
-	@xml_tag("PhotoOverlay")
+	@simpl_tag("PhotoOverlay")
 	PhotoOverlay	photoOverlay	= null;
 
 	@simpl_composite
-	@xml_tag("ScreenOverlay")
+	@simpl_tag("ScreenOverlay")
 	ScreenOverlay	screenOverlay	= null;
 
 	// TODO NetworkLink

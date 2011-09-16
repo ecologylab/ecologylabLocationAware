@@ -3,16 +3,18 @@
  */
 package ecologylab.serialization.library.kml.view;
 
-import ecologylab.serialization.ElementState.xml_tag;
-import ecologylab.serialization.Hint;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
 
 /**
  * @author Zach
  *
  */
 @simpl_inherit
-@xml_tag("LookAt")
+@simpl_tag("LookAt")
 public class LookAt extends AbstractView
 {
 	@simpl_scalar @simpl_hints(Hint.XML_LEAF) double									longitude;
@@ -27,7 +29,7 @@ public class LookAt extends AbstractView
 
 	@simpl_scalar @simpl_hints(Hint.XML_LEAF) double									roll;
 
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("altitudeMode") String	altitudeMode;	// enum values:
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("altitudeMode") String	altitudeMode;	// enum values:
 																				// "clampToGround",
 																				// "relativeToGround",
 																				// or "absolute"

@@ -1,12 +1,15 @@
 package ecologylab.serialization.library.kml.geometry;
 
+import java.util.List;
+
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.serialization.ElementState;
-import ecologylab.serialization.ElementState.xml_tag;
-import ecologylab.serialization.Hint;
-import ecologylab.serialization.simpl_inherit;
-
-import java.util.List;
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_composite;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
 
 /**
  * From http://code.google.com/apis/kml/documentation/kml_tags_beta1.html#linestring:
@@ -20,7 +23,7 @@ import java.util.List;
  * 
  */
 @simpl_inherit
-@xml_tag("Polygon")
+@simpl_tag("Polygon")
 public class Polygon extends ElementState
 {
 	/**
@@ -45,7 +48,7 @@ public class Polygon extends ElementState
 
 	@simpl_scalar
 	@simpl_hints(Hint.XML_LEAF)
-	@xml_tag("altitudeMode")
+	@simpl_tag("altitudeMode")
 	String					altitudeMode; // enum values:
 
 	// "clampToGround",
@@ -53,11 +56,11 @@ public class Polygon extends ElementState
 	// or "absolute"
 
 	@simpl_composite
-	@xml_tag("outerBoundaryIs")
+	@simpl_tag("outerBoundaryIs")
 	OuterBoundaryIs	obi	= null;
 
 	@simpl_composite
-	@xml_tag("innerBoundaryIs")
+	@simpl_tag("innerBoundaryIs")
 	InnerBoundaryIs	ibi	= null;
 
 	/**

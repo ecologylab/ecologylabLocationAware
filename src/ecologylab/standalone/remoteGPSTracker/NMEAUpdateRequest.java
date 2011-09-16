@@ -4,6 +4,7 @@ import ecologylab.collections.Scope;
 import ecologylab.oodss.messages.RequestMessage;
 import ecologylab.oodss.messages.ResponseMessage;
 import ecologylab.sensor.location.NMEAStringListener;
+import ecologylab.serialization.annotations.simpl_scalar;
 
 public class NMEAUpdateRequest extends RequestMessage
 {

@@ -4,6 +4,7 @@
 package ecologylab.sensor.location;
 
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
+import ecologylab.serialization.annotations.simpl_scalar;
 
 /**
  * Represents the location data from a location sensor of some sort.

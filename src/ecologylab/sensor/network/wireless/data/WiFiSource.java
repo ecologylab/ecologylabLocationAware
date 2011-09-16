@@ -3,9 +3,12 @@
  */
 package ecologylab.sensor.network.wireless.data;
 
+import ecologylab.serialization.ClassDescriptor;
 import ecologylab.serialization.SIMPLTranslationException;
-import ecologylab.serialization.simpl_inherit;
-import ecologylab.serialization.types.element.Mappable;
+import ecologylab.serialization.StringFormat;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.types.element.IMappable;
 
 /**
  * Represents a moment of wifi status data for a potential WiFi connection.
@@ -15,7 +18,7 @@ import ecologylab.serialization.types.element.Mappable;
  * @author Zachary O. Toups (zach@ecologylab.net)
  */
 @simpl_inherit public class WiFiSource extends WirelessNetwork implements
-		Mappable<String>
+		IMappable<String>
 {
 	public static final String			AD_HOC			= "AD_HOC";
 
@@ -98,7 +101,8 @@ import ecologylab.serialization.types.element.Mappable;
 		w.updateData("Snakes on a Plane\r\n" + "00:18:39:d0:4d:43\r\n"
 				+ "-40\r\n" + "94\r\n" + "8\r\n" + "ACCESS_POINT\r\n" + "SECURED");
 
-		System.out.println(w.serialize());
+		ClassDescriptor.serialize(w, System.out, StringFormat.XML);
+		
 	}
 
 	public int getChannel()

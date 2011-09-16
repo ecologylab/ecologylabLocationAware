@@ -3,11 +3,12 @@
  */
 package ecologylab.sensor.location.gps.data;
 
+import java.awt.geom.Point2D;
+
 import ecologylab.sensor.location.EarthData;
 import ecologylab.sensor.location.Location;
-import ecologylab.serialization.simpl_inherit;
-
-import java.awt.geom.Point2D;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
 
 /**
  * An object for representing a set of 3d coordinates on the earth's surface: latitude, longitude,

@@ -7,9 +7,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import ecologylab.serialization.ScalarUnmarshallingContext;
 import ecologylab.serialization.TranslationContext;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_inherit;
 import ecologylab.serialization.types.ScalarType;
-import ecologylab.serialization.types.TypeRegistry;
 
 @simpl_inherit
 public class CoordinateReferenceSystemType extends ScalarType<CoordinateReferenceSystem>

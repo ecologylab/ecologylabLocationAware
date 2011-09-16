@@ -1,6 +1,7 @@
 package ecologylab.sensor.location.compass;
 
 import ecologylab.serialization.ElementState;
+import ecologylab.serialization.annotations.simpl_scalar;
 
 /**
  * 

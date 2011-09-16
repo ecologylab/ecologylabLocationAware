@@ -8,22 +8,19 @@ import javax.media.jai.PlanarImage;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import org.geotools.gce.geotiff.*;
-import org.geotools.geometry.GeneralDirectPosition;
-import org.geotools.referencing.crs.DefaultProjectedCRS;
-import org.geotools.coverage.grid.GridCoordinates2D;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.InvalidGridGeometryException;
 import org.geotools.data.DataSourceException;
-import org.geotools.factory.*;
+import org.geotools.factory.Hints;
+import org.geotools.gce.geotiff.GeoTiffReader;
+import org.geotools.geometry.GeneralDirectPosition;
+import org.geotools.referencing.crs.DefaultProjectedCRS;
 import org.opengis.geometry.Envelope;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.Projection;
 import org.opengis.referencing.operation.TransformException;
 
 import ecologylab.oodss.logging.playback.ExtensionFilter;
-import ecologylab.standalone.ImageGeotagger.DirectoryMonitor.ImageDirectoryMonitor;
 
 public class GTIFFDisplay
 {

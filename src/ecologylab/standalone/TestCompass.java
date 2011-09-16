@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.TooManyListenersException;
 
 import ecologylab.sensor.location.NMEAReader;
-import ecologylab.sensor.location.compass.CompassDatum;
 import ecologylab.sensor.location.compass.CompassDataListener;
 import ecologylab.sensor.location.compass.CompassDataUpdater;
+import ecologylab.sensor.location.compass.CompassDatum;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;

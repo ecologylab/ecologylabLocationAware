@@ -3,19 +3,21 @@
  */
 package ecologylab.services.distributed.server.contextmanager;
 
+import java.nio.channels.SelectionKey;
+
 import ecologylab.collections.Scope;
 import ecologylab.oodss.distributed.impl.NIOServerIOThread;
 import ecologylab.oodss.distributed.server.NIOServerProcessor;
 import ecologylab.oodss.distributed.server.clientsessionmanager.HTTPGetClientSessionManager;
 import ecologylab.oodss.messages.RequestMessage;
 import ecologylab.oodss.messages.ResponseMessage;
+import ecologylab.serialization.ClassDescriptor;
 import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.StringFormat;
 import ecologylab.serialization.TranslationScope;
 import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
 import ecologylab.services.messages.ReportEarthLookLocationRequest;
-
-import java.nio.channels.SelectionKey;
 
 /**
  * This client manager simply serves whatever object is located at KML_DATA in the ObjectRegistry.
@@ -49,7 +51,9 @@ public class EarthGPSSimCSManager extends HTTPGetClientSessionManager
 			throws SIMPLTranslationException
 	{
 		outgoingMessageBuf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
-		((KmlResponse) responseMessage).getKml().serialize(outgoingMessageBuf);
+		
+		ClassDescriptor.serialize(((KmlResponse) responseMessage).getKml(), outgoingMessageBuf, StringFormat.XML);
+		
 		outgoingMessageBuf.append("\r\n");
 	}
 

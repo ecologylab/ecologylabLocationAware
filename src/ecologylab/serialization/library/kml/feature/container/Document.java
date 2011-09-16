@@ -3,15 +3,15 @@
  */
 package ecologylab.serialization.library.kml.feature.container;
 
-import ecologylab.serialization.ElementState.xml_tag;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_tag;
 import ecologylab.serialization.library.kml.style.StyleSelector;
 
 /**
  * @author Zach
  * 
  */
-@simpl_inherit @xml_tag("Document") public class Document extends Container // TODO
+@simpl_inherit @simpl_tag("Document") public class Document extends Container // TODO
 																									// -
 																									// unclear,
 																									// does

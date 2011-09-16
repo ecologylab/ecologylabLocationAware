@@ -4,6 +4,7 @@
 package ecologylab.serialization.library.kml;
 
 import ecologylab.serialization.ElementState;
+import ecologylab.serialization.annotations.simpl_scalar;
 
 /**
  * From:

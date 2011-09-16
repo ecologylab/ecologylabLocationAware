@@ -8,9 +8,13 @@ import ecologylab.generic.Generic;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
 import ecologylab.sensor.network.wireless.WiFiAdapter;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
+import ecologylab.serialization.ClassDescriptor;
 import ecologylab.serialization.ElementState;
 import ecologylab.serialization.SIMPLTranslationException;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.StringFormat;
+import ecologylab.serialization.annotations.simpl_composite;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
 
 /**
  * Represents the current status of a WiFi adapter, including a list of
@@ -73,8 +77,8 @@ import ecologylab.serialization.simpl_inherit;
 		for (int i = 0; i < 100; i++)
 		{
 			try
-			{
-				status.serialize(System.out);
+			{				
+				ClassDescriptor.serialize(status, System.out, StringFormat.XML);
 				System.out.println();
 			}
 			catch (SIMPLTranslationException e1)

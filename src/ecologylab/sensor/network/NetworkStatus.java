@@ -4,7 +4,9 @@
 package ecologylab.sensor.network;
 
 import ecologylab.serialization.ElementState;
-import ecologylab.serialization.types.element.Mappable;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
+import ecologylab.serialization.types.element.IMappable;
 
 /**
  * Represents a data network, most likely wireless.
@@ -14,7 +16,7 @@ import ecologylab.serialization.types.element.Mappable;
  * @author Zachary O. Toups (zach@ecologylab.net)
  */
 public abstract class NetworkStatus extends ElementState implements
-		Mappable<String>
+		IMappable<String>
 {
 	/**
 	 * The identifier for the network, for example, SSID for a wifi network. Note
@@ -23,7 +25,7 @@ public abstract class NetworkStatus extends ElementState implements
 	@simpl_scalar protected String						id;
 
 	/** The MAC address of the network. */
-	@simpl_scalar @xml_tag("mac") protected String	macAddr;
+	@simpl_scalar @simpl_tag("mac") protected String	macAddr;
 
 	/**
 	 * 

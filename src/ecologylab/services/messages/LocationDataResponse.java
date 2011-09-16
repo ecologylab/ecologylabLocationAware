@@ -5,7 +5,7 @@ import ecologylab.oodss.messages.ResponseMessage;
 import ecologylab.sensor.location.LocationUpdatedListener;
 import ecologylab.sensor.location.compass.CompassDatum;
 import ecologylab.sensor.location.gps.data.GPSDatum;
-import ecologylab.serialization.ElementState.simpl_composite;
+import ecologylab.serialization.annotations.simpl_composite;
 
 public class LocationDataResponse extends ResponseMessage
 {

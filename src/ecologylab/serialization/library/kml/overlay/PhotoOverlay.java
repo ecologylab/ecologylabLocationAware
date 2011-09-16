@@ -3,8 +3,12 @@
  */
 package ecologylab.serialization.library.kml.overlay;
 
-import ecologylab.serialization.Hint;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_composite;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
 import ecologylab.serialization.library.kml.geometry.Point;
 import ecologylab.serialization.library.kml.style.StyleSelector;
 
@@ -53,7 +57,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
 	 * scene. A large field of view, like a wide-angle lens, focuses on a large
 	 * part of the scene.
 	 */
-	@simpl_composite @xml_tag("ViewVolume") protected ViewVolume		viewVolume;
+	@simpl_composite @simpl_tag("ViewVolume") protected ViewVolume		viewVolume;
 
 	/**
 	 * For very large images, you'll need to construct an image pyramid, which is
@@ -72,7 +76,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
 	 * When you specify an image pyramid, you also modify the <href> in the
 	 * <Icon> element to include specifications for which tiles to load.
 	 */
-	@simpl_composite @xml_tag("ImagePyramid") protected ImagePyramid	imagePyramid;
+	@simpl_composite @simpl_tag("ImagePyramid") protected ImagePyramid	imagePyramid;
 
 	/**
 	 * The <Point> element acts as a <Point> inside a <Placemark> element. It
@@ -80,7 +84,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
 	 * specified by the <styleUrl> and <StyleSelector> fields, just as it is for
 	 * <Placemark>.
 	 */
-	@simpl_composite @xml_tag("Point") protected Point					point;
+	@simpl_composite @simpl_tag("Point") protected Point					point;
 
 	/**
 	 * The PhotoOverlay is projected onto the <shape>. The <shape> can be one of

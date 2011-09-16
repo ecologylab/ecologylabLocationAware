@@ -3,9 +3,11 @@
  */
 package ecologylab.serialization.library.kml.style;
 
-import ecologylab.serialization.Hint;
-
 import java.awt.Color;
+
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_scalar;
 
 /**
  * @author Zach

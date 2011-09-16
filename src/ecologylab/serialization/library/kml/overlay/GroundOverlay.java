@@ -3,8 +3,12 @@
  */
 package ecologylab.serialization.library.kml.overlay;
 
-import ecologylab.serialization.Hint;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_composite;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
 import ecologylab.serialization.library.kml.geometry.Point;
 import ecologylab.serialization.library.kml.style.StyleSelector;
 
@@ -43,7 +47,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
 	 * above the terrain by 7 meters.
 	 * 
 	 */
-	@simpl_composite @xml_tag("altitudeMode") protected String	altitudeMode;
+	@simpl_composite @simpl_tag("altitudeMode") protected String	altitudeMode;
 
 	/** valid value for shape. */
 	public static final String										CLAMP_TO_GROUND	= "clampToGround";
@@ -55,7 +59,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
 	 * Specifies where the top, bottom, right, and left sides of a bounding box
 	 * for the ground overlay are aligned.
 	 */
-	@simpl_composite @xml_tag("LatLonBox") protected LatLonBox	latLonBox;
+	@simpl_composite @simpl_tag("LatLonBox") protected LatLonBox	latLonBox;
 
 	/**
 	 * The <Point> element acts as a <Point> inside a <Placemark> element. It
@@ -63,7 +67,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
 	 * specified by the <styleUrl> and <StyleSelector> fields, just as it is for
 	 * <Placemark>.
 	 */
-	@simpl_composite @xml_tag("Point") protected Point			point;
+	@simpl_composite @simpl_tag("Point") protected Point			point;
 
 	/**
 	 * 

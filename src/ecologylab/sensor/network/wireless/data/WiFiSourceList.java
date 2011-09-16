@@ -6,7 +6,7 @@ package ecologylab.sensor.network.wireless.data;
 import ecologylab.generic.ResourcePool;
 import ecologylab.sensor.network.NetworkList;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_inherit;
 
 /**
  * A moment of data on wifi status objects, which are hashed according to MAC

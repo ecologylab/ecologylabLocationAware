@@ -3,20 +3,21 @@
  */
 package ecologylab.serialization.library.kml.style;
 
-import ecologylab.serialization.ElementState.xml_tag;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_composite;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_tag;
 
 /**
  * @author Zach
  *
  */
 @simpl_inherit
-@xml_tag("Style")
+@simpl_tag("Style")
 public class Style extends StyleSelector
 {
-	@simpl_composite @xml_tag("LineStyle") LineStyle lineStyle;
-	@simpl_composite @xml_tag("PolyStyle") PolyStyle polyStyle;
-	@simpl_composite @xml_tag("IconStyle") IconStyle iconStyle;
+	@simpl_composite @simpl_tag("LineStyle") LineStyle lineStyle;
+	@simpl_composite @simpl_tag("PolyStyle") PolyStyle polyStyle;
+	@simpl_composite @simpl_tag("IconStyle") IconStyle iconStyle;
 
 	// TODO labelstyle, balloonstyle, liststyle
 	

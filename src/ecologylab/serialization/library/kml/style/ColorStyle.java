@@ -3,12 +3,15 @@
  */
 package ecologylab.serialization.library.kml.style;
 
-import ecologylab.serialization.Hint;
-import ecologylab.serialization.simpl_inherit;
+import java.awt.Color;
+
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
 import ecologylab.serialization.library.kml.KmlObject;
 import ecologylab.serialization.types.scalar.KMLColor;
-
-import java.awt.Color;
 
 /**
  * @author Zach
@@ -18,7 +21,7 @@ import java.awt.Color;
 {
 	@simpl_scalar @simpl_hints(Hint.XML_LEAF) KMLColor								color;
 
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("colorMode") String	colorMode;	// either normal or random
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("colorMode") String	colorMode;	// either normal or random
 
 	/**
 	 * 

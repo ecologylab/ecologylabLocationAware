@@ -4,7 +4,8 @@
 package ecologylab.sensor.location.gps.data;
 
 import ecologylab.serialization.ElementState;
-import ecologylab.serialization.types.element.Mappable;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.types.element.IMappable;
 
 /**
  * Stores information about a GPS satellite (space vehicle, or SV), as reported
@@ -12,7 +13,7 @@ import ecologylab.serialization.types.element.Mappable;
  * 
  * @author Zach Toups (toupsz@gmail.com)
  */
-public class SVData extends ElementState implements Mappable<Integer>
+public class SVData extends ElementState implements IMappable<Integer>
 {
 	/** The key for hashing this object; key is the same as id. */
 	private Integer				key;

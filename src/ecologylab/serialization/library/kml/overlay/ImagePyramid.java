@@ -4,7 +4,10 @@
 package ecologylab.serialization.library.kml.overlay;
 
 import ecologylab.serialization.ElementState;
-import ecologylab.serialization.Hint;
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
 
 /**
  * According to
@@ -24,31 +27,31 @@ public class ImagePyramid extends ElementState
 	 * Angle, in degrees, between the camera's viewing direction and the left
 	 * side of the view volume.
 	 */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("leftFov") public int		leftFov;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("leftFov") public int		leftFov;
 
 	/**
 	 * Angle, in degrees, between the camera's viewing direction and the right
 	 * side of the view volume.
 	 */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("rightFov") public int		rightFov;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("rightFov") public int		rightFov;
 
 	/**
 	 * Angle, in degrees, between the camera's viewing direction and the bottom
 	 * side of the view volume.
 	 */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("bottomFov") public int	bottomFov;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("bottomFov") public int	bottomFov;
 
 	/**
 	 * Angle, in degrees, between the camera's viewing direction and the top side
 	 * of the view volume.
 	 */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("topFov") public int		topFov;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("topFov") public int		topFov;
 
 	/**
 	 * Measurement in meters along the viewing direction from the camera
 	 * viewpoint to the PhotoOverlay shape.
 	 */
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("near") public int			near;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("near") public int			near;
 
 	/**
 	 * 

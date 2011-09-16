@@ -3,9 +3,11 @@
  */
 package ecologylab.serialization.library.kml.view;
 
-import ecologylab.serialization.ElementState.xml_tag;
-import ecologylab.serialization.Hint;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
 
 /**
  * From http://code.google.com/apis/kml/documentation/kml_tags_beta1.html#camera
@@ -13,7 +15,7 @@ import ecologylab.serialization.simpl_inherit;
  * @author Zach
  * 
  */
-@simpl_inherit @xml_tag("Camera") public class Camera extends AbstractView
+@simpl_inherit @simpl_tag("Camera") public class Camera extends AbstractView
 {
 	@simpl_scalar @simpl_hints(Hint.XML_LEAF) double									longitude;
 
@@ -27,7 +29,7 @@ import ecologylab.serialization.simpl_inherit;
 
 	@simpl_scalar @simpl_hints(Hint.XML_LEAF) double									roll;
 
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("altitudeMode") String	altitudeMode;	// enum values:
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("altitudeMode") String	altitudeMode;	// enum values:
 																				// "clampToGround",
 																				// "relativeToGround",
 																				// or "absolute"

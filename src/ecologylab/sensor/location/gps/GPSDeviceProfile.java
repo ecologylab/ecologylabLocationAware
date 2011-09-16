@@ -4,6 +4,7 @@
 package ecologylab.sensor.location.gps;
 
 import ecologylab.serialization.ElementState;
+import ecologylab.serialization.annotations.simpl_scalar;
 
 /**
  * Encapsulates information about a GPS device, including its specifications.

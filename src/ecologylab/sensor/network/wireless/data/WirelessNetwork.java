@@ -4,7 +4,9 @@
 package ecologylab.sensor.network.wireless.data;
 
 import ecologylab.sensor.network.NetworkStatus;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
 
 /**
  * Extends Network to provide signal strength information.
@@ -14,10 +16,10 @@ import ecologylab.serialization.simpl_inherit;
 @simpl_inherit public abstract class WirelessNetwork extends NetworkStatus
 {
 	/** Signal strength to the specified wireless access point in terms of dBm. */
-	@simpl_scalar @xml_tag("ss") protected int				signalStrength				= Integer.MIN_VALUE;
+	@simpl_scalar @simpl_tag("ss") protected int				signalStrength				= Integer.MIN_VALUE;
 
 	/** Signal strength as percent specified by WAP manufacturer. */
-	@simpl_scalar @xml_tag("ss_percent") protected int	signalStrengthPercent	= 0;
+	@simpl_scalar @simpl_tag("ss_percent") protected int	signalStrengthPercent	= 0;
 
 	/**
 	 * 

@@ -3,8 +3,12 @@
  */
 package ecologylab.serialization.library.kml.feature;
 
-import ecologylab.serialization.Hint;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_composite;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
 import ecologylab.serialization.library.kml.KmlObject;
 import ecologylab.serialization.library.kml.style.Style;
 import ecologylab.serialization.library.kml.style.StyleSelector;
@@ -35,7 +39,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
 
 	// TODO xal:AddressDetails??
 
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("phoneNumber") String	phoneNumber;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("phoneNumber") String	phoneNumber;
 
 	// TODO Snippet??
 
@@ -45,9 +49,9 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
 
 	// TODO TimePrimitive??
 
-	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @xml_tag("styleUrl") String		styleUrl;
+	@simpl_scalar @simpl_hints(Hint.XML_LEAF) @simpl_tag("styleUrl") String		styleUrl;
 
-	@simpl_composite @xml_tag("Style") Style			style;
+	@simpl_composite @simpl_tag("Style") Style			style;
 
 	// TODO StyleMap
 

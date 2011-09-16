@@ -3,8 +3,9 @@
  */
 package ecologylab.serialization.library.kml.feature;
 
-import ecologylab.serialization.ElementState.xml_tag;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_composite;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_tag;
 import ecologylab.serialization.library.kml.geometry.LineString;
 import ecologylab.serialization.library.kml.geometry.Point;
 import ecologylab.serialization.library.kml.geometry.Polygon;
@@ -14,19 +15,19 @@ import ecologylab.serialization.library.kml.geometry.Polygon;
  * 
  */
 @simpl_inherit
-@xml_tag("Placemark")
+@simpl_tag("Placemark")
 public class Placemark extends KmlFeature
 {
 	@simpl_composite
-	@xml_tag("Point")
+	@simpl_tag("Point")
 	Point				point				= null;
 
 	@simpl_composite
-	@xml_tag("LineString")
+	@simpl_tag("LineString")
 	LineString	lineString	= null;
 
 	@simpl_composite
-	@xml_tag("Polygon")
+	@simpl_tag("Polygon")
 	Polygon			polygon			= null;
 
 	// TODO LinearRing, Polygon, MultiGeometry, Model

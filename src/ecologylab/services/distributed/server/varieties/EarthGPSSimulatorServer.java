@@ -3,6 +3,11 @@
  */
 package ecologylab.services.distributed.server.varieties;
 
+import java.io.IOException;
+import java.net.BindException;
+import java.net.InetAddress;
+import java.nio.channels.SelectionKey;
+
 import ecologylab.collections.Scope;
 import ecologylab.net.NetTools;
 import ecologylab.oodss.distributed.server.clientsessionmanager.HTTPGetClientSessionManager;
@@ -11,17 +16,13 @@ import ecologylab.oodss.messages.DefaultServicesTranslations;
 import ecologylab.sensor.location.compass.CompassDatum;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.StringFormat;
 import ecologylab.serialization.TranslationScope;
 import ecologylab.serialization.library.kml.KMLTranslations;
 import ecologylab.serialization.library.kml.Kml;
 import ecologylab.services.distributed.server.contextmanager.EarthGPSSimCSManager;
 import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
-
-import java.io.IOException;
-import java.net.BindException;
-import java.net.InetAddress;
-import java.nio.channels.SelectionKey;
 
 /**
  * Acts as a simulated source of location data; acquires data from an instance of Google Earth.
@@ -102,7 +103,7 @@ public class EarthGPSSimulatorServer extends HttpGetServer
 	{
 		TranslationScope serverTranslations = DefaultServicesTranslations.get();
 
-		Kml kmlData = (Kml) KMLTranslations.get().deserializeCharSequence(someKml);
+		Kml kmlData = (Kml) KMLTranslations.get().deserialize(someKml, StringFormat.XML);
 
 		EarthGPSSimulatorServer s = new EarthGPSSimulatorServer(8080,
 				NetTools.getAllInetAddressesForLocalhost(), serverTranslations, new Scope(), 1000000,

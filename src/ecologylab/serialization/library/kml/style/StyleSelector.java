@@ -3,7 +3,7 @@
  */
 package ecologylab.serialization.library.kml.style;
 
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_inherit;
 import ecologylab.serialization.library.kml.KmlObject;
 
 /**

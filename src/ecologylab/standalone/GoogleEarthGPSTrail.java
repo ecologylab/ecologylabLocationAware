@@ -19,7 +19,6 @@ import ecologylab.serialization.library.kml.style.LineStyle;
 import ecologylab.serialization.library.kml.style.PolyStyle;
 import ecologylab.serialization.library.kml.style.Style;
 import ecologylab.services.distributed.server.varieties.KmlServer;
-
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;

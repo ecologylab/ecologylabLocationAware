@@ -3,9 +3,10 @@
  */
 package ecologylab.standalone;
 
+import ecologylab.serialization.ClassDescriptor;
 import ecologylab.serialization.ElementState;
 import ecologylab.serialization.SIMPLTranslationException;
-import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.StringFormat;
 import ecologylab.serialization.library.kml.KMLTranslations;
 
 /**
@@ -35,9 +36,11 @@ public class TestKML
 	 */
 	public static void main(String[] args) throws SIMPLTranslationException
 	{
-		ElementState k =  KMLTranslations.get().deserializeCharSequence(someKml);
+		ElementState k =  (ElementState) KMLTranslations.get().deserialize(someKml, StringFormat.XML);
 		
-		k.serialize(System.out);
+		
+		
+		ClassDescriptor.serialize(k, System.out, StringFormat.XML);
 	}
 
 }

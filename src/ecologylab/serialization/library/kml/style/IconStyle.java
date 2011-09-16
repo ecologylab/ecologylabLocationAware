@@ -3,12 +3,18 @@
  */
 package ecologylab.serialization.library.kml.style;
 
-import ecologylab.serialization.Hint;
-import ecologylab.serialization.SIMPLTranslationException;
-import ecologylab.serialization.simpl_inherit;
-import ecologylab.serialization.library.kml.overlay.Vec2;
-
 import java.awt.Color;
+
+import ecologylab.serialization.ClassDescriptor;
+import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.StringFormat;
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_composite;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.annotations.simpl_tag;
+import ecologylab.serialization.library.kml.overlay.Vec2;
 
 /**
  * Created according to
@@ -34,7 +40,7 @@ import java.awt.Color;
 	@simpl_scalar @simpl_hints(Hint.XML_LEAF) private float									heading;
 
 	/** A custom Icon. In <IconStyle>, the only child element of <Icon> is <href> */
-	@simpl_composite @xml_tag("Icon") private Icon			icon;
+	@simpl_composite @simpl_tag("Icon") private Icon			icon;
 
 	/**
 	 * Specifies the position within the Icon that is "anchored" to the <Point>
@@ -46,7 +52,7 @@ import java.awt.Color;
 	 * be a fraction. The origin of the coordinate system is in the lower left
 	 * corner of the icon.
 	 */
-	@simpl_composite @xml_tag("hotSpot") private Vec2	hotSpot;
+	@simpl_composite @simpl_tag("hotSpot") private Vec2	hotSpot;
 
 	/**
 	 * 
@@ -103,7 +109,8 @@ import java.awt.Color;
 		
 		Style s = new Style("randomColorIcon", null, null, iS);
 		
-		s.serialize(System.out);
+		ClassDescriptor.serialize(s, System.out, StringFormat.XML);
+		
 	}
 
 	public void setHref(String iconURL)

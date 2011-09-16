@@ -3,7 +3,6 @@
  */
 package ecologylab.services.distributed.server.contextmanager;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.channels.SelectionKey;
 
 import ecologylab.collections.Scope;
@@ -12,7 +11,9 @@ import ecologylab.oodss.distributed.server.NIOServerProcessor;
 import ecologylab.oodss.distributed.server.clientsessionmanager.HTTPGetClientSessionManager;
 import ecologylab.oodss.messages.RequestMessage;
 import ecologylab.oodss.messages.ResponseMessage;
+import ecologylab.serialization.ClassDescriptor;
 import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.StringFormat;
 import ecologylab.serialization.TranslationScope;
 import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
@@ -49,7 +50,9 @@ public class KMLGetClientSessionManager extends HTTPGetClientSessionManager
 			throws SIMPLTranslationException
 	{
 		outgoingMessageBuf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
-		((KmlResponse) responseMessage).getKml().serialize(outgoingMessageBuf);
+		
+		ClassDescriptor.serialize(((KmlResponse) responseMessage).getKml(), outgoingMessageBuf, StringFormat.XML);
+		
 		outgoingMessageBuf.append("\r\n");
 	}
 

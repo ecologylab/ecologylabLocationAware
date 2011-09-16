@@ -23,7 +23,9 @@ import ecologylab.sensor.location.gps.data.dataset.RMC;
 import ecologylab.sensor.location.gps.data.dataset.VTG;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener.GPSUpdateInterest;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_collection;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_scalar;
 
 /**
  * Represents an instant of GPS data computed from a series of NMEA strings. Each component of the

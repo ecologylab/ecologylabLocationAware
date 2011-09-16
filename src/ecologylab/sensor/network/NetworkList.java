@@ -8,7 +8,9 @@ import java.util.HashMap;
 
 import ecologylab.generic.ResourcePool;
 import ecologylab.serialization.ElementState;
-import ecologylab.serialization.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_collection;
+import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_nowrap;
 
 /**
  * A moment of data on wifi status objects, which are hashed according to MAC address.

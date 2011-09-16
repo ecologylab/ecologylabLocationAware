@@ -4,7 +4,9 @@
 package ecologylab.serialization.library.kml.overlay;
 
 import ecologylab.serialization.ElementState;
-import ecologylab.serialization.Hint;
+import ecologylab.serialization.annotations.Hint;
+import ecologylab.serialization.annotations.simpl_hints;
+import ecologylab.serialization.annotations.simpl_scalar;
 
 /**
  * According to
