@@ -3,8 +3,8 @@
  */
 package ecologylab.sensor.network.wireless.data;
 
-import ecologylab.serialization.ClassDescriptor;
 import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.serialization.StringFormat;
 import ecologylab.serialization.annotations.simpl_inherit;
 import ecologylab.serialization.annotations.simpl_scalar;
@@ -101,7 +101,7 @@ import ecologylab.serialization.types.element.IMappable;
 		w.updateData("Snakes on a Plane\r\n" + "00:18:39:d0:4d:43\r\n"
 				+ "-40\r\n" + "94\r\n" + "8\r\n" + "ACCESS_POINT\r\n" + "SECURED");
 
-		ClassDescriptor.serialize(w, System.out, StringFormat.XML);
+		SimplTypesScope.serialize(w, System.out, StringFormat.XML);
 		
 	}
 

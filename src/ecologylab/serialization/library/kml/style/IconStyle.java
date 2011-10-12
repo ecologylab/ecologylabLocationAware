@@ -5,8 +5,8 @@ package ecologylab.serialization.library.kml.style;
 
 import java.awt.Color;
 
-import ecologylab.serialization.ClassDescriptor;
 import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.serialization.StringFormat;
 import ecologylab.serialization.annotations.Hint;
 import ecologylab.serialization.annotations.simpl_composite;
@@ -109,7 +109,7 @@ import ecologylab.serialization.library.kml.overlay.Vec2;
 		
 		Style s = new Style("randomColorIcon", null, null, iS);
 		
-		ClassDescriptor.serialize(s, System.out, StringFormat.XML);
+		SimplTypesScope.serialize(s, System.out, StringFormat.XML);
 		
 	}
 

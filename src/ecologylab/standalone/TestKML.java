@@ -3,9 +3,9 @@
  */
 package ecologylab.standalone;
 
-import ecologylab.serialization.ClassDescriptor;
 import ecologylab.serialization.ElementState;
 import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.serialization.StringFormat;
 import ecologylab.serialization.library.kml.KMLTranslations;
 
@@ -40,7 +40,7 @@ public class TestKML
 		
 		
 		
-		ClassDescriptor.serialize(k, System.out, StringFormat.XML);
+		SimplTypesScope.serialize(k, System.out, StringFormat.XML);
 	}
 
 }

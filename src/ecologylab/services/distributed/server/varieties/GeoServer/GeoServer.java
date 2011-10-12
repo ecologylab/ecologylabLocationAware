@@ -12,7 +12,7 @@ import ecologylab.sensor.location.LocationUpdatedListener;
 import ecologylab.sensor.location.compass.CompassDatum;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener.GPSUpdateInterest;
-import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.services.messages.LocationDataRequest;
 import ecologylab.services.messages.LocationDataResponse;
 

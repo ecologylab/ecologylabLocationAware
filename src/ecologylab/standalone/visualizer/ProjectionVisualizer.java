@@ -29,7 +29,7 @@ import ecologylab.sensor.location.gps.gui.GPSController;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
 import ecologylab.serialization.SIMPLTranslationException;
-import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.serialization.library.geom.Rectangle2DDoubleState;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
@@ -82,11 +82,11 @@ public class ProjectionVisualizer extends SingletonApplicationEnvironment implem
 	 * @throws IOException
 	 * @throws NoSuchPortException
 	 */
-	public ProjectionVisualizer(String applicationName, TranslationScope translationScope,
+	public ProjectionVisualizer(String applicationName, SimplTypesScope translationScope,
 			String[] args, float prefsAssetVersion) throws SIMPLTranslationException, NoSuchPortException,
 			IOException
 	{
-		super(applicationName, translationScope, (TranslationScope) null, args, prefsAssetVersion);
+		super(applicationName, translationScope, (SimplTypesScope) null, args, prefsAssetVersion);
 
 		configure();
 	}
@@ -133,7 +133,7 @@ public class ProjectionVisualizer extends SingletonApplicationEnvironment implem
 	 * @throws NoSuchPortException
 	 */
 	public ProjectionVisualizer(Class baseClass, String applicationName,
-			TranslationScope translationScope, String[] args, float prefsAssetVersion)
+			SimplTypesScope translationScope, String[] args, float prefsAssetVersion)
 			throws SIMPLTranslationException, NoSuchPortException, IOException
 	{
 		super(baseClass, applicationName, translationScope, args, prefsAssetVersion);

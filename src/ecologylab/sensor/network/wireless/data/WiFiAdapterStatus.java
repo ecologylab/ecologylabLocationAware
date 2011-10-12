@@ -8,9 +8,9 @@ import ecologylab.generic.Generic;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
 import ecologylab.sensor.network.wireless.WiFiAdapter;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
-import ecologylab.serialization.ClassDescriptor;
 import ecologylab.serialization.ElementState;
 import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.serialization.StringFormat;
 import ecologylab.serialization.annotations.simpl_composite;
 import ecologylab.serialization.annotations.simpl_inherit;
@@ -78,7 +78,7 @@ import ecologylab.serialization.annotations.simpl_scalar;
 		{
 			try
 			{				
-				ClassDescriptor.serialize(status, System.out, StringFormat.XML);
+				SimplTypesScope.serialize(status, System.out, StringFormat.XML);
 				System.out.println();
 			}
 			catch (SIMPLTranslationException e1)

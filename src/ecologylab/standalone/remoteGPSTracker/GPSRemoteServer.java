@@ -7,14 +7,14 @@ import ecologylab.collections.Scope;
 import ecologylab.oodss.distributed.server.NIODatagramServer;
 import ecologylab.oodss.messages.DefaultServicesTranslations;
 import ecologylab.sensor.location.gps.listener.GPSDataLogger;
-import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.SimplTypesScope;
 
 public class GPSRemoteServer extends NIODatagramServer
 {
 
 	GPSDataLogger logger;
 	
-	public GPSRemoteServer(int portNumber, TranslationScope translationScope,
+	public GPSRemoteServer(int portNumber, SimplTypesScope translationScope,
 			Scope objectRegistry)
 	{
 		super(portNumber, translationScope, objectRegistry);
@@ -37,7 +37,7 @@ public class GPSRemoteServer extends NIODatagramServer
 		Class[] GpsTrackerClasses = { NMEAUpdateRequest.class,
 					NMEAUpdateResponse.class };
 
-		TranslationScope nmeaUpdateTranslations = TranslationScope.get("nmeaUpdateTrans",
+		SimplTypesScope nmeaUpdateTranslations = SimplTypesScope.get("nmeaUpdateTrans",
 																	DefaultServicesTranslations.get(),
 																	GpsTrackerClasses);
 		

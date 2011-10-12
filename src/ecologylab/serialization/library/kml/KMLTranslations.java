@@ -1,6 +1,6 @@
 package ecologylab.serialization.library.kml;
 
-import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.serialization.library.kml.feature.KmlFeature;
 import ecologylab.serialization.library.kml.feature.Placemark;
 import ecologylab.serialization.library.kml.feature.container.Container;
@@ -41,9 +41,9 @@ public class KMLTranslations
 	 * 
 	 * @return TranslationSpace for basic ecologylab.oodss
 	 */
-	public static TranslationScope get()
+	public static SimplTypesScope get()
 	{
-		return TranslationScope.get(PACKAGE_NAME, ElementTypeTranslationsProvider.get(),
+		return SimplTypesScope.get(PACKAGE_NAME, ElementTypeTranslationsProvider.get(),
 				TRANSLATIONS);
 	}
 }

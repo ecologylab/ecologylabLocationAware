@@ -12,7 +12,7 @@ import ecologylab.sensor.location.NMEAReader;
 import ecologylab.sensor.location.compass.CompassDataUpdater;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
 import ecologylab.serialization.SIMPLTranslationException;
-import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.services.distributed.server.varieties.GeoServer.GeoServer;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
@@ -149,7 +149,7 @@ public class GeoService extends SingletonApplicationEnvironment
 	
 	public GeoService(String[] args) throws SIMPLTranslationException, BindException, ClassCastException, IOException
 	{
-		super("Location Service", AppFrameworkTranslations.get(), (TranslationScope)null, args, 0.0f);
+		super("Location Service", AppFrameworkTranslations.get(), (SimplTypesScope)null, args, 0.0f);
 		
 		Scope scope = new Scope();
 		

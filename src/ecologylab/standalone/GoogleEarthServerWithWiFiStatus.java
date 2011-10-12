@@ -8,7 +8,7 @@ import ecologylab.oodss.messages.DefaultServicesTranslations;
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
 import ecologylab.sensor.network.wireless.listener.WiFiStringDataListener;
-import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.serialization.library.kml.Kml;
 import ecologylab.serialization.library.kml.feature.Placemark;
 import ecologylab.serialization.library.kml.feature.container.Document;
@@ -97,7 +97,7 @@ public class GoogleEarthServerWithWiFiStatus
 		kmlData.setDocument(doc);
 
 		// setup server
-		TranslationScope serverTranslations = DefaultServicesTranslations.get();
+		SimplTypesScope serverTranslations = DefaultServicesTranslations.get();
 
 		KmlServer s = new KmlServer(8080, NetTools
 				.getAllInetAddressesForLocalhost(), serverTranslations,

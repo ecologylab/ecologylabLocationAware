@@ -5,7 +5,7 @@ import ecologylab.sensor.location.compass.CompassDatum;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.sensor.location.gps.data.SVData;
 import ecologylab.serialization.SIMPLTranslationException;
-import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.services.messages.LocationDataRequest;
 import ecologylab.services.messages.LocationDataResponse;
 
@@ -15,9 +15,9 @@ public class LocationTranslations
 																									{ LocationDataRequest.class,
 			LocationDataResponse.class, CompassDatum.class, GPSDatum.class, SVData.class };
 
-	public static TranslationScope get()
+	public static SimplTypesScope get()
 	{
-		TranslationScope trans = TranslationScope.get("Location_Scope", DefaultServicesTranslations
+		SimplTypesScope trans = SimplTypesScope.get("Location_Scope", DefaultServicesTranslations
 				.get(), LOCATION_MESSAGE_CLASSES);
 		return trans;
 

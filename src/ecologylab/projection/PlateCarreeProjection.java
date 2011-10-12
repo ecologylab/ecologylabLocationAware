@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import ecologylab.sensor.location.gps.data.GeoCoordinate;
-import ecologylab.serialization.ClassDescriptor;
 import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.serialization.StringFormat;
 
 /**
@@ -112,7 +112,7 @@ public class PlateCarreeProjection extends Projection
 
 			try
 			{
-				System.out.println(ClassDescriptor.serialize(d, StringFormat.XML));
+				System.out.println(SimplTypesScope.serialize(d, StringFormat.XML));
 			}
 			catch (SIMPLTranslationException e)
 			{

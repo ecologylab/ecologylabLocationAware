@@ -38,7 +38,7 @@ import ecologylab.sensor.network.wireless.RunnableWiFiAdapter;
 import ecologylab.sensor.network.wireless.gui.WiFiAdapterConnectionControls;
 import ecologylab.sensor.network.wireless.gui.WiFiConnectionController;
 import ecologylab.serialization.SIMPLTranslationException;
-import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.serialization.library.geom.Rectangle2DDoubleState;
 import ecologylab.serialization.library.kml.Kml;
 import ecologylab.services.distributed.server.varieties.KmlServer;
@@ -114,12 +114,12 @@ public class WiFiGPSControls extends SingletonApplicationEnvironment implements
 	 * @throws NoSuchPortException
 	 */
 	public WiFiGPSControls(	String applicationName,
-													TranslationScope translationScope,
+													SimplTypesScope translationScope,
 													String[] args,
 													float prefsAssetVersion) throws SIMPLTranslationException,
 			NoSuchPortException, IOException
 	{
-		super(applicationName, translationScope, (TranslationScope) null, args, prefsAssetVersion);
+		super(applicationName, translationScope, (SimplTypesScope) null, args, prefsAssetVersion);
 
 		configure();
 	}
@@ -167,7 +167,7 @@ public class WiFiGPSControls extends SingletonApplicationEnvironment implements
 	 */
 	public WiFiGPSControls(	Class baseClass,
 													String applicationName,
-													TranslationScope translationScope,
+													SimplTypesScope translationScope,
 													String[] args,
 													float prefsAssetVersion) throws SIMPLTranslationException,
 			NoSuchPortException, IOException
@@ -210,7 +210,7 @@ public class WiFiGPSControls extends SingletonApplicationEnvironment implements
 		kmlData = WiFiGPSKMLDataManager.configureKml(wifi, gps);
 
 		debug("launching KML server");
-		TranslationScope serverTranslations = DefaultServicesTranslations.get();
+		SimplTypesScope serverTranslations = DefaultServicesTranslations.get();
 		this.kmlServer = new KmlServer(	8080,
 																		NetTools.getAllInetAddressesForLocalhost(),
 																		serverTranslations,

@@ -9,7 +9,7 @@ import ecologylab.oodss.distributed.client.NIODatagramClient;
 import ecologylab.oodss.messages.DefaultServicesTranslations;
 import ecologylab.sensor.location.NMEAReader;
 import ecologylab.sensor.location.NMEAStringListener;
-import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.SimplTypesScope;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
@@ -20,7 +20,7 @@ public class GPSRemoteClient extends NIODatagramClient implements NMEAStringList
 	NMEAUpdateRequest update = new NMEAUpdateRequest();
 	
 	public GPSRemoteClient(InetSocketAddress serverAddress,
-			TranslationScope translationScope, Scope objectRegistry, int timeout)
+			SimplTypesScope translationScope, Scope objectRegistry, int timeout)
 	{
 		super(serverAddress, translationScope, objectRegistry, timeout);
 	}
@@ -57,7 +57,7 @@ public class GPSRemoteClient extends NIODatagramClient implements NMEAStringList
 		Class[] GpsTrackerClasses = { NMEAUpdateRequest.class,
 				 								NMEAUpdateResponse.class };
 		
-		TranslationScope nmeaUpdateTranslations = TranslationScope.get("nmeaUpdateTrans",
+		SimplTypesScope nmeaUpdateTranslations = SimplTypesScope.get("nmeaUpdateTrans",
 																							DefaultServicesTranslations.get(),
 																							GpsTrackerClasses);
 		

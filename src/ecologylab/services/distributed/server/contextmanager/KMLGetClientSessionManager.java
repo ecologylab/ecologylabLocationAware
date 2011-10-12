@@ -11,10 +11,9 @@ import ecologylab.oodss.distributed.server.NIOServerProcessor;
 import ecologylab.oodss.distributed.server.clientsessionmanager.HTTPGetClientSessionManager;
 import ecologylab.oodss.messages.RequestMessage;
 import ecologylab.oodss.messages.ResponseMessage;
-import ecologylab.serialization.ClassDescriptor;
 import ecologylab.serialization.SIMPLTranslationException;
 import ecologylab.serialization.StringFormat;
-import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
 
@@ -36,7 +35,7 @@ public class KMLGetClientSessionManager extends HTTPGetClientSessionManager
 	 * @param registry
 	 */
 	public KMLGetClientSessionManager(String token, int maxPacketSize, NIOServerIOThread server,
-			NIOServerProcessor frontend, SelectionKey socketKey, TranslationScope translationScope,
+			NIOServerProcessor frontend, SelectionKey socketKey, SimplTypesScope translationScope,
 			Scope<?> registry)
 	{
 		super(token, maxPacketSize, server, frontend, socketKey, translationScope, registry);
@@ -51,7 +50,7 @@ public class KMLGetClientSessionManager extends HTTPGetClientSessionManager
 	{
 		outgoingMessageBuf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
 		
-		ClassDescriptor.serialize(((KmlResponse) responseMessage).getKml(), outgoingMessageBuf, StringFormat.XML);
+		SimplTypesScope.serialize(((KmlResponse) responseMessage).getKml(), outgoingMessageBuf, StringFormat.XML);
 		
 		outgoingMessageBuf.append("\r\n");
 	}

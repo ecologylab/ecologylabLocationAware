@@ -15,7 +15,7 @@ import ecologylab.oodss.distributed.server.varieties.HttpGetServer;
 import ecologylab.oodss.messages.DefaultServicesTranslations;
 import ecologylab.serialization.SIMPLTranslationException;
 import ecologylab.serialization.StringFormat;
-import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.serialization.library.kml.KMLTranslations;
 import ecologylab.serialization.library.kml.Kml;
 import ecologylab.services.distributed.server.contextmanager.KMLGetClientSessionManager;
@@ -61,10 +61,10 @@ public class KmlServer extends HttpGetServer
 	 * @throws BindException
 	 */
 	public KmlServer(int portNumber, InetAddress[] inetAddresses,
-			TranslationScope requestTranslationSpace, Scope objectRegistry, int idleConnectionTimeout,
+			SimplTypesScope requestTranslationSpace, Scope objectRegistry, int idleConnectionTimeout,
 			int maxPacketSize, Kml kmlData) throws IOException, BindException
 	{
-		super(portNumber, inetAddresses, TranslationScope.get(connectionTscopeName(inetAddresses,
+		super(portNumber, inetAddresses, SimplTypesScope.get(connectionTscopeName(inetAddresses,
 				portNumber), DefaultServicesTranslations.get(), requestTranslationSpace,
 				KML_MESSAGE_CLASSES), objectRegistry, idleConnectionTimeout, maxPacketSize);
 
@@ -82,7 +82,7 @@ public class KmlServer extends HttpGetServer
 	 * @throws BindException
 	 */
 	public KmlServer(int portNumber, InetAddress inetAddress,
-			TranslationScope requestTranslationSpace, Scope objectRegistry, int idleConnectionTimeout,
+			SimplTypesScope requestTranslationSpace, Scope objectRegistry, int idleConnectionTimeout,
 			int maxPacketSize, Kml kmlData) throws IOException, BindException
 	{
 		this(portNumber, addressToAddresses(inetAddress), requestTranslationSpace, objectRegistry,
@@ -97,7 +97,7 @@ public class KmlServer extends HttpGetServer
 	 */
 	public static void main(String[] args) throws BindException, IOException, SIMPLTranslationException
 	{
-		TranslationScope serverTranslations = DefaultServicesTranslations.get();
+		SimplTypesScope serverTranslations = DefaultServicesTranslations.get();
 
 		Kml kmlData = (Kml) KMLTranslations.get().deserialize(someKml, StringFormat.XML);
 
@@ -109,7 +109,7 @@ public class KmlServer extends HttpGetServer
 
 	@Override
 	protected HTTPGetClientSessionManager generateContextManager(String token, SelectionKey sk,
-			TranslationScope translationScopeIn, Scope registryIn)
+			SimplTypesScope translationScopeIn, Scope registryIn)
 	{
 		return new KMLGetClientSessionManager(token, this.maxMessageSize, this.getBackend(), this, sk,
 				translationScopeIn, registryIn);

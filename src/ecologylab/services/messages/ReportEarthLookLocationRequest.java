@@ -11,8 +11,8 @@ import ecologylab.oodss.messages.RequestMessage;
 import ecologylab.oodss.messages.ResponseMessage;
 import ecologylab.sensor.location.compass.CompassDatum;
 import ecologylab.sensor.location.gps.data.GPSDatum;
-import ecologylab.serialization.ClassDescriptor;
 import ecologylab.serialization.SIMPLTranslationException;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.serialization.StringFormat;
 import ecologylab.serialization.library.kml.Kml;
 import ecologylab.serialization.library.kml.feature.Placemark;
@@ -105,7 +105,7 @@ public class ReportEarthLookLocationRequest extends RequestMessage
 
 		try
 		{
-			debug(ClassDescriptor.serialize(currentLookPoint, StringFormat.XML));
+			debug(SimplTypesScope.serialize(currentLookPoint, StringFormat.XML));
 		}
 		catch (SIMPLTranslationException e)
 		{

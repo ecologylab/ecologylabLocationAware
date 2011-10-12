@@ -12,7 +12,7 @@ import ecologylab.sensor.network.NetworkStatus;
 import ecologylab.sensor.network.wireless.data.WiFiAdapterStatus;
 import ecologylab.sensor.network.wireless.data.WiFiSourceList;
 import ecologylab.sensor.network.wireless.data.WirelessNetwork;
-import ecologylab.serialization.TranslationScope;
+import ecologylab.serialization.SimplTypesScope;
 import ecologylab.serialization.types.element.ElementTypeTranslationsProvider;
 import ecologylab.services.logging.WiFiGPSStatusOp;
 
@@ -44,9 +44,9 @@ public class BaseSensorTranslations
 	 * 
 	 * @return TranslationSpace for basic ecologylab.oodss
 	 */
-	public static TranslationScope get()
+	public static SimplTypesScope get()
 	{
-		return TranslationScope.get(PACKAGE_NAME, ElementTypeTranslationsProvider.get(),
+		return SimplTypesScope.get(PACKAGE_NAME, ElementTypeTranslationsProvider.get(),
 				TRANSLATIONS);
 	}
 }
