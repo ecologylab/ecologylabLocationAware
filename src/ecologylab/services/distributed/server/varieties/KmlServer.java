@@ -14,8 +14,8 @@ import ecologylab.oodss.distributed.server.clientsessionmanager.HTTPGetClientSes
 import ecologylab.oodss.distributed.server.varieties.HttpGetServer;
 import ecologylab.oodss.messages.DefaultServicesTranslations;
 import ecologylab.serialization.SIMPLTranslationException;
-import ecologylab.serialization.StringFormat;
 import ecologylab.serialization.SimplTypesScope;
+import ecologylab.serialization.formatenums.StringFormat;
 import ecologylab.serialization.library.kml.KMLTranslations;
 import ecologylab.serialization.library.kml.Kml;
 import ecologylab.services.distributed.server.contextmanager.KMLGetClientSessionManager;

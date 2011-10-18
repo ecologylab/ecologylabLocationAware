@@ -5,9 +5,9 @@ package ecologylab.sensor.network.wireless.data;
 
 import ecologylab.serialization.SIMPLTranslationException;
 import ecologylab.serialization.SimplTypesScope;
-import ecologylab.serialization.StringFormat;
 import ecologylab.serialization.annotations.simpl_inherit;
 import ecologylab.serialization.annotations.simpl_scalar;
+import ecologylab.serialization.formatenums.StringFormat;
 import ecologylab.serialization.types.element.IMappable;
 
 /**

@@ -6,7 +6,7 @@ package ecologylab.standalone;
 import ecologylab.serialization.ElementState;
 import ecologylab.serialization.SIMPLTranslationException;
 import ecologylab.serialization.SimplTypesScope;
-import ecologylab.serialization.StringFormat;
+import ecologylab.serialization.formatenums.StringFormat;
 import ecologylab.serialization.library.kml.KMLTranslations;
 
 /**
