@@ -23,6 +23,7 @@ import ecologylab.serialization.library.kml.Kml;
 import ecologylab.services.distributed.server.contextmanager.EarthGPSSimCSManager;
 import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
+import ecologylab.services.messages.RequestTranslator;
 
 /**
  * Acts as a simulated source of location data; acquires data from an instance of Google Earth.
@@ -61,6 +62,10 @@ public class EarthGPSSimulatorServer extends HttpGetServer
 	 * ground speed.
 	 */
 	public static final String	LAST_TIME_POINT				= "LAST_TIME_POINT";
+	
+	private EarthGPSSimCSManager csManager;
+	
+	private RequestTranslator translator;
 
 	/**
 	 * @param portNumber
@@ -116,7 +121,14 @@ public class EarthGPSSimulatorServer extends HttpGetServer
 	protected HTTPGetClientSessionManager generateContextManager(String token, SelectionKey sk,
 			SimplTypesScope translationScopeIn, Scope registryIn)
 	{
-		return new EarthGPSSimCSManager(token, this.maxMessageSize, this.getBackend(), this, sk,
+		csManager = new EarthGPSSimCSManager(token, this.maxMessageSize, this.getBackend(), this, sk,
 				translationScopeIn, registryIn);
+		csManager.setRequestTranslator(translator);
+		return csManager;
+	}
+	
+	public void setRequestTranslator(RequestTranslator translator)
+	{
+		this.translator = translator;
 	}
 }
