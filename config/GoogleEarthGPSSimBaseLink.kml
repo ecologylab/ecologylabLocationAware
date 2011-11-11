@@ -1,3 +1,4 @@
+<Document>
 <NetworkLink>
   <name>Report View to App</name>
   <flyToView>0</flyToView>
@@ -9,4 +10,29 @@
     <viewRefreshTime>1</viewRefreshTime>
     <viewFormat>CAMERA=[lookatLat],[lookatLon],[lookatHeading],[lookatTilt]</viewFormat>
   </Link>
-</NetworkLink> 
+</NetworkLink>
+<Folder>
+  <name>Locations</name>
+  <NetworkLink>
+    <name>Location A</name>
+    <flyToView>0</flyToView>
+    <Link>
+      <href>http://localhost:8085</href>
+      <viewRefreshMode>onRequest</viewRefreshMode>
+      <viewFormat>location=0</viewFormat>
+    </Link>
+  </NetworkLink>  
+</Folder>
+<Folder>
+  <name>Routes</name>
+  <NetworkLink>
+    <name>Route 1</name>
+    <flyToView>0</flyToView>
+    <Link>
+      <href>http://localhost:8085</href>
+      <viewRefreshMode>onRequest</viewRefreshMode>
+      <viewFormat>route=0</viewFormat>
+    </Link>
+  </NetworkLink>  
+</Folder>
+</Document>
