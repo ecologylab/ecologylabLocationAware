@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import ecologylab.serialization.annotations.simpl_collection;
 import ecologylab.serialization.annotations.simpl_inherit;
+import ecologylab.serialization.annotations.simpl_nowrap;
 import ecologylab.serialization.library.kml.feature.KmlFeature;
 import ecologylab.serialization.library.kml.feature.Placemark;
 import ecologylab.serialization.library.kml.style.StyleSelector;
@@ -17,7 +18,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
  */
 @simpl_inherit public abstract class Container extends KmlFeature
 {
-	@simpl_collection("Placemark") ArrayList<Placemark>	placemarks;
+	@simpl_collection("Placemark") @simpl_nowrap ArrayList<Placemark>	placemarks;
 
 	@simpl_collection("Document") ArrayList<Document>		documents;
 
