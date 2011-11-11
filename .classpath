@@ -129,6 +129,7 @@
 	<classpathentry kind="lib" path="/GeoTools/lib/imageio-ext-tiff-1.0.8.jar"/>
 	<classpathentry kind="lib" path="/GeoTools/lib/imageio-ext-utilities-1.0.8.jar"/>
 	<classpathentry kind="lib" path="/GeoTools/lib/jai_codec-1.1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="/GeoTools/lib/jai_core.jar"/>
 	<classpathentry kind="lib" path="/GeoTools/lib/jai_imageio-1.1.jar"/>
 	<classpathentry kind="lib" path="/GeoTools/lib/jcommon-1.0.15.jar"/>
 	<classpathentry kind="lib" path="/GeoTools/lib/jdom-1.0.jar"/>
