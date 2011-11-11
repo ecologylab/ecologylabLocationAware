@@ -3,6 +3,9 @@
  */
 package ecologylab.serialization.library.kml.geometry;
 
+import java.util.ArrayList;
+
+import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.serialization.annotations.Hint;
 import ecologylab.serialization.annotations.simpl_hints;
 import ecologylab.serialization.annotations.simpl_inherit;
@@ -86,5 +89,10 @@ import ecologylab.serialization.annotations.simpl_tag;
 	public void setAltitudeMode(String altitudeMode)
 	{
 		this.altitudeMode = altitudeMode;
+	}
+	
+	public void setCoordinate(ArrayList<GeoCoordinate> coordinates)
+	{
+		super.setCoordinate(coordinates);
 	}
 }
