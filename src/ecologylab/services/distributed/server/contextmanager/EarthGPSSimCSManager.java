@@ -16,7 +16,7 @@ import ecologylab.serialization.SimplTypesScope;
 import ecologylab.serialization.formatenums.StringFormat;
 import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
-import ecologylab.services.messages.ReportEarthLookLocationRequest;
+import ecologylab.services.messages.RequestTranslator;
 
 /**
  * This client manager simply serves whatever object is located at KML_DATA in the ObjectRegistry.
@@ -26,6 +26,8 @@ import ecologylab.services.messages.ReportEarthLookLocationRequest;
  */
 public class EarthGPSSimCSManager extends HTTPGetClientSessionManager
 {
+	private RequestTranslator translator;
+	
 	/**
 	 * @param token
 	 * @param maxPacketSize
@@ -90,10 +92,11 @@ public class EarthGPSSimCSManager extends HTTPGetClientSessionManager
 	}
 
 	@Override
-	protected ReportEarthLookLocationRequest translateGetRequest(CharSequence messageCharSequence, String startLineString)
+	protected RequestMessage translateGetRequest(CharSequence messageCharSequence, String startLineString)
 			throws SIMPLTranslationException
 	{
-		return new ReportEarthLookLocationRequest(startLineString);
+		return translator.getTranslatedMessage(startLineString);
+		//return new ReportEarthLookLocationRequest(startLineString);
 	}
 
 	@Override
@@ -115,5 +118,10 @@ public class EarthGPSSimCSManager extends HTTPGetClientSessionManager
 			throws SIMPLTranslationException
 	{
 		return KmlRequest.STATIC_INSTANCE;
+	}
+	
+	public void setRequestTranslator(RequestTranslator translator)
+	{
+		this.translator = translator;
 	}
 }
