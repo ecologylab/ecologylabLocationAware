@@ -168,4 +168,16 @@ public abstract class Geometry extends KmlObject
 		this.coordinateList.clear();
 		this.coordinateList.add(coordinates2);
 	}
+	
+	/**
+	 * For Geometry's with multiple points; clears the coordinate list and adds the parameter
+	 * value.
+	 * 
+	 * @param coordinates2
+	 */
+	public void setCoordinate(ArrayList<GeoCoordinate> coordinates2)
+	{
+		this.coordinateList.clear();
+		this.coordinateList = coordinates2;
+	}
 }
