@@ -10,6 +10,7 @@ import ecologylab.serialization.annotations.simpl_inherit;
 import ecologylab.serialization.annotations.simpl_scalar;
 import ecologylab.serialization.annotations.simpl_tag;
 import ecologylab.serialization.library.kml.KmlObject;
+import ecologylab.serialization.library.kml.feature.container.Folder;
 import ecologylab.serialization.library.kml.style.Style;
 import ecologylab.serialization.library.kml.style.StyleSelector;
 
@@ -120,5 +121,12 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
 	public String getName()
 	{
 		return name;
+	}
+	
+	public void setStyle(Style st)
+	{
+		if (this instanceof Folder) return;
+		
+		this.style = st;
 	}
 }
