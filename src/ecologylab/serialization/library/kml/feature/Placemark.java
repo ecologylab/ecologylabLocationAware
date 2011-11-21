@@ -9,6 +9,7 @@ import ecologylab.serialization.annotations.simpl_tag;
 import ecologylab.serialization.library.kml.geometry.LineString;
 import ecologylab.serialization.library.kml.geometry.Point;
 import ecologylab.serialization.library.kml.geometry.Polygon;
+import ecologylab.serialization.library.kml.style.Style;
 
 /**
  * @author Zach
@@ -81,5 +82,10 @@ public class Placemark extends KmlFeature
 
 		this.point = null;
 		this.lineString = null;
+	}
+	
+	public void setStyle(Style st)
+	{
+		super.setStyle(st);
 	}
 }
