@@ -17,7 +17,7 @@
     <name>Location A</name>
     <flyToView>0</flyToView>
     <Link>
-      <href>http://localhost:8085</href>
+      <href>http://localhost:8080</href>
       <viewRefreshMode>onRequest</viewRefreshMode>
       <viewFormat>location=0</viewFormat>
     </Link>
@@ -29,7 +29,7 @@
     <name>Route 1</name>
     <flyToView>0</flyToView>
     <Link>
-      <href>http://localhost:8085</href>
+      <href>http://localhost:8080</href>
       <viewRefreshMode>onRequest</viewRefreshMode>
       <viewFormat>route=0</viewFormat>
     </Link>
