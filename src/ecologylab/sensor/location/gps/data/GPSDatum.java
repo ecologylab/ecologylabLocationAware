@@ -324,7 +324,30 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 		}
 	}
 
-	private void fireGPSDataUpdatedEvent()
+	public void updateLatLon(double lat, double lon)
+	{
+		double oldLat = this.getLat();
+		double oldLon = this.getLon();
+
+		super.setLat(lat);
+		super.setLon(lon);
+
+		this.pointDirty = true;
+
+		if ((oldLat != getLat() || oldLon != getLon()) && this.latLonUpdatedListeners != null)
+		{
+			this.gpsDataUpdatedListenersToUpdate.addAll(this.latLonUpdatedListeners);
+		}
+
+		fireGPSDataUpdatedEvent();
+	}
+
+	/**
+	 * Fires an event to notify all listeners that the datum has been updated. May be invoked
+	 * externally when a full update is carried out over a series of calls. Invoked automatically when
+	 * this is linked to a GPS sensor.
+	 */
+	public void fireGPSDataUpdatedEvent()
 	{
 		for (GPSDataUpdatedListener l : this.gpsDataUpdatedListenersToUpdate)
 		{
@@ -354,7 +377,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	}
 
 	/**
-	 * determine longitude degress and minutes
+	 * determine longitude degrees and minutes
 	 * 
 	 * @param src
 	 */
@@ -366,7 +389,8 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 		double oldLon = getLon();
 
 		setLon(AngularCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 3)),
-				Double.parseDouble(src.substring(3)), 0));
+																			Double.parseDouble(src.substring(3)),
+																			0));
 
 		this.pointDirty = true;
 
@@ -376,6 +400,26 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 		}
 	}
 
+	/**
+	 * update longitude and prep for firing event to listeners
+	 * 
+	 * @param src
+	 */
+	public void updateLon(double lon)
+	{
+		double oldLon = this.getLon();
+		
+		this.setLon(lon);
+
+		this.pointDirty = true;
+
+		if (oldLon != getLon() && this.latLonUpdatedListeners != null)
+		{
+			this.gpsDataUpdatedListenersToUpdate.addAll(this.latLonUpdatedListeners);
+		}
+	}
+
+	
 	/**
 	 * determine latitude sign
 	 * 
@@ -404,7 +448,27 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 		double oldLat = getLat();
 
 		setLat(AngularCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 2)),
-				Double.parseDouble(src.substring(2)), 0));
+																			Double.parseDouble(src.substring(2)),
+																			0));
+
+		this.pointDirty = true;
+
+		if (oldLat != getLat() && this.latLonUpdatedListeners != null)
+		{
+			this.gpsDataUpdatedListenersToUpdate.addAll(this.latLonUpdatedListeners);
+		}
+	}
+	
+	/**
+	 * update latitude and prep for firing event to listeners
+	 * 
+	 * @param src
+	 */
+	public void updateLat(double lat)
+	{
+		double oldLat = this.getLat();
+		
+		this.setLat(lat);
 
 		this.pointDirty = true;
 
@@ -762,6 +826,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 * @param lat
 	 *          the lat to set
 	 */
+	@Override
 	public void setLat(double lat)
 	{
 		super.setLat(lat);
@@ -773,6 +838,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 * @param lon
 	 *          the lon to set
 	 */
+	@Override
 	public void setLon(double lon)
 	{
 		super.setLon(lon);
@@ -899,6 +965,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 * 
 	 * @return the pointRepresentation
 	 */
+	@Override
 	public Point2D.Double getPointRepresentation()
 	{
 		if (pointRepresentation == null)

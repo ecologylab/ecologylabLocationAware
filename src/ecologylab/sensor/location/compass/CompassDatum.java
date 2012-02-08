@@ -1,5 +1,8 @@
 package ecologylab.sensor.location.compass;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import ecologylab.serialization.ElementState;
 import ecologylab.serialization.annotations.simpl_scalar;
 
@@ -12,37 +15,37 @@ public class CompassDatum extends ElementState
 {
 	/** The current heading in degrees. */
 	@simpl_scalar
-	private float	heading;
+	private float											heading;
 
 	/** The current pitch in degrees. */
 	@simpl_scalar
-	private float	pitch;
+	private float											pitch;
 
 	/** The current roll in degrees. */
 	@simpl_scalar
-	private float	roll;
+	private float											roll;
 
 	/** The current temperature of the sensor. */
 	@simpl_scalar
-	private float	temp;
+	private float											temp;
 
 	/** The total acceleration, measured in G's */
 	@simpl_scalar
-	private float	totAcc;
-	
+	private float											totAcc;
+
 	/** The current acceleration in the X direction, measured in G's */
 	@simpl_scalar
-	private float	accX;
+	private float											accX;
 
 	/** The current acceleration in the Y direction, measured in G's */
 	@simpl_scalar
-	private float	accY;
+	private float											accY;
 
 	/** The current acceleration in the Z direction, measured in G's */
 	@simpl_scalar
-	private float	accZ;
-	
-	
+	private float											accZ;
+
+	private List<CompassDataListener>	compassDataUpdatedListeners;
 
 	public CompassDatum()
 	{
@@ -65,6 +68,7 @@ public class CompassDatum extends ElementState
 	public void setHeading(float heading)
 	{
 		this.heading = heading;
+		fireCompassDataUpdatedEvent();
 	}
 
 	public float getPitch()
@@ -75,6 +79,7 @@ public class CompassDatum extends ElementState
 	public void setPitch(float pitch)
 	{
 		this.pitch = pitch;
+		fireCompassDataUpdatedEvent();
 	}
 
 	public float getRoll()
@@ -85,6 +90,7 @@ public class CompassDatum extends ElementState
 	public void setRoll(float roll)
 	{
 		this.roll = roll;
+		fireCompassDataUpdatedEvent();
 	}
 
 	public float getTemp()
@@ -95,6 +101,7 @@ public class CompassDatum extends ElementState
 	public void setTemp(float temp)
 	{
 		this.temp = temp;
+		fireCompassDataUpdatedEvent();
 	}
 
 	/**
@@ -106,7 +113,8 @@ public class CompassDatum extends ElementState
 	}
 
 	/**
-	 * @param totAcc the totAcc to set
+	 * @param totAcc
+	 *          the totAcc to set
 	 */
 	public void setTotAcc(float totAcc)
 	{
@@ -128,6 +136,7 @@ public class CompassDatum extends ElementState
 	public void setAccX(float accX)
 	{
 		this.accX = accX;
+		fireCompassDataUpdatedEvent();
 	}
 
 	/**
@@ -145,6 +154,7 @@ public class CompassDatum extends ElementState
 	public void setAccY(float accY)
 	{
 		this.accY = accY;
+		fireCompassDataUpdatedEvent();
 	}
 
 	/**
@@ -174,5 +184,38 @@ public class CompassDatum extends ElementState
 		this.accX = data.accX;
 		this.accY = data.accY;
 		this.accZ = data.accZ;
+
+		fireCompassDataUpdatedEvent();
+	}
+
+	public void addCompassDataListener(CompassDataListener l)
+	{
+		if (this.compassDataUpdatedListeners == null)
+		{
+			synchronized (this)
+			{
+				if (this.compassDataUpdatedListeners == null)
+				{
+					this.compassDataUpdatedListeners = new LinkedList<CompassDataListener>();
+				}
+			}
+		}
+
+		synchronized (this.compassDataUpdatedListeners)
+		{
+			this.compassDataUpdatedListeners.add(l);
+		}
+	}
+
+	public void fireCompassDataUpdatedEvent()
+	{
+		if (this.compassDataUpdatedListeners != null)
+			synchronized (this.compassDataUpdatedListeners)
+			{
+				for (CompassDataListener l : this.compassDataUpdatedListeners)
+				{
+					l.compassDataUpdated(this);
+				}
+			}
 	}
 }

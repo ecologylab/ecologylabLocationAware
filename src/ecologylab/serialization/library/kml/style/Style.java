@@ -37,4 +37,9 @@ public class Style extends StyleSelector
 		this.polyStyle = polyStyle;
 		this.iconStyle = iconStyle;
 	}
+
+	public IconStyle getIconStyle()
+	{
+		return iconStyle;
+	}
 }
