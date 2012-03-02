@@ -1,19 +1,14 @@
 package ecologylab.standalone.ImageGeotagger;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.HashMap;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
@@ -37,38 +32,49 @@ import ecologylab.services.messages.LocationDataResponse;
 import ecologylab.standalone.GeoClient;
 import ecologylab.standalone.ImageGeotagger.DirectoryMonitor.ImageDirectoryMonitor;
 
-public class ImageProcessor implements Runnable {
-	protected File imageFile;
-	private Thread t;
+public class ImageProcessor implements Runnable
+{
+	protected File								imageFile;
 
-	private GeoClient client;
-	private GPSDatum gpsData;
-	private CompassDatum compassData;
-	private ImageDirectoryMonitor monitor;
+	private Thread								t;
 
-	public ImageProcessor(File image, GeoClient client, ImageDirectoryMonitor monitor) {
+	private GeoClient							client;
+
+	private GPSDatum							gpsData;
+
+	private CompassDatum					compassData;
+
+	private ImageDirectoryMonitor	monitor;
+
+	public ImageProcessor(File image, GeoClient client, ImageDirectoryMonitor monitor)
+	{
 		this.imageFile = image;
 		this.client = client;
 		this.monitor = monitor;
 	}
 
-	public ImageProcessor(File image, GPSDatum gpsData, CompassDatum compassData, ImageDirectoryMonitor monitor)
+	public ImageProcessor(File image,
+												GPSDatum gpsData,
+												CompassDatum compassData,
+												ImageDirectoryMonitor monitor)
 	{
 		this.imageFile = image;
 		this.gpsData = gpsData;
 		this.compassData = compassData;
-		
+
 		this.monitor = monitor;
-		
+
 	}
-	
-	public void processImage() {
+
+	public void processImage()
+	{
 		t = new Thread(this);
 		t.start();
 	}
 
 	@Override
-	public void run() {
+	public void run()
+	{
 		System.out.println("Processing file: " + imageFile.getName());
 
 		if (client != null)
@@ -86,23 +92,24 @@ public class ImageProcessor implements Runnable {
 				return;
 			}
 		}
-		
+
 		/* Read metadata from image file */
 		IImageMetadata metadata = null;
 
 		/* Initialize metadata from existing image metadata */
-		try {
+		try
+		{
 			metadata = Sanselan.getMetadata(imageFile);
-		} catch (ImageReadException e) {
-			// TODO Auto-generated catch block
+		}
+		catch (ImageReadException e)
+		{
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 
-		
-		
 		if (metadata == null || !(metadata instanceof JpegImageMetadata))
 			return;
 
@@ -114,25 +121,32 @@ public class ImageProcessor implements Runnable {
 			return;
 
 		TiffOutputSet outputSet = null;
-		try {
+		try
+		{
 			outputSet = exif.getOutputSet();
-		} catch (ImageWriteException e) {
+		}
+		catch (ImageWriteException e)
+		{
 			e.printStackTrace();
 			return;
 		}
 
 		/* Write location metadata to the existing metadata */
-		if (outputSet != null) {
-			try {
-				if(gpsData != null)
+		if (outputSet != null)
+		{
+			try
+			{
+				if (gpsData != null)
 				{
 					outputSet.setGPSInDegrees(gpsData.getLon(), gpsData.getLat());
 				}
-				if(compassData != null)
+				if (compassData != null)
 				{
 					setCompassData(outputSet);
 				}
-			} catch (ImageWriteException e) {
+			}
+			catch (ImageWriteException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return;
@@ -143,111 +157,131 @@ public class ImageProcessor implements Runnable {
 		File dst = null;
 
 		// create output stream to temp file for dst
-		try {
-			dst = File.createTempFile("temp-" + System.currentTimeMillis(),
-					".jpg");
+		try
+		{
+			dst = File.createTempFile("temp-" + System.currentTimeMillis(), ".jpg");
 			os = new FileOutputStream(dst);
 			os = new BufferedOutputStream(os);
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 			return;
 		}
 
 		// write/update EXIF metadata to output stream of temp file
-		try {
-			new ExifRewriter().updateExifMetadataLossless(imageFile, os,
-					outputSet);
-		} catch (ImageReadException e) {
+		try
+		{
+			new ExifRewriter().updateExifMetadataLossless(imageFile, os, outputSet);
+		}
+		catch (ImageReadException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
-		} catch (ImageWriteException e) {
+		}
+		catch (ImageWriteException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
-		} finally {
-			if (os != null) {
-				try {
+		}
+		finally
+		{
+			if (os != null)
+			{
+				try
+				{
 					os.close();
-				} catch (IOException e) {
+				}
+				catch (IOException e)
+				{
 				}
 			}
 		}
 
 		// finally copy the temp file to original
-		try 
+		try
 		{
 			copyFile(dst, imageFile);
-			if(this.monitor != null)
+			if (this.monitor != null)
 			{
 				this.monitor.addCompassDatum(compassData);
 				this.monitor.addGPSDatum(gpsData);
 			}
-			
-		} catch (IOException e) {
-			
+		}
+		catch (IOException e)
+		{
+
 			e.printStackTrace();
 		}
-		
+
 	}
 
-	public void setCompassData(TiffOutputSet outputSet) 
+	public void setCompassData(TiffOutputSet outputSet)
 	{
 		TiffOutputDirectory dir = outputSet.getGPSDirectory();
 
 		/* create heading data */
 		ByteBuffer rationalBuffer = ByteBuffer.allocate(8);
-		rationalBuffer.put(intToUnsignedByteArray((long) (compassData
-				.getHeading() * 100)));
+		rationalBuffer.put(intToUnsignedByteArray((long) (compassData.getHeading() * 100)));
 		rationalBuffer.put(intToUnsignedByteArray(100));
 		rationalBuffer.flip();
-		
+
 		byte[] buf = new byte[8];
 		rationalBuffer.get(buf);
-		
-		TiffOutputField outField = new TiffOutputField(
-				GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
-				TiffFieldTypeConstants.FIELD_TYPE_RATIONAL, 1,
-				buf);
-		
+
+		TiffOutputField outField = new TiffOutputField(	GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
+																										TiffFieldTypeConstants.FIELD_TYPE_RATIONAL,
+																										1,
+																										buf);
+
 		/* Remove Previous Data if Necessary */
-		TiffOutputField imageDirPre = outputSet
-				.findField(GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
-		if (imageDirPre != null) {
+		TiffOutputField imageDirPre = outputSet.findField(GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
+		if (imageDirPre != null)
+		{
 			outputSet.removeField(GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
 		}
-		
+
 		dir.add(outField);
-		
+
 		/* Create Heading Reference Data */
 		String refVal = GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_MAGNETIC_NORTH;
-		TiffOutputField outField2 = new TiffOutputField(
-				TiffOutputField.GPS_TAG_GPS_IMG_DIRECTION_REF,
-				TiffFieldTypeConstants.FIELD_TYPE_ASCII, refVal.length(),
-				refVal.getBytes());
-		
+		TiffOutputField outField2 = new TiffOutputField(TiffOutputField.GPS_TAG_GPS_IMG_DIRECTION_REF,
+																										TiffFieldTypeConstants.FIELD_TYPE_ASCII,
+																										refVal.length(),
+																										refVal.getBytes());
+
 		/* Delete Previous Field */
-		TiffOutputField imageDirRefPre = outputSet
-				.findField(GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
-		if (imageDirRefPre != null) {
+		TiffOutputField imageDirRefPre = outputSet.findField(GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
+		if (imageDirRefPre != null)
+		{
 			outputSet.removeField(GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
 		}
-		
+
 		dir.add(outField2);
 	}
 
-	public static void copyFile(File in, File out) throws IOException {
+	public static void copyFile(File in, File out) throws IOException
+	{
 		FileChannel inChannel = new FileInputStream(in).getChannel();
 		FileChannel outChannel = new FileOutputStream(out).getChannel();
-		try {
+		try
+		{
 			inChannel.transferTo(0, inChannel.size(), outChannel);
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			throw e;
-		} finally {
+		}
+		finally
+		{
 			if (inChannel != null)
 				inChannel.close();
 			if (outChannel != null)
@@ -256,7 +290,8 @@ public class ImageProcessor implements Runnable {
 	}
 
 	/* Converts a long into a byte array representing a 32 bit unsigned integer */
-	public byte[] intToUnsignedByteArray(long x) {
+	public byte[] intToUnsignedByteArray(long x)
+	{
 		Long anUnsignedInt = x;
 
 		byte[] buf = new byte[4];
@@ -269,7 +304,8 @@ public class ImageProcessor implements Runnable {
 		return buf;
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException
+	{
 		GPSDatum gData = new GPSDatum();
 		gData.setLat(30.620785);
 		gData.setLon(-96.335091);
@@ -284,9 +320,9 @@ public class ImageProcessor implements Runnable {
 
 		int returnVal = chooser.showOpenDialog(null);
 
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			ImageProcessor proc = new ImageProcessor(chooser.getSelectedFile(),
-					gData, cData, null);
+		if (returnVal == JFileChooser.APPROVE_OPTION)
+		{
+			ImageProcessor proc = new ImageProcessor(chooser.getSelectedFile(), gData, cData, null);
 			proc.processImage();
 		}
 	}

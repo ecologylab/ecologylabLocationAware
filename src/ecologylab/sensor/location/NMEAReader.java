@@ -80,7 +80,7 @@ public class NMEAReader extends Debug implements Runnable
 			throw new IOException("GPS is not available for parallel ports.");
 		}
 
-		debug("port acquired: " + portId.toString());
+		debug("port acquired: " + portId.toString()+":"+portId.getName());
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class NMEAReader extends Debug implements Runnable
 
 		if (port == null)
 		{
-			port = (SerialPort) portId.open("GPS Port", 5000);
+			port = (SerialPort) portId.open("NMEA Reader Port", 10000);
 		}
 
 		port.setSerialPortParams(baud, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,

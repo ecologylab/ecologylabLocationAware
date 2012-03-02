@@ -1,9 +1,17 @@
 package ecologylab.sensor.location.compass;
 
-import ecologylab.generic.Debug;
-import ecologylab.sensor.location.NMEAStringListener;
-
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.TooManyListenersException;
+
+import ecologylab.generic.Debug;
+import ecologylab.sensor.location.NMEAReader;
+import ecologylab.sensor.location.NMEAStringListener;
+import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
+import gnu.io.UnsupportedCommOperationException;
 
 public class CompassDataUpdater implements NMEAStringListener
 {
@@ -45,68 +53,69 @@ public class CompassDataUpdater implements NMEAStringListener
 		if (checkCheckSum(gpsDataString) && gpsDataString.charAt(0) == 'C')
 		{
 			int end;
-			
+
 			for (int i = 0; i < gpsDataString.length(); i++)
 			{
 				char c = gpsDataString.charAt(i);
-				
+
 				switch (c)
 				{
 				case 'C':
-					end = nextNonNumber(gpsDataString, i+1);
+					end = nextNonNumber(gpsDataString, i + 1);
 					if (end > -1)
 					{
-						cData.setHeading(Float.parseFloat(gpsDataString.substring(i+1, end)));
-						i = end-1;
+						cData.setHeading(Float.parseFloat(gpsDataString.substring(i + 1, end)));
+						i = end - 1;
 					} // should throw an exception, I guess the hardware is broken on the else
 					break;
 				case 'P':
-					end = nextNonNumber(gpsDataString, i+1);
+					end = nextNonNumber(gpsDataString, i + 1);
 					if (end > -1)
 					{
-						try{
-						cData.setPitch(Float.parseFloat(gpsDataString.substring(i+1, end)));
+						try
+						{
+							cData.setPitch(Float.parseFloat(gpsDataString.substring(i + 1, end)));
 						}
 						catch (NumberFormatException e)
-						{							
+						{
 							e.printStackTrace();
-							Debug.println(gpsDataString.substring(i+1, end));
+							Debug.println(gpsDataString.substring(i + 1, end));
 						}
-						i = end-1;
+						i = end - 1;
 					} // should throw an exception, I guess the hardware is broken on the else
 					break;
 				case 'R':
-					end = nextNonNumber(gpsDataString, i+1);
+					end = nextNonNumber(gpsDataString, i + 1);
 					if (end > -1)
 					{
-						cData.setRoll(Float.parseFloat(gpsDataString.substring(i+1, end)));
-						i = end-1;
+						cData.setRoll(Float.parseFloat(gpsDataString.substring(i + 1, end)));
+						i = end - 1;
 					} // should throw an exception, I guess the hardware is broken on the else
 					break;
 				case 'T': // ignore
 				case 'D': // ignore
-					end = nextNonNumber(gpsDataString, i+1);
+					end = nextNonNumber(gpsDataString, i + 1);
 					if (end > -1)
 					{
-						i = end-1;
+						i = end - 1;
 					} // should throw an exception, I guess the hardware is broken on the else
 					break;
 				case 'M':
-					switch(gpsDataString.charAt(i+1))
+					switch (gpsDataString.charAt(i + 1))
 					{
 					case 'x': // ignore
 					case 'y': // ignore
 					case 'z': // ignore
-						end = nextNonNumber(gpsDataString, i+2);
-				
+						end = nextNonNumber(gpsDataString, i + 2);
+
 						if (end > -1)
 						{
 							i = end - 1;
 						} // should throw an exception, I guess the hardware is broken on the else
 						break;
 					default: // ignore
-						end = nextNonNumber(gpsDataString, i+1);
-						
+						end = nextNonNumber(gpsDataString, i + 1);
+
 						if (end > -1)
 						{
 							i = end - 1;
@@ -114,52 +123,52 @@ public class CompassDataUpdater implements NMEAStringListener
 					}
 					break;
 				case 'A':
-					switch(gpsDataString.charAt(i+1))
+					switch (gpsDataString.charAt(i + 1))
 					{
-					case 'x': 
-						end = nextNonNumber(gpsDataString, i+2);
-						
+					case 'x':
+						end = nextNonNumber(gpsDataString, i + 2);
+
 						if (end > -1)
 						{
-							cData.setAccX(Float.parseFloat(gpsDataString.substring(i+2, end)));
+							cData.setAccX(Float.parseFloat(gpsDataString.substring(i + 2, end)));
 							i = end - 1;
 						} // should throw an exception, I guess the hardware is broken on the else
 						break;
-					case 'y': 
-						end = nextNonNumber(gpsDataString, i+2);
-						
+					case 'y':
+						end = nextNonNumber(gpsDataString, i + 2);
+
 						if (end > -1)
 						{
-							cData.setAccX(Float.parseFloat(gpsDataString.substring(i+2, end)));
+							cData.setAccX(Float.parseFloat(gpsDataString.substring(i + 2, end)));
 							i = end - 1;
 						} // should throw an exception, I guess the hardware is broken on the else
 						break;
-					case 'z': 
-						end = nextNonNumber(gpsDataString, i+2);
-						
+					case 'z':
+						end = nextNonNumber(gpsDataString, i + 2);
+
 						if (end > -1)
 						{
-							cData.setAccX(Float.parseFloat(gpsDataString.substring(i+2, end)));
+							cData.setAccX(Float.parseFloat(gpsDataString.substring(i + 2, end)));
 							i = end - 1;
 						} // should throw an exception, I guess the hardware is broken on the else
 						break;
 					default:
-						end = nextNonNumber(gpsDataString, i+1);
-						
+						end = nextNonNumber(gpsDataString, i + 1);
+
 						if (end > -1)
 						{
-							cData.setTotAcc(Float.parseFloat(gpsDataString.substring(i+1, end)));
+							cData.setTotAcc(Float.parseFloat(gpsDataString.substring(i + 1, end)));
 							i = end - 1;
 						} // should throw an exception, I guess the hardware is broken on the else
 					}
 					break;
 				case 'G':
-					switch(gpsDataString.charAt(i+1))
+					switch (gpsDataString.charAt(i + 1))
 					{
 					case 'x': // ignore
 					case 'y': // ignore
-						end = nextNonNumber(gpsDataString, i+2);
-				
+						end = nextNonNumber(gpsDataString, i + 2);
+
 						if (end > -1)
 						{
 							i = end - 1;
@@ -215,6 +224,11 @@ public class CompassDataUpdater implements NMEAStringListener
 	 * else (for example).
 	 * 
 	 * @return
+	 * @throws IOException
+	 * @throws NoSuchPortException
+	 * @throws TooManyListenersException
+	 * @throws UnsupportedCommOperationException
+	 * @throws PortInUseException
 	 */
 	// private synchronized char[] tempDataStore()
 	// {
@@ -226,4 +240,38 @@ public class CompassDataUpdater implements NMEAStringListener
 	// return tempDataStore;
 	// }
 
+	public static void main(String[] args) throws NoSuchPortException, IOException,
+			PortInUseException, UnsupportedCommOperationException, TooManyListenersException
+	{
+		NMEAReader compass = new NMEAReader("/dev/tty.SLAB_USBtoUART", 19200);
+		CompassDatum cd = new CompassDatum();
+
+		CompassDataUpdater comUpdater = new CompassDataUpdater(cd);
+		compass.addGPSDataListener(comUpdater);
+		compass.connect();
+
+		cd.addCompassDataListener(new CompassDataListener()
+		{
+
+			@Override
+			public void compassDataUpdated(CompassDatum data)
+			{
+				System.out.println("facing: " + data.getHeading());
+				System.out.println("roll:   " + data.getRoll());
+				System.out.println("pitch:  " + data.getPitch());
+			}
+		});
+
+		for (int i = 0; i < 10; i++)
+		{
+			try
+			{
+				Thread.sleep(1000);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
 }

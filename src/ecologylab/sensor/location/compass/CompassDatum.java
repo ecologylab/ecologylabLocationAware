@@ -13,7 +13,10 @@ import ecologylab.serialization.annotations.simpl_scalar;
  */
 public class CompassDatum extends ElementState
 {
-	/** The current heading in degrees. */
+	/**
+	 * The current heading in degrees. If calibrated correctly, 0 is North, and degrees increase
+	 * clockwise.
+	 */
 	@simpl_scalar
 	private float											heading;
 
