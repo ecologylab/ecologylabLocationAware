@@ -160,5 +160,6 @@
 	<classpathentry kind="lib" path="/GeoTools/lib/xmlgraphics-commons-1.2.jar"/>
 	<classpathentry kind="lib" path="/GeoTools/lib/xpp3-1.1.3.4.O.jar"/>
 	<classpathentry kind="lib" path="/GeoTools/lib/xsd-2.2.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ecologylabFundamentalSun"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
