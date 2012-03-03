@@ -22,6 +22,7 @@ public class ImageGeotagger
 			
 			/* Select Directory To Monitor */
 			JFileChooser chooser = new JFileChooser();
+			chooser.setDialogTitle("Choose Image Directory");
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 			int returnVal = chooser.showOpenDialog(null);

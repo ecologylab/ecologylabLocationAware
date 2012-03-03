@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 
 import javax.swing.JFileChooser;
@@ -20,6 +21,7 @@ import org.apache.sanselan.formats.jpeg.JpegImageMetadata;
 import org.apache.sanselan.formats.jpeg.exifRewrite.ExifRewriter;
 import org.apache.sanselan.formats.tiff.TiffImageMetadata;
 import org.apache.sanselan.formats.tiff.constants.GPSTagConstants;
+import org.apache.sanselan.formats.tiff.constants.TiffConstants;
 import org.apache.sanselan.formats.tiff.constants.TiffFieldTypeConstants;
 import org.apache.sanselan.formats.tiff.write.TiffOutputDirectory;
 import org.apache.sanselan.formats.tiff.write.TiffOutputField;
@@ -227,11 +229,18 @@ public class ImageProcessor implements Runnable
 	public void setCompassData(TiffOutputSet outputSet)
 	{
 		TiffOutputDirectory dir = outputSet.getGPSDirectory();
-
+				
+		ByteOrder order = (outputSet.byteOrder == TiffConstants.BYTE_ORDER_BIG_ENDIAN)?ByteOrder.BIG_ENDIAN:ByteOrder.LITTLE_ENDIAN;
+		
+		
 		/* create heading data */
 		ByteBuffer rationalBuffer = ByteBuffer.allocate(8);
-		rationalBuffer.put(intToUnsignedByteArray((long) (compassData.getHeading() * 100)));
-		rationalBuffer.put(intToUnsignedByteArray(100));
+		
+		long heading = (long) (compassData.getHeading() * 100);
+		
+		System.out.println("Heading num: " + heading);
+		rationalBuffer.put(intToUnsignedByteArray(heading, order));
+		rationalBuffer.put(intToUnsignedByteArray(100, order));
 		rationalBuffer.flip();
 
 		byte[] buf = new byte[8];
@@ -290,16 +299,26 @@ public class ImageProcessor implements Runnable
 	}
 
 	/* Converts a long into a byte array representing a 32 bit unsigned integer */
-	public byte[] intToUnsignedByteArray(long x)
+	public byte[] intToUnsignedByteArray(long x, ByteOrder order)
 	{
 		Long anUnsignedInt = x;
 
 		byte[] buf = new byte[4];
-
-		buf[0] = (byte) ((anUnsignedInt & 0xFF000000L) >> 24);
-		buf[1] = (byte) ((anUnsignedInt & 0x00FF0000L) >> 16);
-		buf[2] = (byte) ((anUnsignedInt & 0x0000FF00L) >> 8);
-		buf[3] = (byte) (anUnsignedInt & 0x000000FFL);
+		
+		if(order.equals(java.nio.ByteOrder.nativeOrder()))
+		{
+			buf[3] = (byte) ((anUnsignedInt & 0xFF000000L) >> 24);
+			buf[2] = (byte) ((anUnsignedInt & 0x00FF0000L) >> 16);
+			buf[1] = (byte) ((anUnsignedInt & 0x0000FF00L) >> 8);
+			buf[0] = (byte) (anUnsignedInt & 0x000000FFL);
+		}
+		else
+		{
+			buf[0] = (byte) ((anUnsignedInt & 0xFF000000L) >> 24);
+			buf[1] = (byte) ((anUnsignedInt & 0x00FF0000L) >> 16);
+			buf[2] = (byte) ((anUnsignedInt & 0x0000FF00L) >> 8);
+			buf[3] = (byte) (anUnsignedInt & 0x000000FFL);
+		}
 
 		return buf;
 	}
