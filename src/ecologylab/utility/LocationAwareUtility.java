@@ -34,9 +34,10 @@ public class LocationAwareUtility
 		lat2 = Math.toRadians(lat2);
 		lon2 = Math.toRadians(lon2);
 
-		return normalizeHeading(Math.toDegrees(Math.atan2(	Math.sin(lon2 - lon1) * Math.cos(lat2),
-																			(Math.cos(lat1) * Math.sin(lat2))
-																					- (Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1)))
+		return normalizeHeading(Math.toDegrees(Math.atan2(
+				Math.sin(lon2 - lon1) * Math.cos(lat2),
+				(Math.cos(lat1) * Math.sin(lat2))
+						- (Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1)))
 				% (2.0 * Math.PI)));
 	}
 
@@ -66,11 +67,13 @@ public class LocationAwareUtility
 			double otherLonCoord)
 	{// Orthodromic Distance
 		double distance = 0;
-		distance = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin((Math.toRadians(wayLatCoord) - Math.toRadians(otherLatCoord)) / 2),
-																								2)
-				+ Math.cos(Math.toRadians(wayLatCoord))
-				* Math.cos(Math.toRadians(otherLatCoord))
-				* Math.pow(Math.sin((Math.toRadians(wayLonCoord) - Math.toRadians(otherLonCoord)) / 2), 2)));
+		distance = 2 * Math
+				.asin(Math.sqrt(Math.pow(
+						Math.sin((Math.toRadians(wayLatCoord) - Math.toRadians(otherLatCoord)) / 2), 2)
+						+ Math.cos(Math.toRadians(wayLatCoord))
+						* Math.cos(Math.toRadians(otherLatCoord))
+						* Math.pow(Math.sin((Math.toRadians(wayLonCoord) - Math.toRadians(otherLonCoord)) / 2),
+								2)));
 		distance *= EarthData.RADIUS_EARTH_METERS;
 		return distance;
 	}
@@ -86,5 +89,23 @@ public class LocationAwareUtility
 		int multVal = (Math.abs((int) (heading / 360)) + (heading < 0 ? 1 : 0));
 
 		return heading + (multVal * 360.0 * (heading < 0 ? 1 : -1));
+	}
+
+	/**
+	 * Given two normalized angles in degrees, computes the number of degrees through which you must
+	 * move from angleFrom to angleTo. A negative value means the difference moves counter-clockwise;
+	 * a positive value means the angle moves clockwise.
+	 * 
+	 * Formula from
+	 * http://blog.open-design.be/2009/06/02/find-the-shortest-rotation-angle-between-two-angles/.
+	 * 
+	 * @param angleFrom
+	 * @param angleTo
+	 * @return
+	 */
+	public static double angleDifference(double angleFrom, double angleTo)
+	{
+		double radians = Math.toRadians(angleFrom - angleTo);
+		return Math.toDegrees(Math.atan2(Math.sin(radians), Math.cos(radians)));
 	}
 }
