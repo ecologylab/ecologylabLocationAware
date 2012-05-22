@@ -51,36 +51,36 @@ public class GeoCoordinate extends Location implements EarthData
 		this.alt = alt;
 	}
 
-	public double getLat()
+	public synchronized double getLat()
 	{
 		return lat;
 	}
 
-	public void setLat(double lat)
+	public synchronized void setLat(double lat)
 	{
 		this.lat = lat;
 
 		kMLCommaDelimited = null;
 	}
 
-	public double getLon()
+	public synchronized double getLon()
 	{
 		return lon;
 	}
 
-	public void setLon(double lon)
+	public synchronized void setLon(double lon)
 	{
 		this.lon = lon;
 
 		kMLCommaDelimited = null;
 	}
 
-	public double getAlt()
+	public synchronized double getAlt()
 	{
 		return alt;
 	}
 
-	public void setAlt(double alt)
+	public synchronized void setAlt(double alt)
 	{
 		this.alt = alt;
 

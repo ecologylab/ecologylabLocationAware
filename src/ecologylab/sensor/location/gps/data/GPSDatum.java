@@ -324,7 +324,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 		}
 	}
 
-	public void updateLatLon(double lat, double lon)
+	public synchronized void updateLatLon(double lat, double lon)
 	{
 		double oldLat = this.getLat();
 		double oldLon = this.getLon();
