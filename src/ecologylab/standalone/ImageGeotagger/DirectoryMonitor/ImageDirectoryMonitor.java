@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion.Static;
-
 import ecologylab.generic.StartAndStoppable;
 import ecologylab.sensor.location.compass.CompassDatum;
 import ecologylab.sensor.location.gps.data.GPSDatum;

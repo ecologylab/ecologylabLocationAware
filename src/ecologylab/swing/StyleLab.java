@@ -14,7 +14,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -43,8 +42,6 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyledLayerDescriptor;
 import org.geotools.styling.UserLayer;
-import org.geotools.swing.ExceptionMonitor;
-import org.geotools.swing.JMapFrame;
 import org.geotools.swing.data.JFileDataStoreChooser;
 import org.geotools.swing.styling.JSimpleStyleDialog;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -205,7 +202,8 @@ public class StyleLab
 		}
 		catch (Exception e)
 		{
-			ExceptionMonitor.show(null, e, "Problem creating style");
+			e.printStackTrace();
+//			ExceptionMonitor.show(null, e, "Problem creating style");
 		}
 		return null;
 	}
