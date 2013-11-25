@@ -75,11 +75,18 @@ public class GeoCoordinate extends Location implements EarthData
 		kMLCommaDelimited = null;
 	}
 
+	/**
+	 * @return the altitude, in meters.
+	 */
 	public synchronized double getAlt()
 	{
 		return alt;
 	}
 
+	/**
+	 * @param alt
+	 *          the altitude, in meters.
+	 */
 	public synchronized void setAlt(double alt)
 	{
 		this.alt = alt;
