@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -18,15 +17,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import javax.measure.unit.BaseUnit;
-import javax.measure.unit.Unit;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
+
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
-import org.geotools.data.DataSourceException;
 import org.geotools.factory.Hints;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.geometry.GeneralDirectPosition;
@@ -34,12 +31,9 @@ import org.geotools.referencing.crs.DefaultProjectedCRS;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.geometry.Envelope;
 import org.opengis.geometry.MismatchedDimensionException;
-import org.opengis.metadata.spatial.PixelOrientation;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.MathTransform2D;
 import org.opengis.referencing.operation.TransformException;
-
-import com.vividsolutions.jts.geom.Point;
 
 import ecologylab.oodss.logging.playback.ExtensionFilter;
 import ecologylab.sensor.location.compass.CompassDatum;
@@ -51,25 +45,25 @@ import ecologylab.standalone.ImageGeotagger.DirectoryMonitor.ImageDirectoryMonit
 
 public class MapPanel extends JPanel
 {
-	private Envelope env;
+	private final Envelope env;
 	
-	private MathTransform projTrans;
-	private MathTransform2D geomTrans;
-	private GridGeometry2D geom;
+	private final MathTransform projTrans;
+	private final MathTransform2D geomTrans;
+	private final GridGeometry2D geom;
 	
-	private GeneralDirectPosition latLon = new GeneralDirectPosition(2);
-	private GeneralDirectPosition projCoords = new GeneralDirectPosition(2);
-	private GeneralDirectPosition gridCoords = new GeneralDirectPosition(2);
+	private final GeneralDirectPosition latLon = new GeneralDirectPosition(2);
+	private final GeneralDirectPosition projCoords = new GeneralDirectPosition(2);
+	private final GeneralDirectPosition gridCoords = new GeneralDirectPosition(2);
 	
 	private Point2D gridLocation;
-	private Point2D.Double center;
+	private final Point2D.Double center;
 	
 	private ArrayList<CompassDatum> compassData;
 	private ArrayList<GPSDatum> gpsData;
 	
-	private BufferedImage mapImage;
+	private final BufferedImage mapImage;
 	
-	private Arc2D.Double hdopArc = new Arc2D.Double();
+	private final Arc2D.Double hdopArc = new Arc2D.Double();
 
 	private float	heading;
 	
@@ -79,7 +73,7 @@ public class MapPanel extends JPanel
 	public MapPanel(File geotiff) throws IOException
 	{
 		GeoTiffReader reader = new GeoTiffReader(geotiff, new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
-		GridCoverage2D coverage = (GridCoverage2D) reader.read(null);
+		GridCoverage2D coverage = reader.read(null);
 		env = coverage.getEnvelope();
 		
 		/*
@@ -206,6 +200,7 @@ public class MapPanel extends JPanel
 		return ret;
 	}
 	
+	@Override
 	public void paint(Graphics g)
 	{
 		int cx = this.getWidth() / 2;
