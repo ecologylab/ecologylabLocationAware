@@ -26,12 +26,18 @@ public class GeoService extends SingletonApplicationEnvironment
 	public static final String GPS_BAUD = "GPS_BAUD";
 	public static final String COMPASS_PORT = "COMPASS_PORT";
 	public static final String COMPASS_BAUD = "COMPASS_BAUD";
+
+	public static final String	HISTORY_LENGTH	= "HISTORY_LENGTH";
+
 	public static final int SERVICE_PORT = 14449;
 	
 	/* State Fields */
-	private GeoServer server;
+	private final GeoServer server;
 	private NMEAReader compass;
 	private NMEAReader gps;
+	private GPSDataUpdater	gpsUpdater;
+
+	private CompassDataUpdater	compassUpdater;
 	
 	private boolean connectCompass()
 	{
@@ -39,21 +45,15 @@ public class GeoService extends SingletonApplicationEnvironment
 		{
 			compass = new NMEAReader(Pref.lookupString(COMPASS_PORT), Pref.lookupInt(COMPASS_BAUD));
 		}
-		catch (NoSuchPortException e)
+		catch (NoSuchPortException | IOException e)
 		{
 			e.printStackTrace();
 			compass = null;
 			return false;
 
 		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			compass = null;
-			return false;
-		}
 		
-		CompassDataUpdater compassUpdater = new CompassDataUpdater();
+		compassUpdater = new CompassDataUpdater();
 		
 		compass.addGPSDataListener(compassUpdater);
 		
@@ -63,30 +63,14 @@ public class GeoService extends SingletonApplicationEnvironment
 		{
 			compass.connect();
 		}
-		catch (PortInUseException e)
+		catch (PortInUseException | UnsupportedCommOperationException | TooManyListenersException
+				| IOException e)
 		{
 			e.printStackTrace();
 			compass = null;
 			return false;
 		}
-		catch (UnsupportedCommOperationException e)
-		{
-			e.printStackTrace();
-			compass = null;
-			return false;
-		}
-		catch (TooManyListenersException e)
-		{
-			e.printStackTrace();
-			compass = null;
-			return false;
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			compass = null;
-			return false;
-		}
+
 		return true;
 	}
 	
@@ -96,20 +80,13 @@ public class GeoService extends SingletonApplicationEnvironment
 		{
 			gps = new NMEAReader(Pref.lookupString(GPS_PORT), Pref.lookupInt(GPS_BAUD));
 
-			GPSDataUpdater gpsUpdater = new GPSDataUpdater();
+			gpsUpdater = new GPSDataUpdater();
 			
 			gps.addGPSDataListener(gpsUpdater);
 			
 			gpsUpdater.addDataUpdatedListener(server);
 		}
-		catch (NoSuchPortException e)
-		{
-			e.printStackTrace();
-			gps = null;
-			return false;
-
-		}
-		catch (IOException e)
+		catch (NoSuchPortException | IOException e)
 		{
 			e.printStackTrace();
 			gps = null;
@@ -120,43 +97,29 @@ public class GeoService extends SingletonApplicationEnvironment
 		{
 			gps.connect();
 		}
-		catch (PortInUseException e)
+		catch (PortInUseException | UnsupportedCommOperationException | TooManyListenersException
+				| IOException e)
 		{
 			e.printStackTrace();
 			gps = null;
 			return false;
 		}
-		catch (UnsupportedCommOperationException e)
-		{
-			e.printStackTrace();
-			gps = null;
-			return false;
-		}
-		catch (TooManyListenersException e)
-		{
-			e.printStackTrace();
-			gps = null;
-			return false;
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			gps = null;
-			return false;
-		}
+
 		return true;
 	}
-	
+
 	public GeoService(String[] args) throws SIMPLTranslationException, BindException, ClassCastException, IOException
 	{
 		super("Location Service", AppFrameworkTranslations.get(), (SimplTypesScope)null, args, 0.0f);
 		
 		Scope scope = new Scope();
 		
-		server = new GeoServer(SERVICE_PORT, scope, true);
+		server = new GeoServer(SERVICE_PORT, scope, true, Pref.lookupInt(HISTORY_LENGTH, 1));
 		
 		connectCompass();
 		connectGPS();
+
+		this.compassUpdater.connectGPS(gpsUpdater);
 	}
 	
 	public static void main(String[] args) throws SIMPLTranslationException, BindException, ClassCastException, IOException

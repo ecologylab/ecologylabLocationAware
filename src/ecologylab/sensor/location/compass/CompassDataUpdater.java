@@ -2,24 +2,23 @@ package ecologylab.sensor.location.compass;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
 import ecologylab.generic.Debug;
 import ecologylab.sensor.location.NMEAReader;
 import ecologylab.sensor.location.NMEAStringListener;
-import gnu.io.CommPortIdentifier;
+import ecologylab.sensor.location.gps.listener.GPSDataUpdater;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 
 public class CompassDataUpdater implements NMEAStringListener
 {
-	private CompassDatum										cData;
+	private final CompassDatum										cData;
 
 	// private char[] tempDataStore;
 
-	private ArrayList<CompassDataListener>	listeners	= new ArrayList<CompassDataListener>();
+	private final ArrayList<CompassDataListener>	listeners	= new ArrayList<CompassDataListener>();
 
 	// public CompassDataUpdater(CompassDatum datum){
 	//
@@ -48,6 +47,19 @@ public class CompassDataUpdater implements NMEAStringListener
 		return -1;
 	}
 
+	/**
+	 * This object's singleton CompassDatum can receive updates from a GPS in order to provide time
+	 * data. Executing this method with a properly configured GPSDataUpdater will connect up the
+	 * singleton as a listener.
+	 * 
+	 * @param gpsDataUpdater
+	 */
+	public void connectGPS(GPSDataUpdater gpsDataUpdater)
+	{
+		gpsDataUpdater.addDataUpdatedListener(this.cData);
+	}
+
+	@Override
 	public void processIncomingNMEAString(String gpsDataString)
 	{
 		if (checkCheckSum(gpsDataString) && gpsDataString.charAt(0) == 'C')
@@ -60,129 +72,129 @@ public class CompassDataUpdater implements NMEAStringListener
 
 				switch (c)
 				{
-				case 'C':
-					end = nextNonNumber(gpsDataString, i + 1);
-					if (end > -1)
-					{
-						cData.setHeading(Float.parseFloat(gpsDataString.substring(i + 1, end)));
-						i = end - 1;
-					} // should throw an exception, I guess the hardware is broken on the else
-					break;
-				case 'P':
-					end = nextNonNumber(gpsDataString, i + 1);
-					if (end > -1)
-					{
-						try
-						{
-							cData.setPitch(Float.parseFloat(gpsDataString.substring(i + 1, end)));
-						}
-						catch (NumberFormatException e)
-						{
-							e.printStackTrace();
-							Debug.println(gpsDataString.substring(i + 1, end));
-						}
-						i = end - 1;
-					} // should throw an exception, I guess the hardware is broken on the else
-					break;
-				case 'R':
-					end = nextNonNumber(gpsDataString, i + 1);
-					if (end > -1)
-					{
-						cData.setRoll(Float.parseFloat(gpsDataString.substring(i + 1, end)));
-						i = end - 1;
-					} // should throw an exception, I guess the hardware is broken on the else
-					break;
-				case 'T': // ignore
-				case 'D': // ignore
-					end = nextNonNumber(gpsDataString, i + 1);
-					if (end > -1)
-					{
-						i = end - 1;
-					} // should throw an exception, I guess the hardware is broken on the else
-					break;
-				case 'M':
-					switch (gpsDataString.charAt(i + 1))
-					{
-					case 'x': // ignore
-					case 'y': // ignore
-					case 'z': // ignore
-						end = nextNonNumber(gpsDataString, i + 2);
-
-						if (end > -1)
-						{
-							i = end - 1;
-						} // should throw an exception, I guess the hardware is broken on the else
-						break;
-					default: // ignore
+					case 'C':
 						end = nextNonNumber(gpsDataString, i + 1);
-
 						if (end > -1)
 						{
-							i = end - 1;
-						} // should throw an exception, I guess the hardware is broken on the else
-					}
-					break;
-				case 'A':
-					switch (gpsDataString.charAt(i + 1))
-					{
-					case 'x':
-						end = nextNonNumber(gpsDataString, i + 2);
-
-						if (end > -1)
-						{
-							cData.setAccX(Float.parseFloat(gpsDataString.substring(i + 2, end)));
+							cData.setHeading(Float.parseFloat(gpsDataString.substring(i + 1, end)));
 							i = end - 1;
 						} // should throw an exception, I guess the hardware is broken on the else
 						break;
-					case 'y':
-						end = nextNonNumber(gpsDataString, i + 2);
-
-						if (end > -1)
-						{
-							cData.setAccX(Float.parseFloat(gpsDataString.substring(i + 2, end)));
-							i = end - 1;
-						} // should throw an exception, I guess the hardware is broken on the else
-						break;
-					case 'z':
-						end = nextNonNumber(gpsDataString, i + 2);
-
-						if (end > -1)
-						{
-							cData.setAccX(Float.parseFloat(gpsDataString.substring(i + 2, end)));
-							i = end - 1;
-						} // should throw an exception, I guess the hardware is broken on the else
-						break;
-					default:
+					case 'P':
 						end = nextNonNumber(gpsDataString, i + 1);
-
 						if (end > -1)
 						{
-							cData.setTotAcc(Float.parseFloat(gpsDataString.substring(i + 1, end)));
+							try
+							{
+								cData.setPitch(Float.parseFloat(gpsDataString.substring(i + 1, end)));
+							}
+							catch (NumberFormatException e)
+							{
+								e.printStackTrace();
+								Debug.println(gpsDataString.substring(i + 1, end));
+							}
 							i = end - 1;
 						} // should throw an exception, I guess the hardware is broken on the else
-					}
-					break;
-				case 'G':
-					switch (gpsDataString.charAt(i + 1))
-					{
-					case 'x': // ignore
-					case 'y': // ignore
-						end = nextNonNumber(gpsDataString, i + 2);
-
+						break;
+					case 'R':
+						end = nextNonNumber(gpsDataString, i + 1);
+						if (end > -1)
+						{
+							cData.setRoll(Float.parseFloat(gpsDataString.substring(i + 1, end)));
+							i = end - 1;
+						} // should throw an exception, I guess the hardware is broken on the else
+						break;
+					case 'T': // ignore
+					case 'D': // ignore
+						end = nextNonNumber(gpsDataString, i + 1);
 						if (end > -1)
 						{
 							i = end - 1;
 						} // should throw an exception, I guess the hardware is broken on the else
 						break;
-					}
-					break;
-				case '*':
-					for (CompassDataListener listener : listeners)
-					{
-						listener.compassDataUpdated(cData);
-					}
+					case 'M':
+						switch (gpsDataString.charAt(i + 1))
+						{
+							case 'x': // ignore
+							case 'y': // ignore
+							case 'z': // ignore
+								end = nextNonNumber(gpsDataString, i + 2);
 
-					return;
+								if (end > -1)
+								{
+									i = end - 1;
+								} // should throw an exception, I guess the hardware is broken on the else
+								break;
+							default: // ignore
+								end = nextNonNumber(gpsDataString, i + 1);
+
+								if (end > -1)
+								{
+									i = end - 1;
+								} // should throw an exception, I guess the hardware is broken on the else
+						}
+						break;
+					case 'A':
+						switch (gpsDataString.charAt(i + 1))
+						{
+							case 'x':
+								end = nextNonNumber(gpsDataString, i + 2);
+
+								if (end > -1)
+								{
+									cData.setAccX(Float.parseFloat(gpsDataString.substring(i + 2, end)));
+									i = end - 1;
+								} // should throw an exception, I guess the hardware is broken on the else
+								break;
+							case 'y':
+								end = nextNonNumber(gpsDataString, i + 2);
+
+								if (end > -1)
+								{
+									cData.setAccX(Float.parseFloat(gpsDataString.substring(i + 2, end)));
+									i = end - 1;
+								} // should throw an exception, I guess the hardware is broken on the else
+								break;
+							case 'z':
+								end = nextNonNumber(gpsDataString, i + 2);
+
+								if (end > -1)
+								{
+									cData.setAccX(Float.parseFloat(gpsDataString.substring(i + 2, end)));
+									i = end - 1;
+								} // should throw an exception, I guess the hardware is broken on the else
+								break;
+							default:
+								end = nextNonNumber(gpsDataString, i + 1);
+
+								if (end > -1)
+								{
+									cData.setTotAcc(Float.parseFloat(gpsDataString.substring(i + 1, end)));
+									i = end - 1;
+								} // should throw an exception, I guess the hardware is broken on the else
+						}
+						break;
+					case 'G':
+						switch (gpsDataString.charAt(i + 1))
+						{
+							case 'x': // ignore
+							case 'y': // ignore
+								end = nextNonNumber(gpsDataString, i + 2);
+
+								if (end > -1)
+								{
+									i = end - 1;
+								} // should throw an exception, I guess the hardware is broken on the else
+								break;
+						}
+						break;
+					case '*':
+						for (CompassDataListener listener : listeners)
+						{
+							listener.compassDataUpdated(cData);
+						}
+
+						return;
 				}
 			}
 		}

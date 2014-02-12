@@ -21,15 +21,15 @@ public class GeoCoordinate extends Location implements EarthData
 {
 	/** The latitude, expressed in degrees in double-precision degrees. */
 	@simpl_scalar
-	double										lat;
+	protected double					lat;
 
 	/** The longitude, expressed in degrees in double-precision degrees. */
 	@simpl_scalar
-	double										lon;
+	protected double					lon;
 
 	/** The altitude, expressed in meters. */
 	@simpl_scalar
-	double										alt;
+	protected double					alt;
 
 	/**
 	 * A Point2D.Double representation of this's latitude and longitude, instantiated and filled

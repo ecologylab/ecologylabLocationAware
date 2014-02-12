@@ -13,7 +13,7 @@ import ecologylab.serialization.types.element.IMappable;
  * 
  * @author Zach Toups (toupsz@gmail.com)
  */
-public class SVData extends ElementState implements IMappable<Integer>
+public class SVData extends ElementState implements IMappable<Integer>, Cloneable
 {
 	/** The key for hashing this object; key is the same as id. */
 	private Integer				key;
@@ -67,6 +67,7 @@ public class SVData extends ElementState implements IMappable<Integer>
 		this(id, -1, -1, -1);
 	}
 
+	@Override
 	public Integer key()
 	{
 		if (key == null)
@@ -147,5 +148,11 @@ public class SVData extends ElementState implements IMappable<Integer>
 	public void setAzimuth(int azimuth)
 	{
 		this.azimuth = azimuth;
+	}
+
+	@Override
+	public SVData clone()
+	{
+		return new SVData(this.id, this.elevation, this.azimuth, this.snr);
 	}
 }

@@ -9,9 +9,10 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import org.apache.sanselan.ImageReadException;
 import org.apache.sanselan.ImageWriteException;
@@ -19,46 +20,53 @@ import org.apache.sanselan.Sanselan;
 import org.apache.sanselan.common.IImageMetadata;
 import org.apache.sanselan.formats.jpeg.JpegImageMetadata;
 import org.apache.sanselan.formats.jpeg.exifRewrite.ExifRewriter;
+import org.apache.sanselan.formats.tiff.TiffField;
 import org.apache.sanselan.formats.tiff.TiffImageMetadata;
+import org.apache.sanselan.formats.tiff.constants.ExifTagConstants;
 import org.apache.sanselan.formats.tiff.constants.GPSTagConstants;
+import org.apache.sanselan.formats.tiff.constants.TagInfo;
 import org.apache.sanselan.formats.tiff.constants.TiffConstants;
 import org.apache.sanselan.formats.tiff.constants.TiffFieldTypeConstants;
+import org.apache.sanselan.formats.tiff.constants.TiffTagConstants;
 import org.apache.sanselan.formats.tiff.write.TiffOutputDirectory;
 import org.apache.sanselan.formats.tiff.write.TiffOutputField;
 import org.apache.sanselan.formats.tiff.write.TiffOutputSet;
 
-import ecologylab.oodss.logging.playback.ExtensionFilter;
 import ecologylab.sensor.location.compass.CompassDatum;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.services.messages.LocationDataResponse;
 import ecologylab.standalone.GeoClient;
-import ecologylab.standalone.ImageGeotagger.DirectoryMonitor.ImageDirectoryMonitor;
+import ecologylab.standalone.ImageGeotagger.DirectoryMonitor.AppendGPSImgDirMonitor;
 
 public class ImageProcessor implements Runnable
 {
-	protected File								imageFile;
+	protected File											imageFile;
 
-	private Thread								t;
+	private Thread											t;
 
-	private GeoClient							client;
+	private GeoClient										client;
 
-	private GPSDatum							gpsData;
+	private GPSDatum										gpsData;
 
-	private CompassDatum					compassData;
+	private CompassDatum								compassData;
 
-	private ImageDirectoryMonitor	monitor;
+	private final AppendGPSImgDirMonitor	monitor;
 
-	public ImageProcessor(File image, GeoClient client, ImageDirectoryMonitor monitor)
+	private long												offsetMillis;
+
+	public ImageProcessor(File image, GeoClient client, long offsetMillis,
+			AppendGPSImgDirMonitor monitor)
 	{
 		this.imageFile = image;
 		this.client = client;
 		this.monitor = monitor;
+		this.offsetMillis = offsetMillis;
 	}
 
 	public ImageProcessor(File image,
-												GPSDatum gpsData,
-												CompassDatum compassData,
-												ImageDirectoryMonitor monitor)
+			GPSDatum gpsData,
+			CompassDatum compassData,
+			AppendGPSImgDirMonitor monitor)
 	{
 		this.imageFile = image;
 		this.gpsData = gpsData;
@@ -79,81 +87,79 @@ public class ImageProcessor implements Runnable
 	{
 		System.out.println("Processing file: " + imageFile.getName());
 
-		if (client != null)
-		{
-			System.out.println("Getting location from service.");
-			if (client.connected())
-			{
-				LocationDataResponse locationData = client.updateLocation();
-				gpsData = locationData.gpsData;
-				compassData = locationData.compassData;
-			}
-			else
-			{
-				System.out.println("Client isn't connected!");
-				return;
-			}
-		}
-
 		/* Read metadata from image file */
 		IImageMetadata metadata = null;
+		JpegImageMetadata jpegMetadata = null;
+		TiffImageMetadata exif = null;
+		TiffOutputSet outputSet = null;
 
 		/* Initialize metadata from existing image metadata */
 		try
 		{
 			metadata = Sanselan.getMetadata(imageFile);
-		}
-		catch (ImageReadException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
 
-		if (metadata == null || !(metadata instanceof JpegImageMetadata))
-			return;
-
-		JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
-
-		TiffImageMetadata exif = jpegMetadata.getExif();
-
-		if (exif == null)
-			return;
-
-		TiffOutputSet outputSet = null;
-		try
-		{
-			outputSet = exif.getOutputSet();
-		}
-		catch (ImageWriteException e)
-		{
-			e.printStackTrace();
-			return;
-		}
-
-		/* Write location metadata to the existing metadata */
-		if (outputSet != null)
-		{
-			try
-			{
-				if (gpsData != null)
-				{
-					outputSet.setGPSInDegrees(gpsData.getLon(), gpsData.getLat());
-				}
-				if (compassData != null)
-				{
-					setCompassData(outputSet);
-				}
-			}
-			catch (ImageWriteException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (metadata == null || !(metadata instanceof JpegImageMetadata))
 				return;
+
+			jpegMetadata = (JpegImageMetadata) metadata;
+
+			exif = jpegMetadata.getExif();
+
+			if (exif == null)
+				return;
+
+			outputSet = exif.getOutputSet();
+
+			if (client != null)
+			{
+				System.out.println("Getting location from service.");
+				if (client.connected())
+				{
+					// get the time for the image and produce a Calendar object from it
+					// assumes camera is set to UTC
+					String dateTimeUTC = jpegMetadata.findEXIFValue(TiffTagConstants.TIFF_TAG_DATE_TIME)
+							.getStringValue();
+
+					Calendar imageTime = Calendar.getInstance();
+					DateFormat df = new SimpleDateFormat("yyyy:MM:dd kk:mm:ss");
+					java.util.Date d = df.parse(dateTimeUTC);
+
+					imageTime.setTimeInMillis(d.getTime() + offsetMillis);
+
+					LocationDataResponse locationData = client.updateLocation(imageTime);
+					gpsData = locationData.gpsData;
+					compassData = locationData.compassData;
+				}
+				else
+				{
+					System.out.println("Client isn't connected!");
+					return;
+				}
 			}
+
+			/* Write location metadata to the existing metadata */
+			if (outputSet != null)
+				try
+				{
+					if (gpsData != null)
+						outputSet.setGPSInDegrees(gpsData.getLon(), gpsData.getLat());
+
+					if (compassData != null)
+						setCompassData(outputSet);
+				}
+				catch (ImageWriteException e)
+				{
+					e.printStackTrace();
+					return;
+				}
 		}
+		catch (ImageReadException | IOException | ImageWriteException | ParseException e)
+		{
+			e.printStackTrace();
+			return;
+		}
+
+
 
 		OutputStream os = null;
 		File dst = null;
@@ -176,28 +182,14 @@ public class ImageProcessor implements Runnable
 		{
 			new ExifRewriter().updateExifMetadataLossless(imageFile, os, outputSet);
 		}
-		catch (ImageReadException e)
+		catch (ImageReadException | ImageWriteException | IOException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		catch (ImageWriteException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
 		finally
 		{
 			if (os != null)
-			{
 				try
 				{
 					os.close();
@@ -205,7 +197,6 @@ public class ImageProcessor implements Runnable
 				catch (IOException e)
 				{
 				}
-			}
 		}
 
 		// finally copy the temp file to original
@@ -220,24 +211,22 @@ public class ImageProcessor implements Runnable
 		}
 		catch (IOException e)
 		{
-
 			e.printStackTrace();
 		}
-
 	}
 
 	public void setCompassData(TiffOutputSet outputSet)
 	{
 		TiffOutputDirectory dir = outputSet.getGPSDirectory();
-				
-		ByteOrder order = (outputSet.byteOrder == TiffConstants.BYTE_ORDER_BIG_ENDIAN)?ByteOrder.BIG_ENDIAN:ByteOrder.LITTLE_ENDIAN;
-		
-		
+
+		ByteOrder order = (outputSet.byteOrder == TiffConstants.BYTE_ORDER_BIG_ENDIAN) ? ByteOrder.BIG_ENDIAN
+				: ByteOrder.LITTLE_ENDIAN;
+
 		/* create heading data */
 		ByteBuffer rationalBuffer = ByteBuffer.allocate(8);
-		
+
 		long heading = (long) (compassData.getHeading() * 100);
-		
+
 		System.out.println("Heading num: " + heading);
 		rationalBuffer.put(intToUnsignedByteArray(heading, order));
 		rationalBuffer.put(intToUnsignedByteArray(100, order));
@@ -246,10 +235,10 @@ public class ImageProcessor implements Runnable
 		byte[] buf = new byte[8];
 		rationalBuffer.get(buf);
 
-		TiffOutputField outField = new TiffOutputField(	GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
-																										TiffFieldTypeConstants.FIELD_TYPE_RATIONAL,
-																										1,
-																										buf);
+		TiffOutputField outField = new TiffOutputField(GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION,
+				TiffFieldTypeConstants.FIELD_TYPE_RATIONAL,
+				1,
+				buf);
 
 		/* Remove Previous Data if Necessary */
 		TiffOutputField imageDirPre = outputSet.findField(GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION);
@@ -263,12 +252,13 @@ public class ImageProcessor implements Runnable
 		/* Create Heading Reference Data */
 		String refVal = GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF_VALUE_MAGNETIC_NORTH;
 		TiffOutputField outField2 = new TiffOutputField(TiffOutputField.GPS_TAG_GPS_IMG_DIRECTION_REF,
-																										TiffFieldTypeConstants.FIELD_TYPE_ASCII,
-																										refVal.length(),
-																										refVal.getBytes());
+				TiffFieldTypeConstants.FIELD_TYPE_ASCII,
+				refVal.length(),
+				refVal.getBytes());
 
 		/* Delete Previous Field */
-		TiffOutputField imageDirRefPre = outputSet.findField(GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
+		TiffOutputField imageDirRefPre = outputSet
+				.findField(GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
 		if (imageDirRefPre != null)
 		{
 			outputSet.removeField(GPSTagConstants.GPS_TAG_GPS_IMG_DIRECTION_REF);
@@ -304,8 +294,8 @@ public class ImageProcessor implements Runnable
 		Long anUnsignedInt = x;
 
 		byte[] buf = new byte[4];
-		
-		if(order.equals(java.nio.ByteOrder.nativeOrder()))
+
+		if (order.equals(java.nio.ByteOrder.nativeOrder()))
 		{
 			buf[3] = (byte) ((anUnsignedInt & 0xFF000000L) >> 24);
 			buf[2] = (byte) ((anUnsignedInt & 0x00FF0000L) >> 16);
@@ -323,26 +313,84 @@ public class ImageProcessor implements Runnable
 		return buf;
 	}
 
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) throws ImageReadException
 	{
-		GPSDatum gData = new GPSDatum();
-		gData.setLat(30.620785);
-		gData.setLon(-96.335091);
+		File imageFile = new File(
+				// "/Users/ztoups/Dropbox/workspaceGit/photoNav/config/photoLibrary/IMG_0290.JPG");
+				"/Users/ztoups/Desktop/DSCN0945.JPG");
 
-		CompassDatum cData = new CompassDatum(202, 0, 0, 0);
+		System.out.println("Processing file: " + imageFile.getName());
 
-		JFileChooser chooser = new JFileChooser();
-		chooser.setDialogType(JFileChooser.FILES_ONLY);
+		/* Read metadata from image file */
+		IImageMetadata metadata = null;
+		JpegImageMetadata jpegMetadata = null;
+		TiffImageMetadata exif = null;
+		TiffOutputSet outputSet = null;
 
-		FileFilter filter = new ExtensionFilter("jpg");
-		chooser.setFileFilter(filter);
-
-		int returnVal = chooser.showOpenDialog(null);
-
-		if (returnVal == JFileChooser.APPROVE_OPTION)
+		/* Initialize metadata from existing image metadata */
+		try
 		{
-			ImageProcessor proc = new ImageProcessor(chooser.getSelectedFile(), gData, cData, null);
-			proc.processImage();
+			metadata = Sanselan.getMetadata(imageFile);
+
+			if (metadata == null || !(metadata instanceof JpegImageMetadata))
+				return;
+
+			jpegMetadata = (JpegImageMetadata) metadata;
+
+			exif = jpegMetadata.getExif();
+
+			if (exif == null)
+				return;
+
+			outputSet = exif.getOutputSet();
+		}
+		catch (ImageReadException | IOException | ImageWriteException e)
+		{
+			e.printStackTrace();
+			return;
+		}
+
+		// get the time for the image and produce a Calendar object from it
+		printTagValue(jpegMetadata, TiffTagConstants.TIFF_TAG_DATE_TIME);
+		printTagValue(jpegMetadata,
+				ExifTagConstants.EXIF_TAG_DATE_TIME_ORIGINAL);
+	}
+
+	private static void printTagValue(final JpegImageMetadata jpegMetadata,
+			final TagInfo tagInfo)
+	{
+		final TiffField field = jpegMetadata.findEXIFValue(tagInfo);
+		if (field == null)
+		{
+			System.out.println(tagInfo.name + ": " + "Not Found.");
+		}
+		else
+		{
+			System.out.println(tagInfo.name + ": "
+					+ field.getValueDescription());
 		}
 	}
+
+	// public static void main(String[] args) throws IOException
+	// {
+	// GPSDatum gData = new GPSDatum();
+	// gData.setLat(30.620785);
+	// gData.setLon(-96.335091);
+	//
+	// CompassDatum cData = new CompassDatum(202, 0, 0, 0);
+	//
+	// JFileChooser chooser = new JFileChooser();
+	// chooser.setDialogType(JFileChooser.FILES_ONLY);
+	//
+	// FileFilter filter = new ExtensionFilter("jpg");
+	// chooser.setFileFilter(filter);
+	//
+	// int returnVal = chooser.showOpenDialog(null);
+	//
+	// if (returnVal == JFileChooser.APPROVE_OPTION)
+	// {
+	// ImageProcessor proc = new ImageProcessor(chooser.getSelectedFile(), gData, cData, null);
+	// proc.processImage();
+	// }
+	// }
 }

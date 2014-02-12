@@ -41,65 +41,76 @@ import ecologylab.sensor.location.gps.data.GPSDatum;
 import ecologylab.services.messages.LocationDataResponse;
 import ecologylab.standalone.GeoClient;
 import ecologylab.standalone.ImageGeotagger.ImageGeotagger;
-import ecologylab.standalone.ImageGeotagger.DirectoryMonitor.ImageDirectoryMonitor;
+import ecologylab.standalone.ImageGeotagger.DirectoryMonitor.AppendGPSImgDirMonitor;
 
 public class MapPanel extends JPanel
 {
-	private final Envelope env;
-	
-	private final MathTransform projTrans;
-	private final MathTransform2D geomTrans;
-	private final GridGeometry2D geom;
-	
-	private final GeneralDirectPosition latLon = new GeneralDirectPosition(2);
-	private final GeneralDirectPosition projCoords = new GeneralDirectPosition(2);
-	private final GeneralDirectPosition gridCoords = new GeneralDirectPosition(2);
-	
-	private Point2D gridLocation;
-	private final Point2D.Double center;
-	
-	private ArrayList<CompassDatum> compassData;
-	private ArrayList<GPSDatum> gpsData;
-	
-	private final BufferedImage mapImage;
-	
-	private final Arc2D.Double hdopArc = new Arc2D.Double();
+	private static final long						serialVersionUID	= 1L;
 
-	private float	heading;
-	
-	private boolean noFix = false;
-	private static final Color noFixGrey = new Color(.33f,.33f,.33f, 0.7f);
-	
+	private final Envelope							env;
+
+	private final MathTransform					projTrans;
+
+	private final MathTransform2D				geomTrans;
+
+	private final GridGeometry2D				geom;
+
+	private final GeneralDirectPosition	latLon						= new GeneralDirectPosition(2);
+
+	private final GeneralDirectPosition	projCoords				= new GeneralDirectPosition(2);
+
+	private final GeneralDirectPosition	gridCoords				= new GeneralDirectPosition(2);
+
+	private Point2D											gridLocation;
+
+	private final Point2D.Double				center;
+
+	private ArrayList<CompassDatum>			compassData;
+
+	private ArrayList<GPSDatum>					gpsData;
+
+	private final BufferedImage					mapImage;
+
+	private final Arc2D.Double					hdopArc						= new Arc2D.Double();
+
+	private float												heading;
+
+	private boolean											noFix							= false;
+
+	private static final Color					noFixGrey					= new Color(.33f, .33f, .33f, 0.7f);
+
 	public MapPanel(File geotiff) throws IOException
 	{
-		GeoTiffReader reader = new GeoTiffReader(geotiff, new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
+		GeoTiffReader reader = new GeoTiffReader(geotiff, new Hints(
+				Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE));
 		GridCoverage2D coverage = reader.read(null);
 		env = coverage.getEnvelope();
-		
+
 		/*
-		 * Conversion from geographic coordinates to coordinate system
-		 * (i.e.) lat/lon to projection
+		 * Conversion from geographic coordinates to coordinate system (i.e.) lat/lon to projection
 		 */
 		DefaultProjectedCRS crs = (DefaultProjectedCRS) coverage.getCoordinateReferenceSystem2D();
 		projTrans = crs.getConversionFromBase().getMathTransform();
-		
+
 		geom = coverage.getGridGeometry();
 		geomTrans = geom.getCRSToGrid2D();
-		
+
 		RenderedImage rImage = coverage.getRenderedImage();
-		
+
 		mapImage = convertRenderedImage(rImage);
-		
-		center = new Point2D.Double(mapImage.getWidth()/2, mapImage.getHeight()/2);
-		
+
+		center = new Point2D.Double(mapImage.getWidth() / 2, mapImage.getHeight() / 2);
+
 		gridLocation = center;
-		
+
 	}
-	
-	private BufferedImage convertRenderedImage(RenderedImage img) {
-		if (img instanceof BufferedImage) {
-			return (BufferedImage)img;	
-		}	
+
+	private BufferedImage convertRenderedImage(RenderedImage img)
+	{
+		if (img instanceof BufferedImage)
+		{
+			return (BufferedImage) img;
+		}
 		ColorModel cm = img.getColorModel();
 		int width = img.getWidth();
 		int height = img.getHeight();
@@ -107,8 +118,10 @@ public class MapPanel extends JPanel
 		boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
 		Hashtable properties = new Hashtable();
 		String[] keys = img.getPropertyNames();
-		if (keys!=null) {
-			for (int i = 0; i < keys.length; i++) {
+		if (keys != null)
+		{
+			for (int i = 0; i < keys.length; i++)
+			{
 				properties.put(keys[i], img.getProperty(keys[i]));
 			}
 		}
@@ -116,10 +129,12 @@ public class MapPanel extends JPanel
 		img.copyData(raster);
 		return result;
 	}
-	
-	public void setGeoLocation(GPSDatum gpsData, CompassDatum compassDatum)//double lat, double lon, float hdop, float heading)
+
+	public void setGeoLocation(GPSDatum gpsData, CompassDatum compassDatum)// double lat, double lon,
+																																					// float hdop, float
+																																					// heading)
 	{
-		if(gpsData.getGpsQual() != 0)
+		if (gpsData.getGpsQual() != 0)
 		{
 			noFix = false;
 			gridLocation = updateLocation(gpsData.getLat(), gpsData.getLon(), gpsData.getHdop());
@@ -128,12 +143,12 @@ public class MapPanel extends JPanel
 		{
 			noFix = true;
 		}
-	  
-	  this.heading = compassDatum.getHeading();
-	  
-	  this.repaint();
+
+		this.heading = compassDatum.getHeading();
+
+		this.repaint();
 	}
-	
+
 	private Point2D convertLatLonToGridPos(double lat, double lon)
 	{
 		GeneralDirectPosition latLonPos = new GeneralDirectPosition(lon, lat);
@@ -149,30 +164,28 @@ public class MapPanel extends JPanel
 				DirectPosition gridPos = geomTrans.transform(pos, null);
 				ret = new Point2D.Double(gridPos.getOrdinate(0), gridPos.getOrdinate(1));
 			}
-			
+
 		}
 		catch (MismatchedDimensionException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (TransformException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return ret;
 	}
-	
+
 	private Point2D updateLocation(double lat, double lon, float hdop)
 	{
 		latLon.setOrdinate(0, lon);
 		latLon.setOrdinate(1, lat);
-		
+
 		Point2D ret = center;
-		
+
 		float radius = (float) (hdop * 8.20209974);
-		
+
 		try
 		{
 			projTrans.transform(latLon, projCoords);
@@ -184,8 +197,9 @@ public class MapPanel extends JPanel
 			{
 				geomTrans.transform(projCoords, gridCoords);
 				ret = new Point2D.Double(gridCoords.getOrdinate(0), gridCoords.getOrdinate(1));
-				
-				this.hdopArc.setArcByCenter(projCoords.getOrdinate(0), projCoords.getOrdinate(1), radius, 0, 360, Arc2D.OPEN);			
+
+				this.hdopArc.setArcByCenter(projCoords.getOrdinate(0), projCoords.getOrdinate(1), radius,
+						0, 360, Arc2D.OPEN);
 			}
 		}
 		catch (MismatchedDimensionException e)
@@ -196,48 +210,48 @@ public class MapPanel extends JPanel
 		{
 			e.printStackTrace();
 		}
-		
+
 		return ret;
 	}
-	
+
 	@Override
 	public void paint(Graphics g)
 	{
 		int cx = this.getWidth() / 2;
 		int cy = this.getHeight() / 2;
-		
-		int sx1 = (int) Math.max(gridLocation.getX() - this.getWidth()/2, 0);
-		int sy1 = (int) Math.max(gridLocation.getY() - this.getHeight()/2, 0);
-		int sx2 = (int) Math.min(gridLocation.getX() + this.getWidth()/2, mapImage.getWidth());
-		int sy2 = (int) Math.min(gridLocation.getY() + this.getHeight()/2, mapImage.getHeight());
-		
+
+		int sx1 = (int) Math.max(gridLocation.getX() - this.getWidth() / 2, 0);
+		int sy1 = (int) Math.max(gridLocation.getY() - this.getHeight() / 2, 0);
+		int sx2 = (int) Math.min(gridLocation.getX() + this.getWidth() / 2, mapImage.getWidth());
+		int sy2 = (int) Math.min(gridLocation.getY() + this.getHeight() / 2, mapImage.getHeight());
+
 		int dx1 = (int) (cx - (gridLocation.getX() - sx1));
 		int dy1 = (int) (cy - (gridLocation.getY() - sy1));
 		int dx2 = (int) (cx + (sx2 - gridLocation.getX()));
 		int dy2 = (int) (cy + (sy2 - gridLocation.getY()));
-		
-		BufferedImage subImage = mapImage.getSubimage(sx1, sy1, sx2-sx1, sy2-sy1);
-		
+
+		BufferedImage subImage = mapImage.getSubimage(sx1, sy1, sx2 - sx1, sy2 - sy1);
+
 		g.drawImage(subImage, dx1, dy1, this);
-		
+
 		Graphics2D g2 = (Graphics2D) g;
-		
-		if(noFix)
+
+		if (noFix)
 		{
 			g2.setColor(noFixGrey);
-			
-			g2.fillRect(0,0, this.getWidth(), this.getHeight());
+
+			g2.fillRect(0, 0, this.getWidth(), this.getHeight());
 		}
-		
+
 		g2.setColor(Color.yellow);
 		g2.fillOval(cx - 5, cy - 5, 10, 10);
-		
+
 		AffineTransform aft = g2.getTransform();
-		
+
 		g2.translate(cx, cy);
-		
+
 		g2.translate(-gridLocation.getX(), -gridLocation.getY());
-		
+
 		try
 		{
 			Shape ring = geomTrans.createTransformedShape(this.hdopArc);
@@ -247,106 +261,110 @@ public class MapPanel extends JPanel
 		{
 			e.printStackTrace();
 		}
-		
+
 		g2.setTransform(aft);
-		
-		/*g.drawImage(mapImage, dx1, dy1, dx2, dy2,
-				sx1, sy1, sx2, sy2, this);*/
-		
+
+		/*
+		 * g.drawImage(mapImage, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, this);
+		 */
+
 		/* draw heading line */
-		
+
 		double radHeading = Math.toRadians(heading + 90);
-		
-		g2.drawLine(cx, cy, (int)(cx - Math.cos(radHeading) * 50), (int)(cy - Math.sin(radHeading)*50));
-		
+
+		g2.drawLine(cx, cy, (int) (cx - Math.cos(radHeading) * 50),
+				(int) (cy - Math.sin(radHeading) * 50));
+
 		g2.setStroke(new BasicStroke(3));
-		
+
 		g2.setColor(Color.RED);
-		if(gpsData != null && compassData != null)
+		if (gpsData != null && compassData != null)
 		{
-			for(int x = 0; x < gpsData.size(); x++)
+			for (int x = 0; x < gpsData.size(); x++)
 			{
 				GPSDatum gdatum = gpsData.get(x);
 				CompassDatum cdatum = compassData.get(x);
-				
-				if(gdatum != null)
+
+				if (gdatum != null)
 				{
 					Point2D pnt = convertLatLonToGridPos(gdatum.getLat(), gdatum.getLon());
-					if(pnt != null)
+					if (pnt != null)
 					{
-						int px = (int)(pnt.getX() - gridLocation.getX()) + cx;
-						int py = (int)(pnt.getY() - gridLocation.getY()) + cy;
-						//System.out.println(px + ", " + py);
-						g2.fillArc( px - 4, py - 4, 8, 8, 0, 360);
-						if(cdatum != null)
+						int px = (int) (pnt.getX() - gridLocation.getX()) + cx;
+						int py = (int) (pnt.getY() - gridLocation.getY()) + cy;
+						// System.out.println(px + ", " + py);
+						g2.fillArc(px - 4, py - 4, 8, 8, 0, 360);
+						if (cdatum != null)
 						{
-							
+
 							double heading = Math.toRadians(cdatum.getHeading() + 90);
-							g2.drawLine(px, py, (int)(px - Math.cos(heading) * 20), (int)(py - Math.sin(heading)*20));
+							g2.drawLine(px, py, (int) (px - Math.cos(heading) * 20),
+									(int) (py - Math.sin(heading) * 20));
 						}
 					}
 				}
 			}
 		}
 	}
-	
-	public static void main (String [] args) throws IOException
+
+	public static void main(String[] args) throws IOException
 	{
-		
+
 		GeoClient client = new GeoClient();
-		
+
 		client.connect();
-		
-		ImageDirectoryMonitor monitor = ImageGeotagger.startMonitor(client);
-				
-		if(!client.connected())
+
+		AppendGPSImgDirMonitor monitor = ImageGeotagger.startMonitor(client);
+
+		if (!client.connected())
 		{
 			return;
 		}
-		
+
 		JFileChooser chooser = new JFileChooser();
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		chooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
-		
+
 		FileFilter filter = new ExtensionFilter("tiff");
 		chooser.setFileFilter(filter);
-		
+
 		int returnVal = chooser.showOpenDialog(null);
-		
-		if (returnVal != JFileChooser.APPROVE_OPTION) {
+
+		if (returnVal != JFileChooser.APPROVE_OPTION)
+		{
 			client.disconnect();
 			return;
 		}
-		
+
 		JFrame frame = new JFrame("Map Window");
-		
+
 		MapPanel mapPanel = new MapPanel(chooser.getSelectedFile());
-		
+
 		frame.add(mapPanel);
-		
+
 		frame.setSize(400, 400);
-		
+
 		frame.setVisible(true);
-		
+
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		//mapPanel.setGeoLocation(30.613672, -96.338842, 50);
-		
+
+		// mapPanel.setGeoLocation(30.613672, -96.338842, 50);
+
 		mapPanel.compassData = monitor.getCompassData();
 		mapPanel.gpsData = monitor.getGPSData();
-		
-		while(true)
+
+		while (true)
 		{
 			LocationDataResponse resp = client.updateLocation();
-			
-			if(resp.gpsData != null && resp.compassData != null)
+
+			if (resp.gpsData != null && resp.compassData != null)
 			{
 				mapPanel.compassData = monitor.getCompassData();
 				mapPanel.gpsData = monitor.getGPSData();
 				mapPanel.setGeoLocation(resp.gpsData, resp.compassData);
-				//System.out.println("Heading: " + resp.compassData.getHeading());
+				// System.out.println("Heading: " + resp.compassData.getHeading());
 			}
-			
+
 			try
 			{
 				Thread.sleep(200);
@@ -357,6 +375,6 @@ public class MapPanel extends JPanel
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 }

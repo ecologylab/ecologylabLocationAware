@@ -1,54 +1,79 @@
 package ecologylab.sensor.location.compass;
 
+import java.util.Calendar;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import ecologylab.sensor.location.gps.data.GPSDatum;
+import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 import ecologylab.serialization.ElementState;
 import ecologylab.serialization.annotations.simpl_scalar;
 
 /**
  * 
  * @author William A. Hamilton (bill@ecologylab.net)
- * @author Zachary O. Dugas Toups (zach@ecologylab.net)
+ * @author Zachary O. Toups (ztoups@nmsu.edu)
  */
-public class CompassDatum extends ElementState
+public class CompassDatum extends ElementState implements Cloneable, GPSDataUpdatedListener
 {
 	/**
 	 * The current heading in degrees. If calibrated correctly, 0 is North, and degrees increase
 	 * clockwise.
 	 */
 	@simpl_scalar
-	private float											heading;
+	private float			heading;
 
 	/** The current pitch in degrees. */
 	@simpl_scalar
-	private float											pitch;
+	private float			pitch;
 
 	/** The current roll in degrees. */
 	@simpl_scalar
-	private float											roll;
+	private float			roll;
 
 	/** The current temperature of the sensor. */
 	@simpl_scalar
-	private float											temp;
+	private float			temp;
 
 	/** The total acceleration, measured in G's */
 	@simpl_scalar
-	private float											totAcc;
+	private float			totAcc;
 
 	/** The current acceleration in the X direction, measured in G's */
 	@simpl_scalar
-	private float											accX;
+	private float			accX;
 
 	/** The current acceleration in the Y direction, measured in G's */
 	@simpl_scalar
-	private float											accY;
+	private float			accY;
 
 	/** The current acceleration in the Z direction, measured in G's */
 	@simpl_scalar
-	private float											accZ;
+	private float			accZ;
+
+	/** Optional field; cannot come from compass sensor; generally has to come from GPS. */
+	@simpl_scalar
+	private Calendar	utcTime;
+
+	@Override
+	public CompassDatum clone()
+	{
+		CompassDatum clone = new CompassDatum(this.heading, this.pitch, this.roll, this.temp);
+
+		clone.totAcc = this.totAcc;
+		clone.accX = this.accX;
+		clone.accY = this.accY;
+		clone.accZ = this.accZ;
+		if (this.utcTime != null)
+			clone.utcTime = (Calendar) this.utcTime.clone();
+
+		return clone;
+	}
 
 	private List<CompassDataListener>	compassDataUpdatedListeners;
+
+	private EnumSet<GPSUpdateInterest>	interestSet;
 
 	public CompassDatum()
 	{
@@ -220,5 +245,25 @@ public class CompassDatum extends ElementState
 					l.compassDataUpdated(this);
 				}
 			}
+	}
+
+	@Override
+	public EnumSet<GPSUpdateInterest> getInterestSet()
+	{
+		if (interestSet == null)
+			interestSet = EnumSet.of(GPSUpdateInterest.OTHERS);
+
+		return interestSet;
+	}
+
+	@Override
+	public void gpsDatumUpdated(GPSDatum datum)
+	{
+		this.utcTime = datum.getUtcTime();
+	}
+
+	public Calendar getTime()
+	{
+		return this.utcTime;
 	}
 }

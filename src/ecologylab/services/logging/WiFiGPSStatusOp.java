@@ -4,6 +4,7 @@
 package ecologylab.services.logging;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.TooManyListenersException;
 
 import stec.jenie.NativeException;
@@ -57,9 +58,8 @@ import gnu.io.UnsupportedCommOperationException;
 	 */
 	@simpl_composite protected WiFiAdapterStatus	netStatus;
 
-	@simpl_scalar protected String				utcTime;
-
-	@simpl_scalar protected String				utcDate;
+	@simpl_scalar
+	protected Calendar					utcTime;
 
 	/**
 	 * 
@@ -96,22 +96,24 @@ import gnu.io.UnsupportedCommOperationException;
 	{
 	}
 
+	@Override
 	public void apListUpdate(String newData)
 	{
 		this.netStatus.apListUpdate(newData);
 	}
 
+	@Override
 	public void macAddressUpdate(String newData)
 	{
 		this.netStatus.macAddressUpdate(newData);
 	}
 
+	@Override
 	public void processIncomingNMEAString(String gpsDataString)
 	{
 		this.locationStatusUpdater().processIncomingNMEAString(gpsDataString);
 
 		this.utcTime = this.locationStatus.getUtcTime();
-		this.utcDate = this.locationStatus.getUtcDate();
 	}
 	
 	public static void main(String[] args) throws NativeException, NoSuchPortException, IOException, PortInUseException, UnsupportedCommOperationException, TooManyListenersException
@@ -162,16 +164,8 @@ import gnu.io.UnsupportedCommOperationException;
 	/**
 	 * @return the utcTime
 	 */
-	public String getUtcTime()
+	public Calendar getUtcTime()
 	{
 		return utcTime;
-	}
-
-	/**
-	 * @return the utcDate
-	 */
-	public String getUtcDate()
-	{
-		return utcDate;
 	}
 }

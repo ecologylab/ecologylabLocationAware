@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
 import ecologylab.sensor.location.LocationStatus;
 import ecologylab.sensor.location.gps.data.dataset.GGA;
@@ -32,11 +33,11 @@ import ecologylab.serialization.annotations.simpl_scalar;
  * datum is as up-to-date as possible as of the time stamp. Whenever no new data is provided, the
  * old data is retained.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Zachary O. Toups (ztoups@nmsu.edu)
  * 
  */
 @simpl_inherit
-public class GPSDatum extends LocationStatus implements GPSConstants
+public class GPSDatum extends LocationStatus implements GPSConstants, Cloneable
 {
 	public enum DopType
 	{
@@ -119,17 +120,13 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 */
 	private SVData											currentSV;
 
-	/**
-	 * References to data about the currently-tracked satellites (space vehicles, SVs).
-	 */
+	/** References to data about the currently-tracked satellites (space vehicles, SVs). */
 	@simpl_collection("sv")
 	private ArrayList<SVData>						trackedSVs;
 
-	private Calendar										utcTime					= Calendar.getInstance();
+	// private final Calendar utcTime = Calendar.getInstance();
 
-	/**
-	 * All up-to-date data on SVs that have been reported on by the GPS hardware.
-	 */
+	/** All up-to-date data on SVs that have been reported on by the GPS hardware. */
 	protected HashMap<Integer, SVData>	allSVs;
 
 	/** Used for moving data around when processing NMEA sentences. */
@@ -171,12 +168,12 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 		return tempDataStore;
 	}
 
-	public static void main(String[] args)
-	{
-		GPSDatum d = new GPSDatum();
-
-		d.integrateGPSData("GPRMC,223832.804,V,3037.3725,N,09620.2286,W,0.00,0.00,120208,,,N*6C");
-	}
+	// public static void main(String[] args)
+	// {
+	// GPSDatum d = new GPSDatum();
+	//
+	// d.integrateGPSData("GPRMC,223832.804,V,3037.3725,N,09620.2286,W,0.00,0.00,120208,,,N*6C");
+	// }
 
 	/**
 	 * Splits and stores data from an NMEA GPS data set.
@@ -217,49 +214,49 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 
 			switch (gpsData.charAt(2))
 			{
-			case ('G'):
-				// either GGA, GLL, GSA, or GSV
-				switch (gpsData.charAt(3))
-				{
 				case ('G'):
-					// check GGA
-					if (gpsData.charAt(4) == 'A')
+					// either GGA, GLL, GSA, or GSV
+					switch (gpsData.charAt(3))
 					{
-						fieldBase = GGA.values();
+						case ('G'):
+							// check GGA
+							if (gpsData.charAt(4) == 'A')
+							{
+								fieldBase = GGA.values();
+							}
+							break;
+						case ('L'):
+							// check GLL
+							if (gpsData.charAt(4) == 'L')
+							{
+								fieldBase = GLL.values();
+							}
+							break;
+						case ('S'):
+							switch (gpsData.charAt(4))
+							{
+								case ('A'): // GSA
+									fieldBase = GSA.values();
+									break;
+								case ('V'): // GSV
+									fieldBase = GSV.values();
+									break;
+							}
+							break;
 					}
 					break;
-				case ('L'):
-					// check GLL
-					if (gpsData.charAt(4) == 'L')
+				case ('R'): // check RMC
+					if (gpsData.charAt(3) == 'M' && gpsData.charAt(4) == 'C')
 					{
-						fieldBase = GLL.values();
+						fieldBase = RMC.values();
 					}
 					break;
-				case ('S'):
-					switch (gpsData.charAt(4))
-					{
-					case ('A'): // GSA
-						fieldBase = GSA.values();
-						break;
-					case ('V'): // GSV
-						fieldBase = GSV.values();
-						break;
-					}
+				case ('V'):
+					fieldBase = VTG.values();
 					break;
-				}
-				break;
-			case ('R'): // check RMC
-				if (gpsData.charAt(3) == 'M' && gpsData.charAt(4) == 'C')
-				{
-					fieldBase = RMC.values();
-				}
-				break;
-			case ('V'):
-				fieldBase = VTG.values();
-				break;
-			case ('Z'):
-				// TODO check ZDA
-				break;
+				case ('Z'):
+					// TODO check ZDA
+					break;
 			}
 
 			if (fieldBase != null)
@@ -389,8 +386,8 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 		double oldLon = getLon();
 
 		setLon(AngularCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 3)),
-																			Double.parseDouble(src.substring(3)),
-																			0));
+				Double.parseDouble(src.substring(3)),
+				0));
 
 		this.pointDirty = true;
 
@@ -408,7 +405,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	public void updateLon(double lon)
 	{
 		double oldLon = this.getLon();
-		
+
 		this.setLon(lon);
 
 		this.pointDirty = true;
@@ -419,7 +416,6 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 		}
 	}
 
-	
 	/**
 	 * determine latitude sign
 	 * 
@@ -448,8 +444,8 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 		double oldLat = getLat();
 
 		setLat(AngularCoord.fromDegMinSec(Integer.parseInt(src.substring(0, 2)),
-																			Double.parseDouble(src.substring(2)),
-																			0));
+				Double.parseDouble(src.substring(2)),
+				0));
 
 		this.pointDirty = true;
 
@@ -458,7 +454,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 			this.gpsDataUpdatedListenersToUpdate.addAll(this.latLonUpdatedListeners);
 		}
 	}
-	
+
 	/**
 	 * update latitude and prep for firing event to listeners
 	 * 
@@ -467,7 +463,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	public void updateLat(double lat)
 	{
 		double oldLat = this.getLat();
-		
+
 		this.setLat(lat);
 
 		this.pointDirty = true;
@@ -483,7 +479,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	 * 
 	 * @param utcString
 	 */
-	public void updateUtcPosTime(String utcString)
+	public synchronized void updateUtcPosTime(String utcString)
 	{
 		if (utcString == null || utcString.length() == 0)
 			return;
@@ -495,11 +491,29 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 		int second = ((int) (time)) % 100;
 		int milliSecond = ((int) (time * 1000)) % 1000;
 
+		if (utcTime == null)
+		{
+			utcTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		}
 		this.utcTime.set(Calendar.HOUR_OF_DAY, hour);
 		this.utcTime.set(Calendar.MINUTE, minute);
 		this.utcTime.set(Calendar.SECOND, second);
 		this.utcTime.set(Calendar.MILLISECOND, milliSecond);
 	}
+
+	public synchronized void updateDate(String dateString)
+	{
+		this.utcTime.set(Integer.parseInt(dateString.substring(4, 6)) + 2000,
+				Integer.parseInt(dateString.substring(2, 4)) - 1,
+				Integer.parseInt(dateString.substring(0, 2)));
+	}
+
+	// public static void main(String[] args)
+	// {
+	// GregorianCalendar gcTest = new GregorianCalendar(15, 2, 3);
+	//
+	// System.out.println(gcTest);
+	// }
 
 	/**
 	 * Update the number of satellites the GPS receiver is using to produce a solution.
@@ -619,14 +633,14 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 
 		switch (src.charAt(0))
 		{
-		case 'A':
-		case 'a':
-			this.dataValid = true;
-			break;
-		case 'V':
-		case 'v':
-			this.dataValid = false;
-			break;
+			case 'A':
+			case 'a':
+				this.dataValid = true;
+				break;
+			case 'V':
+			case 'v':
+				this.dataValid = false;
+				break;
 		}
 	}
 
@@ -643,14 +657,14 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 
 		switch (src.charAt(0))
 		{
-		case 'A':
-		case 'a':
-			this.autoCalcMode = true;
-			break;
-		case 'M':
-		case 'm':
-			this.autoCalcMode = false;
-			break;
+			case 'A':
+			case 'a':
+				this.autoCalcMode = true;
+				break;
+			case 'M':
+			case 'm':
+				this.autoCalcMode = false;
+				break;
 		}
 	}
 
@@ -869,31 +883,31 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	/**
 	 * List of listeners who want to be notified of latitude or longitude updates.
 	 */
-	private List<GPSDataUpdatedListener>	latLonUpdatedListeners;
+	private List<GPSDataUpdatedListener>			latLonUpdatedListeners;
 
 	/** List of listeners who want to be notified of altitude updates. */
-	private List<GPSDataUpdatedListener>	altUpdatedListeners;
+	private List<GPSDataUpdatedListener>			altUpdatedListeners;
 
 	/**
 	 * List of listeners who want to be notified of any updates not covered above.
 	 */
-	private List<GPSDataUpdatedListener>	speedUpdatedListeners;
+	private List<GPSDataUpdatedListener>			speedUpdatedListeners;
 
 	/**
 	 * List of listeners who want to be notified of any updates not covered above.
 	 */
-	private List<GPSDataUpdatedListener>	otherUpdatedListeners;
+	private List<GPSDataUpdatedListener>			otherUpdatedListeners;
 
 	/** Semaphore for instantiating the above lists lazilly. */
-	private Object												listenerLock										= new Object();
+	private final Object											listenerLock										= new Object();
 
 	/** Set of listeners to notify for this update, as determined by interest. */
-	private Set<GPSDataUpdatedListener>		gpsDataUpdatedListenersToUpdate	= new HashSet<GPSDataUpdatedListener>();
+	private final Set<GPSDataUpdatedListener>	gpsDataUpdatedListenersToUpdate	= new HashSet<GPSDataUpdatedListener>();
 
 	/**
 	 * Indicates that pointRepresentation is out of synch with the state of this object.
 	 */
-	private boolean												pointDirty											= true;
+	private boolean														pointDirty											= true;
 
 	private List<GPSDataUpdatedListener> latLonUpdatedListeners()
 	{
@@ -1098,7 +1112,7 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 
 	public Calendar getTime()
 	{
-		return (Calendar) utcTime.clone();
+		return utcTime;
 	}
 
 	public String getTimeString()
@@ -1120,5 +1134,56 @@ public class GPSDatum extends LocationStatus implements GPSConstants
 	public void setGrndSpd(double grndSpd)
 	{
 		this.grndSpd = grndSpd;
+	}
+
+	@Override
+	public GPSDatum clone()
+	{
+		GPSDatum clone = new GPSDatum(this.lat, this.lon);
+		clone.alt = this.alt;
+		clone.utcTime = (Calendar) this.utcTime.clone();
+
+		clone.grndSpd = this.grndSpd;
+		clone.gpsQual = this.gpsQual;
+		clone.numSats = this.numSats;
+
+		clone.hdop = this.hdop;
+		clone.pdop = this.pdop;
+		clone.vdop = this.vdop;
+
+		clone.geoidHeight = this.geoidHeight;
+		clone.heightDiff = this.heightDiff;
+		clone.dgpsAge = this.dgpsAge;
+		clone.dgpsRefStation = this.dgpsRefStation;
+		clone.dataValid = this.dataValid;
+		clone.autoCalcMode = this.autoCalcMode;
+		clone.calcMode = this.calcMode;
+
+		if (this.currentSV != null)
+			clone.currentSV = this.currentSV.clone();
+		else
+			clone.currentSV = null;
+
+		if (this.trackedSVs != null)
+		{
+			clone.trackedSVs = new ArrayList<>(this.trackedSVs.size());
+			for (SVData svData : this.trackedSVs)
+				clone.trackedSVs.add(svData.clone());
+		}
+		else
+			clone.trackedSVs = null;
+
+		if (this.allSVs != null)
+		{
+			clone.allSVs = new HashMap<>();
+			for (Integer key : this.allSVs.keySet())
+				clone.allSVs.put(key, this.allSVs.get(key).clone());
+		}
+		else
+			clone.allSVs = null;
+
+		clone.HDOPMultiplier = this.HDOPMultiplier;
+
+		return clone;
 	}
 }

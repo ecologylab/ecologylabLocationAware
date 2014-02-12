@@ -1,6 +1,7 @@
 package ecologylab.standalone;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 import ecologylab.collections.Scope;
 import ecologylab.oodss.distributed.client.NIOClient;
@@ -10,17 +11,30 @@ import ecologylab.services.distributed.server.varieties.GeoServer.LocationTransl
 import ecologylab.services.messages.LocationDataRequest;
 import ecologylab.services.messages.LocationDataResponse;
 
-public class GeoClient 
+/**
+ * An NIOClient that provides access to GPS and compass data. This client is a little unorthodox
+ * because it can also provide the same data via it's updateLocation methods.
+ * 
+ * @author William A. Hamilton (bill@ecologylab.net)
+ * @author Zachary O. Toups (ztoups@nmsu.edu)
+ */
+public class GeoClient
 {
-	private NIOClient client;
-	private static final LocationDataRequest request = new LocationDataRequest();
-	
+	private NIOClient													client;
+
+	// private static final LocationDataRequest request = new LocationDataRequest();
+
 	public synchronized LocationDataResponse updateLocation()
+	{
+		return updateLocation(null);
+	}
+
+	public synchronized LocationDataResponse updateLocation(Calendar time)
 	{
 		try
 		{
-			ResponseMessage resp = client.sendMessage(request);
-			
+			ResponseMessage resp = client.sendMessage(new LocationDataRequest(time));
+
 			if (resp instanceof LocationDataResponse)
 			{
 				return (LocationDataResponse) resp;
@@ -28,13 +42,12 @@ public class GeoClient
 		}
 		catch (MessageTooLargeException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-	
+
 	public GeoClient()
 	{
 		Scope s = new Scope();
@@ -47,17 +60,17 @@ public class GeoClient
 			e.printStackTrace();
 		}
 	}
-	
+
 	public boolean connect()
 	{
 		return client.connect();
 	}
-	
+
 	public void disconnect()
 	{
 		client.disconnect();
 	}
-	
+
 	public boolean connected()
 	{
 		return client.connected();
