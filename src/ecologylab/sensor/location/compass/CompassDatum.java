@@ -262,6 +262,13 @@ public class CompassDatum extends ElementState implements Cloneable, GPSDataUpda
 		this.utcTime = datum.getUtcTime();
 	}
 
+	public long getTimeInMillis()
+	{
+		if (utcTime == null)
+			return -1;
+		return utcTime.getTimeInMillis();
+	}
+
 	public Calendar getTime()
 	{
 		return this.utcTime;

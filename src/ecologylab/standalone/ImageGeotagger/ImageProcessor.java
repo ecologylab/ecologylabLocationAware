@@ -12,7 +12,6 @@ import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 import org.apache.sanselan.ImageReadException;
 import org.apache.sanselan.ImageWriteException;
@@ -40,19 +39,19 @@ import ecologylab.standalone.ImageGeotagger.DirectoryMonitor.AppendGPSImgDirMoni
 
 public class ImageProcessor implements Runnable
 {
-	protected File											imageFile;
+	protected File												imageFile;
 
-	private Thread											t;
+	private Thread												t;
 
-	private GeoClient										client;
+	private GeoClient											client;
 
-	private GPSDatum										gpsData;
+	private GPSDatum											gpsData;
 
-	private CompassDatum								compassData;
+	private CompassDatum									compassData;
 
 	private final AppendGPSImgDirMonitor	monitor;
 
-	private long												offsetMillis;
+	private long													offsetMillis;
 
 	public ImageProcessor(File image, GeoClient client, long offsetMillis,
 			AppendGPSImgDirMonitor monitor)
@@ -83,7 +82,7 @@ public class ImageProcessor implements Runnable
 	}
 
 	@Override
-	public void run()
+	public synchronized void run()
 	{
 		System.out.println("Processing file: " + imageFile.getName());
 
@@ -96,7 +95,24 @@ public class ImageProcessor implements Runnable
 		/* Initialize metadata from existing image metadata */
 		try
 		{
-			metadata = Sanselan.getMetadata(imageFile);
+			// there seems to be a non-deterministic bug where this call thinks it has read the whole file
+			// when, in fact, it has not. This code will run until it gets metadata back, dammit, or until
+			// it has tried 100 times.
+			int countdown = 100000;
+			while (metadata == null && countdown > 0)
+			{
+				try
+				{
+					metadata = Sanselan.getMetadata(imageFile);
+				}
+				catch (ImageReadException e)
+				{ // ignore
+					System.err.println("WARNING: Failed to read metadata on " + imageFile.getName()
+							+ "; trying " + (countdown - 1) + " more times.");
+				}
+
+				countdown--;
+			}
 
 			if (metadata == null || !(metadata instanceof JpegImageMetadata))
 				return;
@@ -120,13 +136,21 @@ public class ImageProcessor implements Runnable
 					String dateTimeUTC = jpegMetadata.findEXIFValue(TiffTagConstants.TIFF_TAG_DATE_TIME)
 							.getStringValue();
 
-					Calendar imageTime = Calendar.getInstance();
+					// Calendar imageTime = Calendar.getInstance();
 					DateFormat df = new SimpleDateFormat("yyyy:MM:dd kk:mm:ss");
 					java.util.Date d = df.parse(dateTimeUTC);
 
-					imageTime.setTimeInMillis(d.getTime() + offsetMillis);
+					// imageTime.setTimeInMillis(d.getTime() + offsetMillis);
 
-					LocationDataResponse locationData = client.updateLocation(imageTime);
+					long timeInMillis = d.getTime() - offsetMillis;
+
+					System.out.println("image time: " + d.getTime() + "; offset: " + offsetMillis
+							+ "; image time - offset = " + timeInMillis);
+
+					if (timeInMillis == -1)
+						throw new RuntimeException("-1 is an invalid time");
+
+					LocationDataResponse locationData = client.updateLocation(timeInMillis);
 					gpsData = locationData.gpsData;
 					compassData = locationData.compassData;
 				}
@@ -158,8 +182,6 @@ public class ImageProcessor implements Runnable
 			e.printStackTrace();
 			return;
 		}
-
-
 
 		OutputStream os = null;
 		File dst = null;

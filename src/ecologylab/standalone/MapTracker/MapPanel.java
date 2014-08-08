@@ -355,7 +355,7 @@ public class MapPanel extends JPanel
 
 		while (true)
 		{
-			LocationDataResponse resp = client.updateLocation();
+			LocationDataResponse resp = client.updateCurrentLocation();
 
 			if (resp.gpsData != null && resp.compassData != null)
 			{

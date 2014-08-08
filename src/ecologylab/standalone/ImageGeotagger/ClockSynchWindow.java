@@ -124,6 +124,8 @@ public class ClockSynchWindow implements ActionListener
 		System.out.println("...done!");
 		System.out.println(csw.getOffset());
 
+		csw.stop();
+
 		return csw.getOffset();
 	}
 	
@@ -173,6 +175,15 @@ public class ClockSynchWindow implements ActionListener
 		jf.pack();
 	}
 
+	public void stop()
+	{
+		if (t != null)
+			t.stop();
+
+		if (iam != null)
+			iam.stop();
+	}
+
 	public void start()
 	{
 		jf.setVisible(true);
@@ -189,8 +200,8 @@ public class ClockSynchWindow implements ActionListener
 		synchronized (this)
 		{
 			long timeInMillis = -1;
-			if (gc.updateLocation().gpsData != null)
-				timeInMillis = gc.updateLocation().gpsData.getTimeInMillis();
+			if (gc.updateCurrentLocation().gpsData != null)
+				timeInMillis = gc.updateCurrentLocation().gpsData.getTimeInMillis();
 			if (ImgArrivesMonitor.IMAGE_ARRIVED == e.getActionCommand())
 			{
 				timeInputField.setText(Long.toHexString(timeInMillis));
@@ -236,7 +247,7 @@ public class ClockSynchWindow implements ActionListener
 					DateFormat df = new SimpleDateFormat("yyyy:MM:dd kk:mm:ss");
 					java.util.Date d = df.parse(dateTimeUTC);
 
-					offset = d.getTime() - timeInMillis;
+					offset = d.getTime() - Long.parseLong(timeInputField.getText(), 16);
 					t.stop();
 					jf.setVisible(false);
 					jf.dispose();

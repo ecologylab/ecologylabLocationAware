@@ -31,11 +31,15 @@ public class ImageGeotagger
 
 				try
 				{
-					monitor = new AppendGPSImgDirMonitor(chooser.getSelectedFile(), client);
+					File selectedFile = chooser.getSelectedFile();
+
+					// set up clock synch
+					long clockOffset = ClockSynchWindow.getOffsetFromSynchWindow(selectedFile, client);
+
+					monitor = new AppendGPSImgDirMonitor(selectedFile, client, clockOffset);
 				}
 				catch (Exception e)
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
@@ -47,6 +51,10 @@ public class ImageGeotagger
 				System.exit(0);
 			}
 
+		}
+		else
+		{
+			System.err.println("Could not connect to GPS service.");
 		}
 		return monitor;
 	}
@@ -72,8 +80,7 @@ public class ImageGeotagger
 				// set up clock synch
 				long clockOffset = ClockSynchWindow.getOffsetFromSynchWindow(selectedFile, client);
 				
-				ImgDirMonitor monitor = new AppendGPSImgDirMonitor(selectedFile, client); // TODO add synch
-																																									// offset
+				ImgDirMonitor monitor = new AppendGPSImgDirMonitor(selectedFile, client, clockOffset);
 				monitor.start();
 			}
 			else

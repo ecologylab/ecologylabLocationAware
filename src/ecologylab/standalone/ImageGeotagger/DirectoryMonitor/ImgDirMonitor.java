@@ -9,15 +9,18 @@ import ecologylab.generic.StartAndStoppable;
 
 public abstract class ImgDirMonitor implements Runnable, StartAndStoppable
 {
-	protected final File	directoryToMonitor;
-	/**
-	 * Interval at which the directory is polled for new files.
-	 */
-	private final int	pollingInterval	= 1000;
-	private static JpegFilter	filter	= new JpegFilter();
+	protected final File			directoryToMonitor;
+
+	/** Interval at which the directory is polled for new files. */
+	private final int					pollingInterval	= 1000;
+
+	private static JpegFilter	filter					= new JpegFilter();
+
 	private final Set<String>	processedFiles	= new HashSet<String>();
-	private Thread	t;
-	private boolean	running	= false;
+
+	private Thread						t;
+
+	private boolean						running					= false;
 
 	static class JpegFilter implements FilenameFilter
 	{
@@ -56,8 +59,8 @@ public abstract class ImgDirMonitor implements Runnable, StartAndStoppable
 	protected void seedProcessedFiles()
 	{
 		String[] files = directoryToMonitor.list(filter);
-		
-		for(String file : files)
+
+		for (String file : files)
 		{
 			processedFiles.add(file);
 		}
@@ -66,21 +69,21 @@ public abstract class ImgDirMonitor implements Runnable, StartAndStoppable
 	private Set<File> waitForNewImages() throws InterruptedException
 	{
 		Set<File> newFiles = new HashSet<File>();
-		
-		while(running)
+
+		while (running)
 		{
 			File[] files = directoryToMonitor.listFiles(filter);
-			
-			for(File file : files)
+
+			for (File file : files)
 			{
-				if(!processedFiles.contains(file.getName()))
+				if (!processedFiles.contains(file.getName()))
 				{
 					processedFiles.add(file.getName());
 					newFiles.add(file);
 				}
 			}
-						
-			if(!newFiles.isEmpty())
+
+			if (!newFiles.isEmpty())
 			{
 				return newFiles;
 			}
@@ -89,7 +92,7 @@ public abstract class ImgDirMonitor implements Runnable, StartAndStoppable
 				Thread.sleep(pollingInterval);
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -98,19 +101,19 @@ public abstract class ImgDirMonitor implements Runnable, StartAndStoppable
 	@Override
 	public void run()
 	{
-		while(running)
+		while (running)
 		{
 			try
 			{
 				Set<File> newFiles = waitForNewImages();
-				for(File file : newFiles)
+				for (File file : newFiles)
 				{
 					processFile(file);
 				}
 			}
-			catch(InterruptedException e)
+			catch (InterruptedException e)
 			{
-				if(!running)
+				if (!running)
 				{
 					return;
 				}
@@ -121,7 +124,7 @@ public abstract class ImgDirMonitor implements Runnable, StartAndStoppable
 	@Override
 	public synchronized void start()
 	{
-		if(!running)
+		if (!running)
 		{
 			running = true;
 			t = new Thread(this);
@@ -132,11 +135,11 @@ public abstract class ImgDirMonitor implements Runnable, StartAndStoppable
 	@Override
 	public synchronized void stop()
 	{
-		if(running)
+		if (running)
 		{
 			running = false;
 			t.interrupt();
-		}	
+		}
 	}
 
 }

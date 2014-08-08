@@ -1110,11 +1110,6 @@ public class GPSDatum extends LocationStatus implements GPSConstants, Cloneable
 		return utcTime.getTimeInMillis();
 	}
 
-	public Calendar getTime()
-	{
-		return utcTime;
-	}
-
 	public String getTimeString()
 	{
 		return utcTime.get(Calendar.HOUR_OF_DAY) + ":" + utcTime.get(Calendar.MINUTE) + ":"

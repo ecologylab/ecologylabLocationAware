@@ -6,7 +6,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/simplCore"/>
 	<classpathentry kind="lib" path="lib/jenie.jar"/>
 	<classpathentry kind="lib" path="lib/RXTXcomm.jar"/>
-	<classpathentry kind="lib" path="lib/sanselan-0.97-incubator.jar"/>
+	<classpathentry kind="lib" path="lib/sanselan-0.97-incubator.jar" sourcepath="/Users/ztoups-desk/Downloads/sanselan-0.97-incubator"/>
 	<classpathentry kind="lib" path="lib/gt-referencing-10.1.jar"/>
 	<classpathentry kind="lib" path="lib/gt-api-10.1.jar" sourcepath="/Users/ztoups/Downloads/geotools-10.1 3/modules/library/api/src/main/java/org/geotools/factory"/>
 	<classpathentry kind="lib" path="lib/gt-opengis-10.1.jar"/>

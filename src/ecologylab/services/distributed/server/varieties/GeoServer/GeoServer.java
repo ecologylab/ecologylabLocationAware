@@ -73,13 +73,17 @@ public class GeoServer extends DoubleThreadedNIOServer implements LocationUpdate
 	{
 		synchronized (gpsData)
 		{
-			if (this.gpsData.size() == 0)
-				this.gpsData.offerLast(datum.clone());
-			else if (!this.gpsData.peekLast().getTime().equals(datum.getTime()))
+			if (datum.getUtcTime() != null)
 			{
-				if (this.gpsData.remainingCapacity() == 0)
-					this.gpsData.removeFirst();
-				this.gpsData.offerLast(datum.clone());
+				if (this.gpsData.size() == 0)
+					this.gpsData.offerLast(datum.clone());
+				else if (!this.gpsData.peekLast().getUtcTime().equals(datum.getUtcTime()))
+				{
+					if (this.gpsData.remainingCapacity() == 0)
+						this.gpsData.removeFirst();
+					this.gpsData.offerLast(datum.clone());
+					System.out.println(datum.getTimeInMillis() + " / " + datum.toString());
+				}
 			}
 		}
 	}

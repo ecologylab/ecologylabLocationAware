@@ -1,7 +1,6 @@
 package ecologylab.standalone;
 
 import java.io.IOException;
-import java.util.Calendar;
 
 import ecologylab.collections.Scope;
 import ecologylab.oodss.distributed.client.NIOClient;
@@ -24,16 +23,35 @@ public class GeoClient
 
 	// private static final LocationDataRequest request = new LocationDataRequest();
 
-	public synchronized LocationDataResponse updateLocation()
+	public synchronized LocationDataResponse updateCurrentLocation()
 	{
-		return updateLocation(null);
+		return doUpdateLocation(-1);
 	}
 
-	public synchronized LocationDataResponse updateLocation(Calendar time)
+	public synchronized LocationDataResponse updateLocation(long timeInMillis)
+	{
+		if (timeInMillis == -1)
+			throw new RuntimeException("cannot update location without a time");
+		return doUpdateLocation(timeInMillis);
+	}
+
+	private LocationDataResponse doUpdateLocation(long timeInMillis)
 	{
 		try
 		{
-			ResponseMessage resp = client.sendMessage(new LocationDataRequest(time));
+			LocationDataRequest request = new LocationDataRequest(timeInMillis);
+			
+			// try
+			// {
+			// SimplTypesScope.serialize(request, System.out, StringFormat.XML);
+			// }
+			// catch (SIMPLTranslationException e)
+			// {
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
+			// }
+			
+			ResponseMessage resp = client.sendMessage(request);
 
 			if (resp instanceof LocationDataResponse)
 			{

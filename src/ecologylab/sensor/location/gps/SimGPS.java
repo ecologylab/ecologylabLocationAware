@@ -176,7 +176,7 @@ public class SimGPS extends NMEAReader implements ActionListener
 	public boolean connect() throws PortInUseException, UnsupportedCommOperationException,
 			IOException, TooManyListenersException
 	{
-		this.start(50);
+		this.start(1);
 
 		return this.connected();
 	}
