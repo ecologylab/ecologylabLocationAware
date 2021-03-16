@@ -25,7 +25,7 @@ import ecologylab.serialization.types.scalar.KMLColor;
  * includes specifications for stacking order of multiple overlays and for
  * adding color and transparency values to the base image.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
+ * @author Z O. Toups (zach@ecologylab.net) (Java classes only)
  */
 @simpl_inherit public abstract class Overlay extends KmlFeature
 {

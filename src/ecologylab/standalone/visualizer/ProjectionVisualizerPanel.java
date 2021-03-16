@@ -24,7 +24,7 @@ import ecologylab.sensor.location.gps.data.GeoCoordinate;
 import ecologylab.sensor.location.gps.listener.GPSDataUpdatedListener;
 
 /**
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  * 
  */
 public class ProjectionVisualizerPanel extends JPanel implements

@@ -15,7 +15,7 @@ import java.util.LinkedList;
  * Can modify the Description component of a KmlFeature to keep it updated with
  * an HTML-formatted string indicating the current WiFi status.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 public class WiFiDataComment implements WiFiStringDataListener
 {

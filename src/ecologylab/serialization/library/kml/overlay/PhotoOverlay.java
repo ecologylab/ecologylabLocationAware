@@ -23,12 +23,12 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
  * location and oriented toward the viewpoint.
  * 
  * Because <PhotoOverlay> is derived from <Feature>, it can contain one of the
- * two elements derived from <AbstractView>—either <Camera> or <LookAt>. The
+ * two elements derived from <AbstractView>ï¿½either <Camera> or <LookAt>. The
  * Camera (or LookAt) specifies a viewpoint and a viewing direction (also
  * referred to as a view vector). The PhotoOverlay is positioned in relation to
  * the viewpoint. Specifically, the plane of a 2D rectangular image is
  * orthogonal (at right angles to) the view vector. The normal of this
- * plane—that is, its front, which is the part with the photo—is oriented toward
+ * planeï¿½that is, its front, which is the part with the photoï¿½is oriented toward
  * the viewpoint.
  * 
  * The URL for the PhotoOverlay image is specified in the <Icon> tag, which is
@@ -39,7 +39,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
  * 
  * For more information, see the "Topics in KML" page on PhotoOverlay.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
+ * @author Z O. Toups (zach@ecologylab.net) (Java classes only)
  */
 @simpl_inherit public class PhotoOverlay extends Overlay
 {

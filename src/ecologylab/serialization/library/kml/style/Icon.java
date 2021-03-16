@@ -20,7 +20,7 @@ import ecologylab.serialization.library.kml.overlay.Vec2;
  * placemark. This location can either be on a local file system or a remote web
  * server.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
+ * @author Z O. Toups (zach@ecologylab.net) (Java classes only)
  */
 public class Icon extends ElementState
 {

@@ -28,7 +28,7 @@ import ecologylab.services.messages.RequestTranslator;
 /**
  * Acts as a simulated source of location data; acquires data from an instance of Google Earth.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 public class EarthGPSSimulatorServer extends HttpGetServer
 {

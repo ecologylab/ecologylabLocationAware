@@ -20,7 +20,7 @@ import ecologylab.serialization.formatenums.StringFormat;
  * Represents the current status of a WiFi adapter, including a list of
  * WiFiConnections and the current MAC address of the connected router (if any).
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 @simpl_inherit public class WiFiAdapterStatus extends ElementState implements
 		WiFiStringDataListener

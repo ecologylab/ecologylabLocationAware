@@ -8,7 +8,7 @@ import ecologylab.sensor.location.NMEAStringListener;
 import ecologylab.sensor.location.gps.data.GPSDatum;
 
 /**
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  * 
  */
 public class GPSDataUpdater extends Debug implements NMEAStringListener

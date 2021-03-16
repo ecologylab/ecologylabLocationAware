@@ -4,7 +4,7 @@
 package ecologylab.sensor.network.wireless.listener;
 
 /**
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 public interface WiFiStringDataListener
 {

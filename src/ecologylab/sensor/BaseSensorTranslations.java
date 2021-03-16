@@ -19,7 +19,7 @@ import ecologylab.services.logging.WiFiGPSStatusOp;
 /**
  * Provide XML translation mappings for use with sensors.
  * 
- * @author Zachary O. Toups (toupsz@gmail.com)
+ * @author Z O. Toups (toupsz@gmail.com)
  */
 public class BaseSensorTranslations
 {

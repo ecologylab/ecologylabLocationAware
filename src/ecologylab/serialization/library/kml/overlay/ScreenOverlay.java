@@ -28,7 +28,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
  * element is omitted or contains no <href>, a rectangle is drawn using the
  * color and size defined by the screen overlay.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
+ * @author Z O. Toups (zach@ecologylab.net) (Java classes only)
  */
 @simpl_inherit public class ScreenOverlay extends Overlay
 {
@@ -39,7 +39,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
 	 * different ways: as pixels ("pixels"), as fractions of the image
 	 * ("fraction"), or as inset pixels ("insetPixels"), which is an offset in
 	 * pixels from the upper right corner of the image. The x and y positions can
-	 * be specified in different ways—for example, x can be in pixels and y can
+	 * be specified in different waysï¿½for example, x can be in pixels and y can
 	 * be a fraction. The origin of the coordinate system is in the lower left
 	 * corner of the image.
 	 */
@@ -51,7 +51,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
 	 * pixels ("pixels"), as fractions of the screen ("fraction"), or as inset
 	 * pixels ("insetPixels"), which is an offset in pixels from the upper right
 	 * corner of the screen. The x and y positions can be specified in different
-	 * ways—for example, x can be in pixels and y can be a fraction. The origin
+	 * waysï¿½for example, x can be in pixels and y can be a fraction. The origin
 	 * of the coordinate system is in the lower left corner of the screen.
 	 */
 	@simpl_composite @simpl_tag("screenXY") protected Vec2		screenXY;
@@ -73,7 +73,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
 	/**
 	 * Indicates the angle of rotation of the parent object. A value of 0 means
 	 * no rotation. The value is an angle in degrees counterclockwise starting
-	 * from north. Use ±180 to indicate the rotation of the parent object from 0.
+	 * from north. Use ï¿½180 to indicate the rotation of the parent object from 0.
 	 * The center of the <rotation>, if not (.5,.5), is specified in
 	 * <rotationXY>.
 	 */

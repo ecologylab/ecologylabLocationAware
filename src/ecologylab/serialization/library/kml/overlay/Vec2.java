@@ -15,10 +15,10 @@ import ecologylab.serialization.annotations.simpl_scalar;
  * different ways: as pixels ("pixels"), as fractions of the icon ("fraction"),
  * or as inset pixels ("insetPixels"), which is an offset in pixels from the
  * upper right corner of the icon. The x and y positions can be specified in
- * different ways—for example, x can be in pixels and y can be a fraction. The
+ * different waysï¿½for example, x can be in pixels and y can be a fraction. The
  * origin of the coordinate system is in the lower left corner of the icon.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
+ * @author Z O. Toups (zach@ecologylab.net) (Java classes only)
  */
 public class Vec2 extends ElementState
 {

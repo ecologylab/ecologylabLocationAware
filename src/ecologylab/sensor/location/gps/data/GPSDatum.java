@@ -33,7 +33,7 @@ import ecologylab.serialization.annotations.simpl_scalar;
  * datum is as up-to-date as possible as of the time stamp. Whenever no new data is provided, the
  * old data is retained.
  * 
- * @author Zachary O. Toups (ztoups@nmsu.edu)
+ * @author Z O. Toups (ztoups@nmsu.edu)
  * 
  */
 @simpl_inherit

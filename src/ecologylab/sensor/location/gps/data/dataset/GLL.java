@@ -8,7 +8,7 @@ import ecologylab.sensor.location.gps.data.GPSDatum;
 /**
  * GLL data set -- Geographic position - Latitude and Longitude
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  * 
  */
 public enum GLL implements GPSDataFieldBase

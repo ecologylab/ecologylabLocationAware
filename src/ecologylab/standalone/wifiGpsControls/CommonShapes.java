@@ -17,7 +17,7 @@ import java.awt.geom.GeneralPath;
  * All shapes are 10 x 10 clicks in the graphics space. They are also all
  * centered at 0, 0.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 public abstract class CommonShapes
 {

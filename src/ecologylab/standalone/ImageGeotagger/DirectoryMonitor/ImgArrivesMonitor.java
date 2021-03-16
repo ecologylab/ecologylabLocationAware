@@ -10,7 +10,7 @@ import java.io.File;
 /**
  * Notifies a listener when an image arrives, and what the image is.
  * 
- * @author Zachary O. Toups (ztoups@nmsu.edu)
+ * @author Z O. Toups (ztoups@nmsu.edu)
  */
 public class ImgArrivesMonitor extends ImgDirMonitor
 {

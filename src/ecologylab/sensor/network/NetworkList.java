@@ -20,7 +20,7 @@ import ecologylab.serialization.annotations.simpl_nowrap;
  * those access points provided. In this way, the WiFiList should only contain the most current
  * data, and currently-undetected WiFi networks will not be in the list.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 @simpl_inherit
 public abstract class NetworkList<NET extends NetworkStatus> extends ElementState

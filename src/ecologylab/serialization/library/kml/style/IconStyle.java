@@ -24,7 +24,7 @@ import ecologylab.serialization.library.kml.overlay.Vec2;
  * x, y scaling of the icon. The color specified in the <color> element of <IconStyle> is blended
  * with the color of the <Icon>.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
+ * @author Z O. Toups (zach@ecologylab.net) (Java classes only)
  */
 @simpl_inherit
 public class IconStyle extends ColorStyle
@@ -52,7 +52,7 @@ public class IconStyle extends ColorStyle
 	 * Placemark. The x and y values can be specified in three different ways: as pixels ("pixels"),
 	 * as fractions of the icon ("fraction"), or as inset pixels ("insetPixels"), which is an offset
 	 * in pixels from the upper right corner of the icon. The x and y positions can be specified in
-	 * different ways—for example, x can be in pixels and y can be a fraction. The origin of the
+	 * different waysï¿½for example, x can be in pixels and y can be a fraction. The origin of the
 	 * coordinate system is in the lower left corner of the icon.
 	 */
 	@simpl_composite

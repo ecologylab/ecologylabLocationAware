@@ -33,7 +33,7 @@ import gnu.io.UnsupportedCommOperationException;
  * These may be logged to create a set of data about locations, times, and
  * network status.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 @simpl_inherit public class WiFiGPSStatusOp extends MixedInitiativeOp implements
 		WiFiStringDataListener, NMEAStringListener

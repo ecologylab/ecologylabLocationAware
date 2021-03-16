@@ -18,7 +18,7 @@ import ecologylab.serialization.annotations.simpl_inherit;
  * way, the WiFiList should only contain the most current data, and
  * currently-undetected WiFi networks will not be in the list.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 @simpl_inherit public class WiFiSourceList extends NetworkList<WiFiSource>
 		implements WiFiStringDataListener
@@ -111,7 +111,7 @@ import ecologylab.serialization.annotations.simpl_inherit;
 	 * objects used by the WiFiList. Prevents unncessary instantiation if
 	 * possible.
 	 * 
-	 * @author Zachary O. Toups (zach@ecologylab.net)
+	 * @author Z O. Toups (zach@ecologylab.net)
 	 */
 	class WiFiStatusPool extends ResourcePool<WiFiSource>
 	{

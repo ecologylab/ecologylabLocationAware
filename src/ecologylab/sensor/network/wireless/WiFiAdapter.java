@@ -14,7 +14,7 @@ import ecologylab.generic.Debug;
 /**
  * Abstracts the sensor for a WiFi card; allows listeners to retrieve updates.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  * @author Alan Blevins (blevinsa@gmail.com)
  */
 public class WiFiAdapter extends Debug

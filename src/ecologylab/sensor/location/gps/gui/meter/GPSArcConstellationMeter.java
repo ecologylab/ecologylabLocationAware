@@ -23,7 +23,7 @@ import ecologylab.sensor.location.gps.data.GPSDatum.DopType;
 /**
  * Draws a meter indicating GPS uncertainty.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 public class GPSArcConstellationMeter extends GraphicsTransformPanel implements
 		GPSConstants

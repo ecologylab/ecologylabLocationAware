@@ -22,7 +22,7 @@ import ecologylab.serialization.library.kml.style.StyleSelector;
  * or contains no <href>, a rectangle is drawn using the color and size defined
  * by the screen overlay.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
+ * @author Z O. Toups (zach@ecologylab.net) (Java classes only)
  */
 @simpl_inherit public class GroundOverlay extends Overlay
 {

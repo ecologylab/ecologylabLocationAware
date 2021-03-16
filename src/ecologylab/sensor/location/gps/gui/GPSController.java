@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.TooManyListenersException;
 
 /**
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  *
  */
 public interface GPSController

@@ -18,7 +18,7 @@ import ecologylab.services.logging.WiFiGPSStatusOp;
 /**
  * Demonstrates how to load log data, and how to access it.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 public class DemoLogUse
 {

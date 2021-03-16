@@ -11,7 +11,7 @@ import ecologylab.serialization.annotations.simpl_tag;
 /**
  * Extends Network to provide signal strength information.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 @simpl_inherit public abstract class WirelessNetwork extends NetworkStatus
 {

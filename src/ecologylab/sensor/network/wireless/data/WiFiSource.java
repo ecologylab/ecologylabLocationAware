@@ -15,7 +15,7 @@ import ecologylab.serialization.types.element.IMappable;
  * 
  * Inherited field, id, contains the ssid for the network in question.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 @simpl_inherit public class WiFiSource extends WirelessNetwork implements
 		IMappable<String>

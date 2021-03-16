@@ -13,7 +13,7 @@ import ecologylab.sensor.location.NMEAStringListener;
 /**
  * Logs pure NMEA sentences to a return-delimited file.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  * 
  */
 public class GPSDataLogger implements NMEAStringListener

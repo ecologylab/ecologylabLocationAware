@@ -13,7 +13,7 @@ import ecologylab.serialization.types.element.IMappable;
  * 
  * TODO Support for current data rate, etc.??
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 public abstract class NetworkStatus extends ElementState implements
 		IMappable<String>

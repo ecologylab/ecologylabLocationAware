@@ -20,7 +20,7 @@ import ecologylab.sensor.network.wireless.WiFiAdapter;
 import ecologylab.sensor.network.wireless.gui.strings.WiFiStatusStrings;
 
 /**
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 public class WiFiAdapterConnectionControls extends JPanel implements
 		ActionListener, WiFiStatusStrings

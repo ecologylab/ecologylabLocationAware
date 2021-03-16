@@ -28,7 +28,7 @@ import ecologylab.serialization.annotations.simpl_tag;
  * When you specify an image pyramid, you also modify the <href> in the <Icon>
  * element to include specifications for which tiles to load.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
+ * @author Z O. Toups (zach@ecologylab.net) (Java classes only)
  */
 public class ViewVolume extends ElementState
 {

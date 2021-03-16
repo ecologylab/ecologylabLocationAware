@@ -41,7 +41,7 @@ import ecologylab.sensor.location.gps.data.GeoCoordinate;
  * In this mode, the virtual world is held at a constant, specified size (width/height) and the scale between it and the
  * real world changes, depending on the other specifications.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  * 
  */
 public abstract class Projection extends Debug

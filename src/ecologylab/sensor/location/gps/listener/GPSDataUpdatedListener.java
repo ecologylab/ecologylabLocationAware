@@ -14,7 +14,7 @@ import ecologylab.sensor.location.gps.data.GPSDatum;
  * not check this every time an event is generated, and so changing what data
  * the listener is interested in requires removing and re-adding the listener.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  * 
  */
 public interface GPSDataUpdatedListener

@@ -19,7 +19,7 @@ import ecologylab.serialization.annotations.simpl_tag;
  * scene. A large field of view, like a wide-angle lens, focuses on a large part
  * of the scene.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net) (Java classes only)
+ * @author Z O. Toups (zach@ecologylab.net) (Java classes only)
  */
 public class ImagePyramid extends ElementState
 {

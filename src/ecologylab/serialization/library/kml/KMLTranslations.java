@@ -21,7 +21,7 @@ import ecologylab.serialization.types.element.ElementTypeTranslationsProvider;
 /**
  * Provide XML translation mappings for use with KML.
  * 
- * @author Zachary O. Toups (toupsz@gmail.com)
+ * @author Z O. Toups (toupsz@gmail.com)
  */
 public class KMLTranslations
 {

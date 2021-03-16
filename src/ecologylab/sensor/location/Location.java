@@ -11,7 +11,7 @@ import ecologylab.serialization.ElementState;
  * 
  * This object is only used for organization, not for storing any data.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 public abstract class Location extends ElementState
 {

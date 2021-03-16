@@ -10,7 +10,7 @@ import ecologylab.sensor.location.gps.data.GPSDatum;
  * information on time, latitude, longitude and height, system status, speed, course and date. This
  * data set is relayed by all GPS receivers.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 public enum RMC implements GPSDataFieldBase
 {

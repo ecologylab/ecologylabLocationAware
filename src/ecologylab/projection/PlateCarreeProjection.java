@@ -30,7 +30,7 @@ import ecologylab.serialization.formatenums.StringFormat;
  * 
  * PlateCarreeProjection sets scale in terms of virtual world points : degrees latitude/longitude.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  * 
  */
 public class PlateCarreeProjection extends Projection

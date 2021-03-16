@@ -37,7 +37,7 @@ import gnu.io.PortInUseException;
 import gnu.io.UnsupportedCommOperationException;
 
 /**
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  * 
  */
 public class ProjectionVisualizer extends SingletonApplicationEnvironment implements GPSDataUpdatedListener,

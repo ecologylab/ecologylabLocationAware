@@ -45,7 +45,7 @@ import ecologylab.standalone.ImageGeotagger.DirectoryMonitor.ImgArrivesMonitor;
  * GPS time and the photo's timestamp can be used to determine the offset between GPS time and the
  * camera clock.
  * 
- * @author Zachary O. Toups (ztoups@nmsu.edu)
+ * @author Z O. Toups (ztoups@nmsu.edu)
  */
 public class ClockSynchWindow implements ActionListener
 {

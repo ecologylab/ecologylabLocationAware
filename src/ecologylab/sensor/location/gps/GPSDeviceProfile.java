@@ -12,7 +12,7 @@ import ecologylab.serialization.annotations.simpl_scalar;
  * This information is not generally needed for working with a GPS, but may be
  * helpful in some data analysis and display.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  * 
  */
 public class GPSDeviceProfile extends ElementState

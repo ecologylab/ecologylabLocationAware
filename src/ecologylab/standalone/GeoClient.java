@@ -15,7 +15,7 @@ import ecologylab.services.messages.LocationDataResponse;
  * because it can also provide the same data via it's updateLocation methods.
  * 
  * @author William A. Hamilton (bill@ecologylab.net)
- * @author Zachary O. Toups (ztoups@nmsu.edu)
+ * @author Z O. Toups (ztoups@nmsu.edu)
  */
 public class GeoClient
 {

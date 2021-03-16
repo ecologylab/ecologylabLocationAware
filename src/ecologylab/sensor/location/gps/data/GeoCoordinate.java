@@ -14,7 +14,7 @@ import ecologylab.serialization.annotations.simpl_scalar;
  * An object for representing a set of 3d coordinates on the earth's surface: latitude, longitude,
  * and altitude.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 @simpl_inherit
 public class GeoCoordinate extends Location implements EarthData

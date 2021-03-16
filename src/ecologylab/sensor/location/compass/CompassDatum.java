@@ -13,7 +13,7 @@ import ecologylab.serialization.annotations.simpl_scalar;
 /**
  * 
  * @author William A. Hamilton (bill@ecologylab.net)
- * @author Zachary O. Toups (ztoups@nmsu.edu)
+ * @author Z O. Toups (ztoups@nmsu.edu)
  */
 public class CompassDatum extends ElementState implements Cloneable, GPSDataUpdatedListener
 {

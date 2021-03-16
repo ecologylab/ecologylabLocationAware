@@ -14,7 +14,7 @@ import ecologylab.serialization.annotations.simpl_scalar;
 /**
  * Represents the location data from a location sensor of some sort.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 public class LocationStatus extends GeoCoordinate
 {

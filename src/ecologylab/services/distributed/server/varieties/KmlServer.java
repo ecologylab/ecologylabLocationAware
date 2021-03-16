@@ -23,7 +23,7 @@ import ecologylab.services.messages.KmlRequest;
 import ecologylab.services.messages.KmlResponse;
 
 /**
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  * 
  */
 public class KmlServer extends HttpGetServer

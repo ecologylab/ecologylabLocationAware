@@ -28,7 +28,7 @@ import ecologylab.services.distributed.server.varieties.EarthGPSSimulatorServer;
  * It produces a KmlResponse message that is sent back to the Google Earth application, to show the
  * user where the point is located.
  * 
- * @author Zachary O. Toups (zach@ecologylab.net)
+ * @author Z O. Toups (zach@ecologylab.net)
  */
 public class ReportEarthLookLocationRequest extends RequestMessage
 {
